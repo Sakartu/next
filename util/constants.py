@@ -10,3 +10,6 @@ will remember which eps you've already seen and start a
 new named (or a new random) ep for you. The configuration
 file for %prog can be found in ~/.%prog/
 """
+
+class Keys:
+    DB_PATH = 'database_path'
