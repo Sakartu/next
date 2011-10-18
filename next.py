@@ -36,8 +36,11 @@ def main():
 
     if len(args):   #1.
         #user provided a showname, find it in the db, then play it.
-        s = db.find_show(conf, "".join(args))
-        player.play_next(conf, s)
+        s = db.find_show(conf, " ".join(args))
+        if s:
+            player.play_next(conf, s)
+        else:
+            print 'Show "{0}" could not be found!'.format(" ".join(args))
     else:           #2.
         #user provided nothing, popup a list of options
         tui.query_user(conf)
