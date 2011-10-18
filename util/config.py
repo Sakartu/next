@@ -21,6 +21,6 @@ def parse_opts():
         print "No configfile found, aborting!"
         sys.exit(2)
 
-    result = dict(config.items('clipshare'))
+    result = dict(config.items('general'))
 
     return result, args
