@@ -5,6 +5,7 @@ from db import db
 from show import player
 from tui import tui
 import sys
+import os
 import sqlite3
 
 def main():
@@ -12,9 +13,9 @@ def main():
 
     try: #the database_path is usually the show_path, but can be defined in conf
         if constants.Keys.DB_PATH in conf:
-            database_path = conf[constants.Keys.DB_PATH]
+            database_path = os.path.join(conf[constants.Keys.DB_PATH], ".next.db")
         else:
-            database_path = conf[constants.Keys.SHOW_PATH]
+            database_path = os.path.join(conf[constants.Keys.SHOW_PATH], ".next.db")
     except KeyError:
         logging.log("No show_path or database_path defined in configuration, aborting!")
         sys.exit(-1)
@@ -24,7 +25,7 @@ def main():
         db_conn = db.initialize(database_path)
         conf['db_conn'] = db_conn
     except sqlite3.OperationalError:
-        logging.log("Could not access shows database, are the permissions correct for '{0}?'".format(database_path))
+        logging.log("Could not access shows database, are the permissions correct for '{0}'?".format(database_path))
         sys.exit(-1)
 
     #couple of usecases:
@@ -34,11 +35,11 @@ def main():
 
     if len(args):   #1.
         #user provided a showname, find it in the db, then play it.
-        s = db.find_show(conf, args)
+        s = db.find_show(conf, "".join(args))
         player.play_next(conf, s)
     else:           #2.
         #user provided nothing, popup a list of options
-        tui.tui.query_user(conf, db_conn)
+        tui.query_user(conf)
 
 if __name__ == '__main__':
 	main()

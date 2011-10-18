@@ -1,0 +1,2 @@
+class UserCancelled(Exception):
+    pass
