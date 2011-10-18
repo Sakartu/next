@@ -1,4 +1,5 @@
 from util import constants
+from constants import Keys
 from db import db
 import os
 import sys
@@ -7,9 +8,10 @@ import time
 import subprocess
 
 def play_next(conf, show):
-    cmd_line = conf[constants.Keys.PLAYER_CMD]
-    shows_base = conf[constants.Keys.SHOW_PATH]
+    cmd_line = conf[Keys.PLAYER_CMD]
+    shows_base = conf[Keys.SHOW_PATH]
     ep_path = build_ep_path(shows_base, show)
+    
     command = cmd_line.split(' ') + [ep_path]
     #play the show
     print "Starting show '{0}'!".format(ep_path)
@@ -19,8 +21,13 @@ def play_next(conf, show):
         sys.stdout.flush()
         time.sleep(1) #give the movie player some time to clean up
     #update the db
-    db.change_show(conf, show.name, show.season, show.ep + 1)
-    print "Player stopped, database updated."
+    print "Should I update the database for you?"
+    answer = raw_input("Update [yes]? ")
+    if 'y' in answer.lower() or answer == "":
+        db.change_show(conf, show.name, show.season, show.ep + 1)
+        print "Player stopped, database updated."
+    else:
+        print "Database unmodified."
 
 def build_ep_path(base, show):
     result = os.path.join(os.path.expanduser(base), show.name)
