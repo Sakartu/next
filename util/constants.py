@@ -13,3 +13,6 @@ file for %prog can be found in ~/.%prog/
 
 class Keys:
     DB_PATH = 'database_path'
+    SHOW_PATH = 'show_path'
+    PLAYER_CMD = 'player_cmd'
+
