@@ -1,6 +1,9 @@
+import re
+
 CONF_PATH = '~/.next/next.conf'
-VIDEO_EXTS = ['avi', 'mpg', 'mpeg', 'mkv']
-SHOW_REGEXES = [r'.*S(\d{1,2)E(\d{1,2}).*']
+VIDEO_EXTS = ['.avi', '.mpg', '.mpeg', '.mkv'] #need to have .'s in front!
+SHOW_REGEXES = [r'.*S0*{season}E0*{ep}.*', #accounts for most S12E12 type of shows
+                r'.*0*{season}x0*{ep}.*'] #accounts for most 12x12 type of shows
 
 USAGE = \
         """Usage: %prog [options] [show]
