@@ -1,5 +1,5 @@
 from util import constants
-from constants import Keys
+from util.constants import Keys
 from db import db
 import os
 import sys
