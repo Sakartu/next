@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from util import config, constants, logging
+from util import config, logging
+from util.constants import Keys
 from db import db
 from show import player
 from tui import tui
@@ -12,10 +13,10 @@ def main():
     (conf, args) = config.parse_opts()
 
     try: #the database_path is usually the show_path, but can be defined in conf
-        if constants.Keys.DB_PATH in conf:
-            database_path = os.path.join(conf[constants.Keys.DB_PATH], ".next.db")
+        if Keys.DB_PATH in conf:
+            database_path = os.path.join(conf[Keys.DB_PATH], ".next.db")
         else:
-            database_path = os.path.join(conf[constants.Keys.SHOW_PATH], ".next.db")
+            database_path = os.path.join(conf[Keys.SHOW_PATH], ".next.db")
     except KeyError:
         logging.log("No show_path or database_path defined in configuration, aborting!")
         sys.exit(-1)
@@ -23,7 +24,7 @@ def main():
     #initialize the sqlite database
     try:
         db_conn = db.initialize(database_path)
-        conf['db_conn'] = db_conn
+        conf[Keys.DB_CONN] = db_conn
     except sqlite3.OperationalError:
         logging.log("Could not access shows database, are the permissions correct for '{0}'?".format(database_path))
         sys.exit(-1)
