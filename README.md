@@ -27,7 +27,7 @@ Since next is just a small python script, installing it is really easy.
 Just checkout the source somewhere (we'll use ~/src/ as an example) and
 put next.py in your path:
 
-user@box$ git clone git://github.com/Sakartu/next.git
+user@box$ git clone git://github.com/Sakartu/next.git  
 user@box$ sudo ln -s ~/src/next/next.py /usr/bin/next
 
 After this next will be at your disposal from your terminal. That's the
