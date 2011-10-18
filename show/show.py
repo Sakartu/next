@@ -1,7 +1,5 @@
-def find_show(db_conn, show_name):
-    c = db_conn.cursor()
-    c.execute('SELECT * FROM shows WHERE name=?', show_name)
-    pass
-
-def play_next(show):
-    pass
+class Show:
+    def __init__(self, db_row):
+        self.name = db_row[0]
+        self.season = db_row[1]
+        self.ep = db_row[2]
