@@ -48,8 +48,9 @@ def all_shows(conf):
     conn = conf[Keys.DB_CONN]
     with conn:
         c = conn.cursor()
-        c.execute("""SELECT name FROM shows""")
-        return map(lambda x : x[0], c.fetchall())
+        c.execute("""SELECT * FROM shows""")
+        shows = c.fetchall()
+        return map(Show, shows)
 
 def find_next_ep(conf, showname):
     conn = conf[Keys.DB_CONN]
