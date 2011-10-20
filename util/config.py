@@ -18,7 +18,7 @@ def parse_opts():
     if os.path.exists(path) and os.access(path, os.F_OK) and os.access(path, os.W_OK):
         config.read(path)
     else:
-        print "No configfile found, aborting!"
+        print "No configfile found in '{0}', aborting!".format(path)
         sys.exit(2)
 
     result = dict(config.items('general'))
