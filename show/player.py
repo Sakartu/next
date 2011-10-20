@@ -11,7 +11,9 @@ def play_next(conf, show):
     cmd_line = conf[Keys.PLAYER_CMD]
     shows_base = conf[Keys.SHOW_PATH]
     ep_path = build_ep_path(shows_base, show)
-    
+    if not ep_path:
+        print "Could not find s{S:02d}e{E:02d} for {name}".format(show.season, show.ep, show.name)
+        return
     command = cmd_line.split(' ') + [ep_path]
     #play the show
     print "Starting show '{0}'!".format(ep_path)
