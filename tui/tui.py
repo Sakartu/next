@@ -157,9 +157,9 @@ def print_help(_):
 
 def print_shows(shows):
     max_len = max(map(len, map(lambda x : x.name, shows))) + 3
-    print "{id:3s}  {name:{length}s} {S:3>s} {E:3>s}".format(id="", name="Show Name", length=max_len, S="S", E="E")
+    print "{id:3s}  {name:{length}s} Episode".format(id="", name="Show Name", length=max_len)
     for (i, show) in enumerate(shows):
-        print "{id:3d}. {name:{length}s} {S:3>d} {E:3>d}".format(id=i + 1, name=show.name, length=max_len, S=show.season, E=show.ep)
+        print "{id:3d}. {name:{length}s} s{S:>02d}e{E:>02d}".format(id=i + 1, name=show.name, length=max_len, S=show.season, E=show.ep)
 
 #all the possible options for the tui, including shortcut and explanation
 options = [
