@@ -25,10 +25,9 @@ def play_ep(conf):
         print "There are no shows to play!"
         return
     print "Which show would you like to play the next ep from?"
-    for (i, show) in enumerate(all_shows):
-        print "{0:3d}. {1}".format(i + 1, show)
+    print_shows(all_shows)
     number = int(get_input("Show number: ", range(1, len(all_shows) + 1)))
-    showname = all_shows[number - 1]
+    showname = all_shows[number - 1].name
 
     s = db.find_show(conf, showname)
     if s:
@@ -39,7 +38,7 @@ def play_random_ep(conf):
     if not all_shows:
         print "There are no shows to play!"
         return
-    s = db.find_show(conf, random.choice(all_shows))
+    s = db.find_show(conf, random.choice(all_shows).name)
     player.play_next(conf, s)
 
 def add_show(conf):
@@ -84,8 +83,7 @@ def change_show(conf):
         print "There are no shows to change!"
         return
     print "Which show would you like to change?"
-    for (i, show) in enumerate(all_shows):
-        print "{0:3d}. {1}".format(i + 1, show)
+    print_shows(all_shows)
     number = int(get_input("Show number: ", range(1, len(all_shows) + 1)))
     showname = all_shows[number - 1]
 
@@ -127,8 +125,7 @@ def list_shows(conf):
     if not all_shows:
         print "There are no shows!"
         return
-    for (i, show) in enumerate(all_shows):
-        print "{0:3d}. {1}".format(i + 1, show)
+    print_shows(all_shows)
 
 def get_input(term="next$ ", possibles=None):
     if possibles != None and type(possibles) != type([]):
@@ -157,6 +154,12 @@ def print_help(_):
     print "What do you want to do? Press a number to select an option or press <enter> to play a random ep you haven't seen yet."
     for (k, o, _) in options:
         print k + ":", o
+
+def print_shows(shows):
+    max_len = max(map(len, map(lambda x : x.name, shows))) + 3
+    print "{id:3s}  {name:{length}s} {S:3>s} {E:3>s}".format(id="", name="Show Name", length=max_len, S="S", E="E")
+    for (i, show) in enumerate(shows):
+        print "{id:3d}. {name:{length}s} {S:3>d} {E:3>d}".format(id=i + 1, name=show.name, length=max_len, S=show.season, E=show.ep)
 
 #all the possible options for the tui, including shortcut and explanation
 options = [
