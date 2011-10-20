@@ -4,7 +4,7 @@ import re
 from util import constants
 
 def find_unlisted(conf):
-    listed = db.all_shows(conf)
+    listed = map(lambda x : x.name, db.all_shows(conf))
     basedir = os.path.expanduser(conf['show_path'])
     all_shows = filter(lambda x : os.path.isdir(os.path.join(basedir, x)), os.listdir(basedir))
     return list(set(all_shows) - set(listed))
@@ -26,5 +26,8 @@ def find_eps(conf, showname, seasons, season):
         for rex in rexes:
             m = rex.match(s)
             if m:
-                result[int(m.group('ep'))] = s
+                try:
+                    result[int(m.group('ep'))] = s
+                except ValueError: #if the value couldn't be converted to an int
+                    print "Ep with name {name} couldn't be parsed properly".format(name=s)
     return result
