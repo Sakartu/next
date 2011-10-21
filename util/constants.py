@@ -20,3 +20,12 @@ class Keys:
     SHOW_PATH = 'show_path'
     PLAYER_CMD = 'player_cmd'
 
+class TVRage:
+    SEARCH_NAME = 'show/name'
+    SEARCH_ID = 'show/showid'
+
+    EPLIST_NAME = 'name'
+    EPLIST_SEASONNUM = 'Episodelist/Season/episode/seasonnum'
+    EPLIST_EPNUM = 'Episodelist/Season/episode/epnum'
+    EPLIST_AIRDATE = 'Episodelist/Season/episode/airdate'
+    EPLIST_TITLE = 'Episodelist/Season/episode/title'
