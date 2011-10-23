@@ -151,11 +151,32 @@ def scan_series(conf):
     if not unlisted:
         print u'There are no shows to add!'
         return
-    for (i, show) in enumerate(unlisted):
-        print u'Would you like to add {0}?'.format(show)
+    for (i, path) in enumerate(unlisted):
+        print u'Would you like to add {0}?'.format(path)
         answer = get_input(u'Add [yes]? ')
         if u'y' in answer.lower() or answer == '':
-            add_show_details(conf, show)
+            print u'Searching for show in TVRage database... ',
+            shows = parser.fuzzy_search(path.split(' ')[0])
+            print u'done.'
+            if not shows:
+                print u'No shows could be found, please try other keywords!'
+                return
+            else:
+                print u'Which show would you like to add?'
+                for (i, show) in enumerate(shows):
+                    print u'{0:3d}. {1}'.format(i + 1, show[0])
+                number = int(get_input(u'Show number: ', range(1, len(shows) + 1)))
+                found_show = shows[number - 1]
+
+                print u'Getting all show eps from TVRage... ',
+                episodes = parser.get_all_eps(found_show[1]) #find eps by sid
+                print u'done.'
+                
+                print u'Storing eps in db... ',
+                db.store_tvr_eps(conf, episodes)
+                print u'done.'
+
+                add_show_details(conf, found_show)
 
 def list_shows(conf):
     all_shows = db.all_shows(conf)
