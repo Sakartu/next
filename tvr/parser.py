@@ -20,8 +20,8 @@ def get_all_eps(sid):
         eps = map(ET.ElementTree, season.findall(tvrpath.EPLIST_EPISODE))
         for ep in eps:
             epnum = ep.find(tvrpath.EPLIST_EPNUM).text
-            airdate = ep.find(tvrpath.EPLIST_AIRDATE).text
             title = ep.find(tvrpath.EPLIST_TITLE).text
-            results.append(Episode(sid, showname, seasonnum, epnum, airdate, title))
+            airdate = ep.find(tvrpath.EPLIST_AIRDATE).text
+            results.append(Episode(sid, showname, seasonnum, epnum, title, airdate))
     return results
 

@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python -u
+# -*- coding: utf-8 -*-
 
 from util import config
 from util.constants import Keys
@@ -14,19 +15,24 @@ def main():
 
     try: #the database_path is usually the show_path, but can be defined in conf
         if Keys.DB_PATH in conf:
-            database_path = os.path.join(conf[Keys.DB_PATH], ".next.db")
+            database_path = os.path.join(conf[Keys.DB_PATH], u'.next.db')
         else:
-            database_path = os.path.join(conf[Keys.SHOW_PATH], ".next.db")
+            database_path = os.path.join(conf[Keys.SHOW_PATH], u'.next.db')
     except KeyError:
-        print("No show_path or database_path defined in configuration, aborting!")
+        print(u'No show_path or database_path defined in configuration, aborting!')
         sys.exit(-1)
 
     #initialize the sqlite database
     try:
-        db_conn = db.initialize(database_path)
-        conf[Keys.DB_CONN] = db_conn
+        if os.path.exists(os.path.expanduser(os.path.expandvars(database_path))):
+            db_conn = db.initialize(database_path)
+            conf[Keys.DB_CONN] = db_conn
+        else:
+            print(u'Could not access shows database, path "{0}" does not exist!'.format(database_path))
+            sys.exit(-1)
+
     except sqlite3.OperationalError:
-        print("Could not access shows database, are the permissions correct for '{0}'?".format(database_path))
+        print(u'Could not access shows database, are the permissions correct for "{0}"?'.format(database_path))
         sys.exit(-1)
 
     #couple of usecases:
@@ -36,11 +42,11 @@ def main():
 
     if len(args):
         #1. user provided a showname, find it in the db, then play it.
-        s = db.find_show(conf, " ".join(args))
+        s = db.find_show(conf, u' '.join(args))
         if s:
             player.play_next(conf, s)
         else:
-            print 'Show "{0}" could not be found!'.format(" ".join(args))
+            print u'Show "{0}" could not be found!'.format(u' '.join(args))
     else:
         #2. user provided nothing, popup a list of options
         tui.query_user(conf)

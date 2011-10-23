@@ -6,7 +6,7 @@ import sys
 
 def parse_opts():
     parser = OptionParser(usage=constants.USAGE)
-    parser.add_option('-c', '--conf', nargs=1, dest="new_path", help='NEW_PATH specifies a different configuration file')
+    parser.add_option(u'-c', u'--conf', nargs=1, dest=u'new_path', help=u'NEW_PATH specifies a different configuration file')
     (options, args) = parser.parse_args()
 
     config = ConfigParser.SafeConfigParser()
@@ -18,9 +18,9 @@ def parse_opts():
     if os.path.exists(path) and os.access(path, os.F_OK) and os.access(path, os.W_OK):
         config.read(path)
     else:
-        print "No configfile found in '{0}', aborting!".format(path)
+        print u'No configfile found in "{0}", aborting!'.format(path)
         sys.exit(2)
 
-    result = dict(config.items('general'))
+    result = dict(config.items(u'general'))
 
     return result, args
