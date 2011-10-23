@@ -4,6 +4,7 @@ from tvr import parser
 from exceptions import UserCancelled
 import random
 import sys
+import sqlite3
 
 def query_user(conf):
     print_help(conf)
@@ -70,19 +71,6 @@ def add_show(conf):
 
     add_show_details(conf, found_show)
 
-def add_show_location(conf):
-    all_shows = db.all_shows(conf)
-    if not all_shows:
-        print u'There are no shows to add a location for!'
-        return
-    print u'Which show would you like to add a location for?'
-    print_shows(all_shows)
-    number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
-    show = all_shows[number - 1]
-    print u'What location do you want to add?'
-    location = get_input(u'Location: ')
-    db.add_location(conf, show.sid, location)
-
 def add_show_details(conf, show):
     #found out which season and ep the user is
     showname = show[0]
@@ -107,8 +95,24 @@ def add_show_details(conf, show):
     ep = int(get_input(u'Episode: ', range(1, len(eps) + 1)))
 
     #and finally put everything in the database
-    db.add_show(conf, sid, showname, season, ep)
-    print u'Successfully added {0} to the database!'.format(showname)
+    try:
+        db.add_show(conf, sid, showname, season, ep)
+        print u'Successfully added {0} to the database!'.format(showname)
+    except sqlite3.IntegrityError:
+        print u'Show already exists, use change command to change season and ep!'
+
+def add_show_location(conf):
+    all_shows = db.all_shows(conf)
+    if not all_shows:
+        print u'There are no shows to add a location for!'
+        return
+    print u'Which show would you like to add a location for?'
+    print_shows(all_shows)
+    number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
+    show = all_shows[number - 1]
+    print u'What location do you want to add?'
+    location = get_input(u'Location: ')
+    db.add_location(conf, show.sid, location)
 
 def change_show(conf):
     all_shows = db.all_shows(conf)

@@ -31,7 +31,8 @@ def main():
             print(u'Could not access shows database, path "{0}" does not exist!'.format(database_path))
             sys.exit(-1)
 
-    except sqlite3.OperationalError:
+    except sqlite3.OperationalError as e:
+        print e
         print(u'Could not access shows database, are the permissions correct for "{0}"?'.format(database_path))
         sys.exit(-1)
 

@@ -15,6 +15,7 @@ def initialize(path):
         if not test:
             c.execute(u'''CREATE TABLE shows(sid integer, name text, season
                     integer, ep integer, finished integer)''')
+            c.execute(u'''CREATE UNIQUE INDEX unique_shows ON shows(sid)''')
 
         #test to see if the tvr_shows table exists
         test = c.execute(u'''SELECT name FROM sqlite_master
@@ -23,6 +24,8 @@ def initialize(path):
         if not test:
             c.execute(u'''CREATE TABLE tvr_shows(sid integer, showname text,
                     season integer, ep integer, title text, airdate text)''')
+            c.execute(u'''CREATE UNIQUE INDEX unique_tvr_shows ON tvr_shows(sid,
+                    season, ep)''')
 
         #test to see if the locations table exists
         test = c.execute(u'''SELECT name FROM sqlite_master
@@ -30,6 +33,8 @@ def initialize(path):
                 AND name="locations"''').fetchall()
         if not test:
             c.execute(u'''CREATE TABLE locations(sid integer, location text)''')
+            c.execute(u'''CREATE UNIQUE INDEX unique_locations ON locations(sid,
+                    location)''')
     return conn
 
 def find_show(conf, show_name):
@@ -68,10 +73,14 @@ def all_shows(conf):
         return map(Show, shows)
 
 def store_tvr_eps(conf, eps):
+    if not eps:
+        return
+    all_eps = find_all_eps(conf, eps[0].sid, eps[0].season)
+
     with conf[Keys.DB_CONN] as conn:
         c = conn.cursor()
         for ep in eps:
-            c.execute(u'''INSERT INTO tvr_shows VALUES (?, ?, ?, ?, ?, ?)''',
+            c.execute(u'''INSERT OR IGNORE INTO tvr_shows VALUES (?, ?, ?, ?, ?, ?)''',
                     (ep.sid, ep.showname, ep.season, ep.epnum, ep.title,
                         ep.airdate))
 
@@ -101,7 +110,7 @@ def find_ep(conf, sid, season, ep):
 def add_location(conf, sid, location):
     with conf[Keys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''INSERT INTO locations VALUES (?, ?, ?, ?)''', (sid,
+        c.execute(u'''INSERT OR IGNORE INTO locations VALUES (?, ?, ?, ?)''', (sid,
             location,))
 
 def find_locations(conf, sid):
