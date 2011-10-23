@@ -51,7 +51,7 @@ def find_show(conf, show_name):
 def add_show(conf, sid, showname, season, ep):
     with conf[Keys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''INSERT INTO shows VALUES (?, ?, ?, ?)''', (sid, showname,
+        c.execute(u'''INSERT INTO shows VALUES (?, ?, ?, ?, 0)''', (sid, showname,
             season, ep,))
 
 def change_show(conf, sid, season, ep):
