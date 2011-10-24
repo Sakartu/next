@@ -9,6 +9,9 @@ import time
 import subprocess
 
 def play_next(conf, show):
+    '''
+    This method plays the next episode for the given show.
+    '''
     cmd_line = conf[Keys.PLAYER_CMD]
     ep_path = build_ep_path(conf, show)
     if not ep_path:
@@ -37,6 +40,12 @@ def play_next(conf, show):
         print u'Database unmodified.'
 
 def build_ep_path(conf, show):
+    '''
+    This is a helper function for the play_next method. It tries to build a path
+    to the next episode. It checks all the locations in the database, as well as
+    the default show location. It will return None if no path could be built, in
+    case the show isn't available on the disk yet.
+    '''
     # we search for an ep in the default shows folder and in each folder named
     # in the locations db
     path = None
