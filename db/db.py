@@ -14,7 +14,7 @@ def initialize(path):
                 AND name="shows"''').fetchall()
         if not test:
             c.execute(u'''CREATE TABLE shows(sid integer, name text, season
-                    integer, ep integer, finished integer)''')
+                    integer, ep integer, maybe_finished integer)''')
             c.execute(u'''CREATE UNIQUE INDEX unique_shows ON shows(sid)''')
 
         #test to see if the tvr_shows table exists
@@ -119,8 +119,12 @@ def find_locations(conf, sid):
         c.execute(u'''SELECT location FROM locations WHERE sid = ?''', (sid,))
         return map(lambda x : x[0], c.fetchall())
 
-def mark_finished(conf, sid):
+def mark_maybe_finished(conf, sid):
     with conf[Keys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''UPDATE TABLE shows SET finished = 1 WHERE sid = ?''', sid)
+        c.execute(u'''UPDATE TABLE shows SET maybe_finished = 1 WHERE sid = ?''', sid)
 
+def mark_not_maybe_finished(conf, sid):
+    with conf[Keys.DB_CONN] as conn:
+        c = conn.cursor()
+        c.execute(u'''UPDATE TABLE shows SET maybe_finished = 0 WHERE sid = ?''', sid)

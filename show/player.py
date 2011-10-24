@@ -31,7 +31,7 @@ def play_next(conf, show):
             db.change_show(conf, show.sid, next_ep.season, next_ep.epnum)
         else:
             print u'No information about new eps yet, try updating later!'
-            db.mark_finished(conf, show.sid)
+            db.mark_maybe_finished(conf, show.sid)
         print u'Player stopped, database updated.'
     else:
         print u'Database unmodified.'

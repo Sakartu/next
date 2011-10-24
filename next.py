@@ -4,7 +4,7 @@
 from util import config
 from util.constants import Keys
 from db import db
-from show import player
+from show import player, admin
 from tui import tui
 import sys
 import os
@@ -35,6 +35,9 @@ def main():
         print e
         print(u'Could not access shows database, are the permissions correct for "{0}"?'.format(database_path))
         sys.exit(-1)
+
+    # let's see if there's any new information for the tvr shows.
+    admin.update_eps(conf)
 
     #couple of usecases:
     # 1. there is an argument provided. this is probably a show that the user wants
