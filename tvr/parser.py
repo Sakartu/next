@@ -4,6 +4,11 @@ from tvrep import Episode
 from util.constants import TVRage as tvrpath
 
 def fuzzy_search(show_name):
+    '''
+    This method searches the TVRage database for a given showname. The search is
+    fuzzy, so looking for "doctor" will return Doctor Who (2005) as well. The
+    result is a list of (name, sid) tuples.
+    '''
     tree = ET.ElementTree(feeds.search(show_name))
     names = tree.findall(tvrpath.SEARCH_NAME)
     ids = tree.findall(tvrpath.SEARCH_ID)
@@ -11,6 +16,10 @@ def fuzzy_search(show_name):
     return results
 
 def get_all_eps(sid):
+    '''
+    This method parses episode list from the TVRage database for a given sid and
+    returns an Episode object for each episode in the list
+    '''
     tree = ET.ElementTree(feeds.episode_list(sid))
     showname = tree.find(tvrpath.EPLIST_NAME).text
     results = []
