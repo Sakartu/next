@@ -6,7 +6,11 @@ import random
 import sys
 import sqlite3
 
-def query_user(conf):
+def show_main_menu(conf):
+    '''
+    This method prints a main menu to the user. It uses the options list below
+    to determine what to show exactly and to find out what to call.
+    '''
     print_help(conf)
 
     stop = False
@@ -25,6 +29,9 @@ def query_user(conf):
             sys.exit(0)
 
 def play_ep(conf):
+    '''
+    A TUI function that plays a new episode from the user-specified show
+    '''
     all_shows = db.all_shows(conf)
     if not all_shows:
         print u'There are no shows to play!'
@@ -37,6 +44,9 @@ def play_ep(conf):
         player.play_next(conf, show)
 
 def play_random_ep(conf):
+    '''
+    A TUI function that plays a new ep from a random show
+    '''
     all_shows = db.all_shows(conf)
     if not all_shows:
         print u'There are no shows to play!'
@@ -45,6 +55,10 @@ def play_random_ep(conf):
     player.play_next(conf, s)
 
 def add_show(conf):
+    '''
+    A TUI function that adds a user-specified show to the database. Uses TVRage
+    to find out details about the show.
+    '''
     #query the user for the show they want to add
     found_show = None
     while not found_show:
@@ -75,6 +89,10 @@ def add_show(conf):
     add_show_details(conf, found_show)
 
 def add_show_details(conf, show):
+    '''
+    A helper function that is used (amongst others) by the add_show function to
+    query the user as to what season and episode the user is
+    '''
     #found out which season and ep the user is
     showname = show[0]
     sid = show[1]
@@ -105,6 +123,10 @@ def add_show_details(conf, show):
         print u'Show already exists, use change command to change season and ep!'
 
 def add_show_location(conf):
+    '''
+    A TUI function that adds a custom location to a show. Can be used if shows
+    are spread across the disk instead of centrally located.
+    '''
     all_shows = db.all_shows(conf)
     if not all_shows:
         print u'There are no shows to add a location for!'
@@ -118,6 +140,10 @@ def add_show_location(conf):
     db.add_location(conf, show.sid, location)
 
 def change_show(conf):
+    '''
+    A TUI function used to change the season and episode of a show where the
+    user is
+    '''
     all_shows = db.all_shows(conf)
     if not all_shows:
         print u'There are no shows to change!'
@@ -150,6 +176,10 @@ def change_show(conf):
     print u'Successfully changed details for {0}!'.format(show.name)
 
 def scan_series(conf):
+    '''
+    A TUI function that scans the user's series folder to find shows that aren't
+    in the database yet, then ask the user show by show if he wants to add it
+    '''
     unlisted = admin.find_unlisted(conf)
     if not unlisted:
         print u'There are no shows to add!'
@@ -182,6 +212,9 @@ def scan_series(conf):
                 add_show_details(conf, found_show)
 
 def list_shows(conf):
+    '''
+    A TUI function that lists all the shows in the database
+    '''
     all_shows = db.all_shows(conf)
     if not all_shows:
         print u'There are no shows!'
@@ -189,6 +222,11 @@ def list_shows(conf):
     print_shows(all_shows)
 
 def get_input(term=u'next$ ', possibles=None):
+    '''
+    A helper function that queries the user for input. Can be given a terminal
+    line to show (term) and a list of possible answers the user can give. If
+    possibles is None, we assume a plaintext answer.
+    '''
     if possibles != None and type(possibles) != type([]):
         possibles = None
 
@@ -212,11 +250,17 @@ def get_input(term=u'next$ ', possibles=None):
     return a
 
 def print_help(_):
+    '''
+    A helper function that prints a list of possible commands.
+    '''
     print u'What do you want to do? Press a number to select an option or press <enter> to play a random ep you haven\'t seen yet.'
     for (k, o, _) in options:
         print k + u':', o
 
 def print_shows(shows):
+    '''
+    A helper function that prints a list of shows, each with the reached season and ep.
+    '''
     max_len = max(map(len, map(lambda x : x.name, shows))) + 3
     print u'{id:3s}  {name:{length}s} Episode'.format(id=u'', name=u'Show Name', length=max_len)
     for (i, show) in enumerate(shows):
