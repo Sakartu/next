@@ -9,6 +9,11 @@ from tui import tui
 import sys
 import os
 import sqlite3
+try:
+    import tvrage
+except:
+    print "next needs the tvrage module to work. See https://bitbucket.org/ckreutzer/python-tvrage/"
+    sys.exit(-1)
 
 def main():
     (conf, args) = config.parse_opts()
