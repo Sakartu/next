@@ -15,12 +15,19 @@ file for nextcan be found in ~/.next/
 """
 
 class Keys:
+    '''
+    This enumeration class contains constants for all the configuration keys
+    '''
     DB_PATH = u'database_path'
     DB_CONN = u'db_conn'
     SHOW_PATH = u'show_path'
     PLAYER_CMD = u'player_cmd'
 
 class TVRage:
+    '''
+    This enumeration class contains constants for all the xpath-like paths for
+    tvrage results
+    '''
     SEARCH_NAME = u'show/name'
     SEARCH_ID = u'show/showid'
 
