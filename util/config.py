@@ -5,6 +5,10 @@ import os
 import sys
 
 def parse_opts():
+    '''
+    This method parses the commandline options to next, if any, and it parses
+    the configuration file
+    '''
     parser = OptionParser(usage=constants.USAGE)
     parser.add_option(u'-c', u'--conf', nargs=1, dest=u'new_path', help=u'NEW_PATH specifies a different configuration file')
     (options, args) = parser.parse_args()
