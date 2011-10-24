@@ -2,7 +2,7 @@ import sqlite3
 import os
 from tvr.tvrshow import Show
 from tvr.tvrep import Episode
-from util.constants import Keys
+from util.constants import ConfKeys
 
 def initialize(path):
     '''
@@ -45,7 +45,7 @@ def find_show(conf, show_name):
     '''
     This method tries to find a show in the shows database using a wildcard search
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM shows 
                 WHERE name like ?''', ("%" + show_name + "%",))
@@ -65,7 +65,7 @@ def add_show(conf, sid, showname, season, ep):
     This method adds a show with a given sid, name, season and ep to the
     database
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''INSERT INTO shows VALUES (?, ?, ?, ?, 0)''', (sid,
         showname, season, ep,))
@@ -74,7 +74,7 @@ def change_show(conf, sid, season, ep):
     '''
     This method changes the season and ep of a given show in the database
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''UPDATE shows SET season=?, ep=? where sid = ?''',
                 (season, ep, sid))
@@ -83,7 +83,7 @@ def all_shows(conf):
     '''
     This method returns a list of Show objects for all the shows in the database
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM shows''')
         shows = c.fetchall()
@@ -96,7 +96,7 @@ def store_tvr_eps(conf, eps):
     if not eps:
         return
 
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         for ep in eps:
             c.execute(u'''INSERT OR IGNORE INTO tvr_shows VALUES (?, ?, ?, ?, ?, ?)''',
@@ -107,7 +107,7 @@ def find_seasons(conf, sid):
     '''
     This method finds all the season numbers belonging to a given show
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT season FROM tvr_shows WHERE sid = ?''', (sid,))
         return list(set(map(lambda x : x[0], c.fetchall())))
@@ -117,7 +117,7 @@ def find_all_eps(conf, sid, season):
     This method returns all the eps, wrapped in Episode objects for a given show
     and season
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM tvr_shows WHERE sid = ? AND season = ?''',
                 (sid, season,))
@@ -128,7 +128,7 @@ def find_ep(conf, sid, season, ep):
     This method returns a single Episode object for the given show, season and
     epnumber
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM tvr_shows WHERE sid = ? AND season = ? AND
                 ep = ?''', (sid, season, ep,))
@@ -141,7 +141,7 @@ def add_location(conf, sid, location):
     '''
     This method adds the given location to the show in the locations database
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''INSERT OR IGNORE INTO locations VALUES (?, ?, ?, ?)''', (sid,
             location,))
@@ -150,7 +150,7 @@ def find_all_locations(conf, sid):
     '''
     This method returns all the stored locations for the given show
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT location FROM locations WHERE sid = ?''', (sid,))
         return map(lambda x : x[0], c.fetchall())
@@ -159,7 +159,7 @@ def mark_maybe_finished(conf, sid):
     '''
     This method marks the given show as maybe_finished
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''UPDATE TABLE shows SET maybe_finished = 1 WHERE sid = ?''', sid)
 
@@ -167,6 +167,6 @@ def mark_not_maybe_finished(conf, sid):
     '''
     This method unmarks the show as maybe_finished
     '''
-    with conf[Keys.DB_CONN] as conn:
+    with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''UPDATE TABLE shows SET maybe_finished = 0 WHERE sid = ?''', sid)

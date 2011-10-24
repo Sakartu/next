@@ -1,5 +1,5 @@
 from util import constants
-from util.constants import Keys
+from util.constants import ConfKeys
 from show import admin
 from db import db
 import os
@@ -12,7 +12,7 @@ def play_next(conf, show):
     '''
     This method plays the next episode for the given show.
     '''
-    cmd_line = conf[Keys.PLAYER_CMD]
+    cmd_line = conf[ConfKeys.PLAYER_CMD]
     ep_path = build_ep_path(conf, show)
     if not ep_path:
         print u'Could not find s{S:02d}e{E:02d} for {name}!'.format(S=show.season, E=show.ep, name=show.name)
@@ -50,7 +50,7 @@ def build_ep_path(conf, show):
     # in the locations db
     path = None
      
-    bases = [os.path.join(conf[Keys.SHOW_PATH], show.name)]
+    bases = [os.path.join(conf[ConfKeys.SHOW_PATH], show.name)]
     bases.extend(db.find_all_locations(conf, show.sid))
     bases = map(os.path.expanduser, bases)
     bases = map(os.path.expandvars, bases)

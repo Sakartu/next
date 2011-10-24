@@ -14,7 +14,7 @@ new named (or a new random) ep for you. The configuration
 file for nextcan be found in ~/.next/
 """
 
-class Keys:
+class ConfKeys:
     '''
     This enumeration class contains constants for all the configuration keys
     '''

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from util import config
-from util.constants import Keys
+from util.constants import ConfKeys
 from db import db
 from show import player, admin
 from tui import tui
@@ -19,10 +19,10 @@ def main():
     (conf, args) = config.parse_opts()
 
     try: #the database_path is usually the show_path, but can be defined in conf
-        if Keys.DB_PATH in conf:
-            database_path = os.path.join(conf[Keys.DB_PATH], u'.next.db')
+        if ConfKeys.DB_PATH in conf:
+            database_path = os.path.join(conf[ConfKeys.DB_PATH], u'.next.db')
         else:
-            database_path = os.path.join(conf[Keys.SHOW_PATH], u'.next.db')
+            database_path = os.path.join(conf[ConfKeys.SHOW_PATH], u'.next.db')
     except KeyError:
         print(u'No show_path or database_path defined in configuration, aborting!')
         sys.exit(-1)
@@ -31,7 +31,7 @@ def main():
     try:
         if os.path.exists(os.path.expanduser(os.path.expandvars(database_path))):
             db_conn = db.initialize(database_path)
-            conf[Keys.DB_CONN] = db_conn
+            conf[ConfKeys.DB_CONN] = db_conn
         else:
             print(u'Could not access shows database, path "{0}" does not exist!'.format(database_path))
             sys.exit(-1)
