@@ -42,7 +42,7 @@ def build_ep_path(conf, show):
     path = None
      
     bases = [os.path.join(conf[Keys.SHOW_PATH], show.name)]
-    bases.extend(db.find_locations(conf, show.sid))
+    bases.extend(db.find_all_locations(conf, show.sid))
     bases = map(os.path.expanduser, bases)
     bases = map(os.path.expandvars, bases)
 
