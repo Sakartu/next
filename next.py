@@ -53,7 +53,7 @@ def main():
             print u'Show "{0}" could not be found!'.format(u' '.join(args))
     else:
         #2. user provided nothing, popup a list of options
-        tui.query_user(conf)
+        tui.show_main_menu(conf)
 
 if __name__ == '__main__':
 	main()
