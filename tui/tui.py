@@ -12,9 +12,12 @@ def query_user(conf):
     stop = False
     while not stop:
         try:
-            choice = get_input(possibles=[x for (x, _, _) in options])
-            command = filter(lambda x : x[0] == choice, options)[0][2]
-            stop = command(conf) #call the appropriate function
+            choice = get_input(possibles=[x for (x, _, _) in options].append(""))
+            if choice == "":
+                stop = play_random_ep(conf)
+            else:
+                command = filter(lambda x : x[0] == choice, options)[0][2]
+                stop = command(conf) #call the appropriate function
         except UserCancelled:
             print u'User cancelled!'
         except KeyboardInterrupt:
@@ -209,7 +212,7 @@ def get_input(term=u'next$ ', possibles=None):
     return a
 
 def print_help(_):
-    print u'What do you want to do? Press a number to select an option or press <enter> to play a random ep you haven\'t seen yet.u'
+    print u'What do you want to do? Press a number to select an option or press <enter> to play a random ep you haven\'t seen yet.'
     for (k, o, _) in options:
         print k + u':', o
 
