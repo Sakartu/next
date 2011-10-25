@@ -23,6 +23,7 @@ class TUI(cmd.Cmd):
             try:
                 cmd.Cmd.cmdloop(self)
             except UserCancelled:
+                self.intro = ""
                 continue
 
     def add_show_details(self, show):
@@ -90,7 +91,7 @@ class TUI(cmd.Cmd):
             player.play_next(self.config, show)
 
     def help_play(self):
-        print 'Play an ep'
+        print 'Play an ep. If keywords are provided, a show with a corresponding name will be searched.'
 
     def do_random(self, line=None):
         '''
