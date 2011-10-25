@@ -2,9 +2,48 @@ from show import player, admin
 from db import db
 from tvr import parser
 from exceptions import UserCancelled
+import cmd
 import random
 import sys
 import sqlite3
+
+class TUI(cmd.Cmd):
+    def __init__(self, config):
+        super(TUI, self).__init__()
+        self.config = config
+
+    def do_play(self, line=None):
+        play_ep(self.config)
+
+    def do_random(self, line=None):
+        play_random_ep(self.config)
+
+    def do_add_show(self, line=None):
+        add_show(self.config)
+
+    def do_add_show_location(self, line=None):
+        add_show_location(self.config)
+
+    def do_change_show(self, line=None):
+        change_show(self.config)
+
+    def do_scan(self, line=None):
+        scan_series(self.config)
+
+    def do_list(self, line=None):
+        list_shows(self.config)
+
+    def do_EOF(self, line=None):
+        return True
+
+    def preloop(self):
+        self.do_help("")
+
+    def emptyline(self):
+        self.do_random()
+
+    def postloop(self):
+        print
 
 def show_main_menu(conf):
     '''
