@@ -5,7 +5,7 @@ from util import config
 from util.constants import ConfKeys
 from db import db
 from show import player, admin
-from tui import TUI
+from tui import TUI, exceptions
 import sys
 import os
 import sqlite3
@@ -62,7 +62,7 @@ def main():
         try:
             ui.cmdloop()
         except KeyboardInterrupt:
-            pass
+            print "\nUser pressed ^C, exitting!"
 
 if __name__ == '__main__':
 	main()
