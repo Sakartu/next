@@ -4,13 +4,26 @@ from tvr import parser
 from exceptions import UserCancelled, NoShowsException
 import cmd
 import random
-import sys
 import sqlite3
+import sys
 
 class TUI(cmd.Cmd):
     def __init__(self, config):
-        super(TUI, self).__init__()
+        cmd.Cmd.__init__(self)
         self.config = config
+        self.prompt = u'next$ '
+        self.intro = "Welcome to next!\n"
+        self.intro += "This program helps you maintain your show watching habits\n"
+        self.intro += "by logging which ep you have reached for a show. Please\n"
+        self.intro += "enter a command to continue!\n"
+        self.doc_header = "Commands (press help <command> to get help):"
+
+    def cmdloop(self, intro=None):
+        while True:
+            try:
+                cmd.Cmd.cmdloop(self)
+            except UserCancelled:
+                continue
 
     def add_show_details(self, show):
         '''
@@ -46,7 +59,6 @@ class TUI(cmd.Cmd):
         except sqlite3.IntegrityError:
             print u'Show already exists, use change command to change season and ep!'
 
-
     def get_all_shows(self):
         shows = db.all_shows(self.config)
         if not shows:
@@ -61,12 +73,24 @@ class TUI(cmd.Cmd):
         if not all_shows:
             print u'There are no shows to play!'
             return
-        print u'Which show would you like to play the next ep from?'
-        print_shows(all_shows)
-        number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
-        show = all_shows[number - 1]
+        if line:
+            candidates = filter(lambda s : set(line.split()) <= set(s.name.lower().split()), all_shows)
+            if not candidates:
+                print 'No show found for "{0}"'.format(line)
+                return
+            #just assume the first show
+            show = candidates[0]
+        else:
+            print u'Which show would you like to play the next ep from?'
+            print_shows(all_shows)
+            number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
+            show = all_shows[number - 1]
+
         if show:
             player.play_next(self.config, show)
+
+    def help_play(self):
+        print 'Play an ep'
 
     def do_random(self, line=None):
         '''
@@ -78,6 +102,9 @@ class TUI(cmd.Cmd):
             return
         s = db.find_show(self.config, random.choice(all_shows).name)
         player.play_next(self.config, s)
+
+    def help_random(self):
+        print 'Play a random ep'
 
     def do_add_show(self, line=None):
         '''
@@ -113,6 +140,9 @@ class TUI(cmd.Cmd):
 
         self.add_show_details(found_show)
 
+    def help_add_show(self):
+        print 'Add a show to the local database'
+
     def do_add_show_location(self, line=None):
         '''
         A TUI function that adds a custom location to a show. Can be used if shows
@@ -129,6 +159,9 @@ class TUI(cmd.Cmd):
         print u'What location do you want to add?'
         location = get_input(u'Location: ')
         db.add_location(self.config, show.sid, location)
+
+    def help_add_show_location(self):
+        print 'Add a location to a show. next will check each added location for eps to play'
 
     def do_change_show(self, line=None):
         '''
@@ -168,6 +201,9 @@ class TUI(cmd.Cmd):
         db.change_show(self.config, show.sid, season, ep)
         print u'Successfully changed details for {0}!'.format(show.name)
 
+    def help_change_show(self):
+        print 'Change the current season and ep for a show'
+
     def do_scan(self, line=None):
         '''
         A TUI function that scans the user's series folder to find shows that aren't
@@ -204,19 +240,35 @@ class TUI(cmd.Cmd):
 
                     self.add_show_details(found_show)
 
+    def help_scan(self):
+        print 'Scan the local shows directory for shows that aren\'t in the database yet'
+
     def do_list(self, line=None):
         '''
         A TUI function that lists all the shows in the database
         '''
         try:
             shows = self.get_all_shows()
-        except NoShowsException, e:
+        except NoShowsException:
             print 'There are no shows!'
         else:
             print_shows(shows)
 
-    def do_EOF(self, line=None):
-        return True
+    def help_list(self):
+        print 'List all the shows in the database'
+
+    def do_quit(self, line=None):
+        '''
+        Quits the program
+        '''
+        print "Exitting..."
+        sys.exit(0)
+
+    def help_quit(self):
+        'Quit the application'
+
+    def help_help(self):
+        print 'Get help about a topic'
 
     def preloop(self):
         self.do_help("")
