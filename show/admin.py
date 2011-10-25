@@ -50,7 +50,7 @@ def process_maybe_finished(conf, all_shows):
     '''
     for show in all_shows:
         if show.maybe_finished:
-            next_ep = find_next_ep(show)
+            next_ep = find_next_ep(conf, show)
             if next_ep:
                 db.change_show(conf, show.sid, next_ep.season, next_ep.epnum)
                 db.mark_not_maybe_finished(conf, show.sid)
