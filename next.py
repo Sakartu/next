@@ -5,7 +5,7 @@ from util import config
 from util.constants import ConfKeys
 from db import db
 from show import player, admin
-from tui import tui
+from tui import TUI
 import sys
 import os
 import sqlite3
@@ -58,7 +58,11 @@ def main():
             print u'Show "{0}" could not be found!'.format(u' '.join(args))
     else:
         #2. user provided nothing, popup a list of options
-        tui.show_main_menu(conf)
+        ui = TUI(conf)
+        try:
+            ui.cmdloop()
+        except KeyboardInterrupt:
+            pass
 
 if __name__ == '__main__':
 	main()
