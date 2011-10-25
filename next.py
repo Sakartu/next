@@ -23,15 +23,15 @@ def main():
             database_path = os.path.join(conf[ConfKeys.DB_PATH], u'.next.db')
         else:
             database_path = os.path.join(conf[ConfKeys.SHOW_PATH], u'.next.db')
+        database_path = os.path.expanduser(os.path.expandvars(database_path))
     except KeyError:
         print(u'No show_path or database_path defined in configuration, aborting!')
         sys.exit(-1)
 
     #initialize the sqlite database
     try:
-        if os.path.exists(os.path.expanduser(os.path.expandvars(database_path))):
-            db_conn = db.initialize(database_path)
-            conf[ConfKeys.DB_CONN] = db_conn
+        if os.path.exists(database_path) or os.access(os.path.dirname(database_path), os.W_OK | os.R_OK):
+            conf[ConfKeys.DB_CONN] = db.initialize(database_path)
         else:
             print(u'Could not access shows database, path "{0}" does not exist!'.format(database_path))
             sys.exit(-1)
