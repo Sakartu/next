@@ -5,10 +5,11 @@ from util import config
 from util.constants import ConfKeys
 from db import db
 from show import player, admin
-from tui import TUI, exceptions
+from tui import TUI
 import sys
 import os
 import sqlite3
+
 try:
     import tvrage
 except:
@@ -42,7 +43,9 @@ def main():
         sys.exit(-1)
 
     # let's see if there's any new information for the tvr shows.
+    print "Updating TVRage episode database...",
     admin.update_eps(conf)
+    print "done."
 
     #couple of usecases:
     # 1. there is an argument provided. this is probably a show that the user wants
