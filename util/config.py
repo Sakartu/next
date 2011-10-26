@@ -27,7 +27,14 @@ def parse_opts():
     parser.add_option(u'--scan', action="store_const", dest="func", const=t.do_scan, help=u'Scan your series path for shows')
     (options, args) = parser.parse_args()
 
+    # Load a default config
     config = ConfigParser.SafeConfigParser()
+    config.add_section(u'general')
+    config.set(u'general', constants.ConfKeys.PLAYER_CMD, u'mplayer')
+    config.set(u'general', constants.ConfKeys.SHOW_PATH, u'~/downloads/series')
+
+    db_path = BaseDirectory.save_data_path('next')
+    config.set(u'general', constants.ConfKeys.DB_PATH, db_path)
 
     # Load the config override
     if options.new_path:
