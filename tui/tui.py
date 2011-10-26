@@ -310,6 +310,12 @@ class TUI(cmd.Cmd, object):
     def help_help(self):
         print u'Get help about a topic'
 
+    def do_EOF(self, line=None):
+        '''
+        Quit the program
+        '''
+        self.do_quit()
+
     def preloop(self):
         self.do_help("")
 
