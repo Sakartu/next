@@ -41,11 +41,12 @@ You can put it elsewhere, if you want to, just use the -c flag to specify
 the new location. In the configurationfile we have a few options that 
 we'll discuss below:
 
-Option | Explanation | Optional?
--------|-------------|----------
-player_cmd | This is the commandline that next will use to start an episode | no
-database_path | If you want your database to reside somewhere other than in show_path, you can specify it here</td> <td>yes</td>
-show_path | This is your series directory, something like ~/downloads/series/ | no
+Option | Explanation | Optional? | Default
+-------|-------------|-----------|--------
+player_cmd | This is the commandline that next will use to start an episode | no | totem
+database_path | If you want your database to reside somewhere other than in show_path, you can specify it here | yes | ~/downloads/series
+show_path | This is your series directory, something like ~/downloads/series/ | no | ~/downloads/series/
+unstructured_mode | Set this option to True if you have all your eps (from every show) in a single download dir | yes | False
 
 TUI manual
 ----------
