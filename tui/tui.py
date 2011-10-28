@@ -8,9 +8,9 @@ import sqlite3
 import sys
 
 class TUI(cmd.Cmd):
-    def __init__(self, config):
+    def __init__(self, conf):
         cmd.Cmd.__init__(self)
-        self.config = config
+        self.conf = conf
         self.prompt = u'next$ '
         self.intro = "Welcome to next!\n"
         self.intro += "This program helps you maintain your show watching habits\n"
@@ -34,7 +34,7 @@ class TUI(cmd.Cmd):
         #found out which season and ep the user is
         showname = show[0]
         sid = show[1]
-        seasons = db.find_seasons(self.config, sid)
+        seasons = db.find_seasons(self.conf, sid)
 
         #then the season in the show
         if not seasons:
@@ -44,7 +44,7 @@ class TUI(cmd.Cmd):
         season = int(get_input(u'Season: ', range(1, len(seasons) + 1)))
 
         #then the ep in the season
-        eps = db.find_all_eps(self.config, sid, season)
+        eps = db.find_all_eps(self.conf, sid, season)
         if not eps:
             print u'This season has no eps!'
             return
@@ -55,13 +55,13 @@ class TUI(cmd.Cmd):
 
         #and finally put everything in the database
         try:
-            db.add_show(self.config, sid, showname, season, ep)
+            db.add_show(self.conf, sid, showname, season, ep)
             print u'Successfully added {0} to the database!'.format(showname)
         except sqlite3.IntegrityError:
             print u'Show already exists, use change command to change season and ep!'
 
     def get_all_shows(self):
-        shows = db.all_shows(self.config)
+        shows = db.all_shows(self.conf)
         if not shows:
             raise NoShowsException
         return shows
@@ -70,7 +70,7 @@ class TUI(cmd.Cmd):
         '''
         A TUI function that plays a new episode from the user-specified show
         '''
-        all_shows = db.all_shows(self.config)
+        all_shows = db.all_shows(self.conf)
         if not all_shows:
             print u'There are no shows to play!'
             return
@@ -88,7 +88,7 @@ class TUI(cmd.Cmd):
             show = all_shows[number - 1]
 
         if show:
-            player.play_next(self.config, show)
+            player.play_next(self.conf, show)
 
     def help_play(self):
         print 'Play an ep. If keywords are provided, a show with a corresponding name will be searched.'
@@ -97,12 +97,12 @@ class TUI(cmd.Cmd):
         '''
         A TUI function that plays a new ep from a random show
         '''
-        all_shows = db.all_shows(self.config)
+        all_shows = db.all_shows(self.conf)
         if not all_shows:
             print u'There are no shows to play!'
             return
-        s = db.find_show(self.config, random.choice(all_shows).name)
-        player.play_next(self.config, s)
+        s = db.find_show(self.conf, random.choice(all_shows).name)
+        player.play_next(self.conf, s)
 
     def help_random(self):
         print 'Play a random ep'
@@ -136,7 +136,7 @@ class TUI(cmd.Cmd):
         print u'done.'
         
         print u'Storing eps in db... ',
-        db.store_tvr_eps(self.config, episodes)
+        db.store_tvr_eps(self.conf, episodes)
         print u'done.'
 
         self.add_show_details(found_show)
@@ -149,7 +149,7 @@ class TUI(cmd.Cmd):
         A TUI function that adds a custom location to a show. Can be used if shows
         are spread across the disk instead of centrally located.
         '''
-        all_shows = db.all_shows(self.config)
+        all_shows = db.all_shows(self.conf)
         if not all_shows:
             print u'There are no shows to add a location for!'
             return
@@ -159,7 +159,7 @@ class TUI(cmd.Cmd):
         show = all_shows[number - 1]
         print u'What location do you want to add?'
         location = get_input(u'Location: ')
-        db.add_location(self.config, show.sid, location)
+        db.add_location(self.conf, show.sid, location)
 
     def help_add_show_location(self):
         print 'Add a location to a show. next will check each added location for eps to play'
@@ -181,7 +181,7 @@ class TUI(cmd.Cmd):
         show = all_shows[number - 1]
 
         #then the season in the show
-        seasons = db.find_seasons(self.config, show.sid)
+        seasons = db.find_seasons(self.conf, show.sid)
         if not seasons:
             print u'There are no seasons for this show!'
             return
@@ -189,7 +189,7 @@ class TUI(cmd.Cmd):
         season = int(get_input(u'Season: ', range(1, len(seasons) + 1)))
 
         #then the ep in the season
-        eps = db.find_all_eps(self.config, show.sid, season)
+        eps = db.find_all_eps(self.conf, show.sid, season)
         if not eps:
             print u'This season has no eps!'
             return
@@ -199,7 +199,7 @@ class TUI(cmd.Cmd):
         ep = int(get_input(u'Episode: ', range(1, len(eps) + 1)))
 
         #and finally put everything in the database
-        db.change_show(self.config, show.sid, season, ep)
+        db.change_show(self.conf, show.sid, season, ep)
         print u'Successfully changed details for {0}!'.format(show.name)
 
     def help_change_show(self):
@@ -210,7 +210,7 @@ class TUI(cmd.Cmd):
         A TUI function that scans the user's series folder to find shows that aren't
         in the database yet, then ask the user show by show if he wants to add it
         '''
-        unlisted = admin.find_unlisted(self.config)
+        unlisted = admin.find_unlisted(self.conf)
         if not unlisted:
             print u'There are no shows to add!'
             return
@@ -236,7 +236,7 @@ class TUI(cmd.Cmd):
                     print u'done.'
                     
                     print u'Storing eps in db... ',
-                    db.store_tvr_eps(self.config, episodes)
+                    db.store_tvr_eps(self.conf, episodes)
                     print u'done.'
 
                     self.add_show_details(found_show)
@@ -254,6 +254,28 @@ class TUI(cmd.Cmd):
             print 'There are no shows!'
         else:
             print_shows(shows)
+
+    def do_new(self, line=None):
+        '''
+        A TUI function that lists all the shows for which new eps are available
+        '''
+        try:
+            all_shows = self.get_all_shows()
+        except NoShowsException:
+            print 'There are no shows!'
+        shows = []
+        for show in all_shows:
+            p = player.build_ep_path(self.conf, show)
+            if p:
+                shows.append(show)
+        if not shows:
+            print 'No new eps are available for your shows!'
+            return
+        print "New eps are on your computer for these shows:"
+        print_shows(shows)
+
+    def help_new(self):
+        pass
 
     def help_list(self):
         print 'List all the shows in the database'
@@ -313,6 +335,6 @@ def print_shows(shows):
     A helper function that prints a list of shows, each with the reached season and ep.
     '''
     max_len = max(map(len, map(lambda x : x.name, shows))) + 3
-    print u'{id:3s}  {name:{length}s} Episode'.format(id=u'', name=u'Show Name', length=max_len)
+    print u'{id:3s}  {name:{length}s} Next episode'.format(id=u'', name=u'Show Name', length=max_len)
     for (i, show) in enumerate(shows):
         print u'{id:3d}. {name:{length}s} s{S:>02d}e{E:>02d}'.format(id=i + 1, name=show.name, length=max_len, S=show.season, E=show.ep)
