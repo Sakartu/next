@@ -9,6 +9,7 @@ from tui import TUI
 import sys
 import os
 import sqlite3
+
 try:
     import tvrage
 except:
@@ -23,15 +24,15 @@ def main():
             database_path = os.path.join(conf[ConfKeys.DB_PATH], u'.next.db')
         else:
             database_path = os.path.join(conf[ConfKeys.SHOW_PATH], u'.next.db')
+        database_path = os.path.expanduser(os.path.expandvars(database_path))
     except KeyError:
         print(u'No show_path or database_path defined in configuration, aborting!')
         sys.exit(-1)
 
     #initialize the sqlite database
     try:
-        if os.path.exists(os.path.expanduser(os.path.expandvars(database_path))):
-            db_conn = db.initialize(database_path)
-            conf[ConfKeys.DB_CONN] = db_conn
+        if os.path.exists(database_path) or os.access(os.path.dirname(database_path), os.W_OK | os.R_OK):
+            conf[ConfKeys.DB_CONN] = db.initialize(database_path)
         else:
             print(u'Could not access shows database, path "{0}" does not exist!'.format(database_path))
             sys.exit(-1)
@@ -42,7 +43,9 @@ def main():
         sys.exit(-1)
 
     # let's see if there's any new information for the tvr shows.
+    print "Updating TVRage episode database...",
     admin.update_eps(conf)
+    print "done."
 
     #couple of usecases:
     # 1. there is an argument provided. this is probably a show that the user wants
@@ -62,7 +65,7 @@ def main():
         try:
             ui.cmdloop()
         except KeyboardInterrupt:
-            pass
+            print "\nUser pressed ^C, exitting!"
 
 if __name__ == '__main__':
 	main()

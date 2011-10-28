@@ -161,7 +161,8 @@ def mark_maybe_finished(conf, sid):
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''UPDATE TABLE shows SET maybe_finished = 1 WHERE sid = ?''', sid)
+        c.execute(u'''UPDATE shows SET maybe_finished = 1 WHERE sid = ?''',
+                (sid,))
 
 def mark_not_maybe_finished(conf, sid):
     '''
@@ -169,4 +170,5 @@ def mark_not_maybe_finished(conf, sid):
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''UPDATE TABLE shows SET maybe_finished = 0 WHERE sid = ?''', sid)
+        c.execute(u'''UPDATE TABLE shows SET maybe_finished = 0 WHERE sid =
+        ?''', (sid,))

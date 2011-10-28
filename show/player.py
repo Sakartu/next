@@ -19,12 +19,18 @@ def play_next(conf, show):
         return
     command = cmd_line.split(' ') + [ep_path]
     #play the show
-    print u'Starting show "{0}"!'.format(ep_path)
+    print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season, E=show.ep, name=show.name)
     try:
+        print " ".join(command)
         subprocess.call(command)
     except KeyboardInterrupt:
         sys.stdout.flush()
         time.sleep(1) #give the movie player some time to clean up
+    except OSError:
+        # maybe the player isn't installed or something?
+        print u'An error occurred while starting the player, check your config!'
+        return
+
     #update the db
     print u'Should I update the database for you?'
     answer = raw_input(u'Update [yes]? ')
