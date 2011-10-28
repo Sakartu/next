@@ -41,29 +41,14 @@ You can put it elsewhere, if you want to, just use the -c flag to specify
 the new location. In the configurationfile we have a few options that 
 we'll discuss below:
 
-<table>
-	<tr>
-	<th>Option</th>
-	<th>Explanation</th>
-	<th>Optional?</th>
-	</tr>
-	<tr>
-		<td>show_path</td>
-		<td>This is your series directory, something like ~/downloads/series/</td>
-		<td>no</td>
-	</tr>
-	<tr>
-		<td>player_cmd</td>
-		<td>This is the commandline that next will use to start an episode</td>
-		<td>no</td>
-	</tr>
-	<tr>
-		<td>database_path</td>
-		<td>If you want your database to reside somewhere other than in show_path, you can specify it here</td>
-		<td>yes</td>
-	</tr>
-</table>
+Option | Explanation | Optional?
+-------|-------------|----------
+player_cmd | This is the commandline that next will use to start an episode | no
+database_path | If you want your database to reside somewhere other than in show_path, you can specify it here</td> <td>yes</td>
+show_path | This is your series directory, something like ~/downloads/series/ | no
 
 TUI manual
 ----------
-to be written :)
+
+The TUI functions have their own documentation. If you start the TUI and type
+help <command> you can learn some more about a command.
