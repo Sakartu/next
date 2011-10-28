@@ -16,8 +16,8 @@ Make sure you update your database regularly, or next will not be aware of new
 episodes!
 
 next can be called either with an option or with words identifying a certain
-show. Only one option can be used at a time, the first option counts, the rest
-will be ignored.
+show. Only one option can be used at a time, the last option counts, previous
+options will be ignored
 """
 
 class ConfKeys:

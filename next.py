@@ -4,7 +4,8 @@
 from util import config
 from util.constants import ConfKeys
 from db import db
-from show import player, admin
+from show import player
+from tui.exceptions import UserCancelled
 from tui import TUI
 import sys
 import os
@@ -17,7 +18,7 @@ except:
     sys.exit(-1)
 
 def main():
-    (conf, args) = config.parse_opts()
+    (options, conf, args) = config.parse_opts()
 
     try: # the database_path is usually the show_path, but can be defined in conf
         if ConfKeys.DB_PATH in conf:
@@ -29,8 +30,6 @@ def main():
         print(u'No show_path or database_path defined in configuration, aborting!')
         sys.exit(-1)
 
-    # first check for commandline options
-
     # initialize the sqlite database
     try:
         if os.path.exists(database_path) or os.access(os.path.dirname(database_path), os.W_OK | os.R_OK):
@@ -39,14 +38,19 @@ def main():
             print(u'Could not access shows database, path "{0}" does not exist or we don\'t have write access!'.format(database_path))
             sys.exit(-1)
 
-    except sqlite3.OperationalError as e:
+    except sqlite3.OperationalError:
         print(u'Could not access shows database, are the permissions correct for "{0}"?'.format(database_path))
         sys.exit(-1)
 
-    # let's see if there's any new information for the tvr shows.
-    print "Updating TVRage episode database...",
-    admin.update_eps(conf)
-    print "done."
+    # first check for commandline options
+    if options.func:
+        try:
+            options.func()
+        except UserCancelled: 
+            print "User cancelled!"
+        except KeyboardInterrupt:
+            print "\nUser pressed ^C!"
+        sys.exit(0)
 
     # couple of usecases:
     # 1. there is an argument provided. this is probably a show that the user wants

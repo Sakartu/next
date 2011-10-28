@@ -8,7 +8,7 @@ import sqlite3
 import sys
 
 class TUI(cmd.Cmd):
-    def __init__(self, conf):
+    def __init__(self, conf={}):
         cmd.Cmd.__init__(self)
         self.conf = conf
         self.prompt = u'next$ '
@@ -255,6 +255,9 @@ class TUI(cmd.Cmd):
         else:
             print_shows(shows)
 
+    def help_list(self):
+        print u'List all the shows in the database'
+
     def do_new(self, line=None):
         '''
         A TUI function that lists all the shows for which new eps are available
@@ -277,8 +280,17 @@ class TUI(cmd.Cmd):
     def help_new(self):
         pass
 
-    def help_list(self):
-        print u'List all the shows in the database'
+    def do_update(self, line=None):
+        '''
+        A function that updates the internal TVRage database
+        '''
+        try:
+            admin.update_eps(self.conf)
+        except:
+            print u'Update failed!'
+
+    def help_update(self, line=None):
+        print u'Update the internal TVRage database'
 
     def do_quit(self, line=None):
         '''
