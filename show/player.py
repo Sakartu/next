@@ -55,8 +55,12 @@ def build_ep_path(conf, show):
     # we search for an ep in the default shows folder and in each folder named
     # in the locations db
     path = None
-     
-    bases = [os.path.join(conf[ConfKeys.SHOW_PATH], show.name)]
+    
+    if ConfKeys.UNSTRUCTURED not in conf or not conf[ConfKeys.UNSTRUCTURED]:
+        bases = [os.path.join(conf[ConfKeys.SHOW_PATH], show.name)]
+    else:
+        # if we're in unstructured mode, we just set the base as the show dir
+        bases = [conf[ConfKeys.SHOW_PATH]]
     bases.extend(db.find_all_locations(conf, show.sid))
     bases = map(os.path.expanduser, bases)
     bases = map(os.path.expandvars, bases)
