@@ -22,6 +22,7 @@ class ConfKeys:
     DB_CONN = u'db_conn'
     SHOW_PATH = u'show_path'
     PLAYER_CMD = u'player_cmd'
+    UNSTRUCTURED = u'unstructured_mode'
 
 class TVRage:
     '''

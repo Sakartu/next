@@ -59,14 +59,17 @@ def build_ep_path(conf, show):
         if not os.path.exists(base):
             continue
         path = base[:]
-        #see which seasons there are and pick the right one
-        for season in os.listdir(base):
-            if str(show.season) in season and os.path.isdir(os.path.join(path,
-                season)):
-                path = os.path.join(path, season)
 
-        if path == base: #no season found
-            continue
+        # only search for season folder if we're not running in unstructured mode
+        if ConfKeys.UNSTRUCTURED not in conf or not conf[ConfKeys.UNSTRUCTURED]:
+            # see which seasons there are and pick the right one
+            for season in os.listdir(base):
+                if str(show.season) in season and os.path.isdir(os.path.join(path,
+                    season)):
+                    path = os.path.join(path, season)
+
+            if path == base: # no season found
+                continue
 
         rexes = [re.compile(x.format(season=show.season, ep=show.ep) + ext) for
                 x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
