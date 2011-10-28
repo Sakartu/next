@@ -27,4 +27,11 @@ def parse_opts():
 
     result = dict(config.items(u'general'))
 
+    for (k, v) in result.items(): # make sure bools are parsed correct
+        if 'false' == v.lower() or 'no' == v.lower() or '0' == v:
+            result[k] = False
+        if 'true' == v.lower() or 'yes' == v.lower() or '1' == v:
+            result[k] = True
+                
+
     return result, args
