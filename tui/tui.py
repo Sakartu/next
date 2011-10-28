@@ -77,7 +77,7 @@ class TUI(cmd.Cmd):
         if line:
             candidates = filter(lambda s : set(line.split()) <= set(s.name.lower().split()), all_shows)
             if not candidates:
-                print 'No show found for "{0}"'.format(line)
+                print u'No show found for "{0}"'.format(line)
                 return
             #just assume the first show
             show = candidates[0]
@@ -91,7 +91,7 @@ class TUI(cmd.Cmd):
             player.play_next(self.conf, show)
 
     def help_play(self):
-        print 'Play an ep. If keywords are provided, a show with a corresponding name will be searched.'
+        print u'Play an ep. If keywords are provided, a show with a corresponding name will be searched.'
 
     def do_random(self, line=None):
         '''
@@ -105,7 +105,7 @@ class TUI(cmd.Cmd):
         player.play_next(self.conf, s)
 
     def help_random(self):
-        print 'Play a random ep'
+        print u'Play a random ep'
 
     def do_add_show(self, line=None):
         '''
@@ -142,7 +142,7 @@ class TUI(cmd.Cmd):
         self.add_show_details(found_show)
 
     def help_add_show(self):
-        print 'Add a show to the local database'
+        print u'Add a show to the local database'
 
     def do_add_show_location(self, line=None):
         '''
@@ -162,7 +162,7 @@ class TUI(cmd.Cmd):
         db.add_location(self.conf, show.sid, location)
 
     def help_add_show_location(self):
-        print 'Add a location to a show. next will check each added location for eps to play'
+        print u'Add a location to a show. next will check each added location for eps to play'
 
     def do_change_show(self, line=None):
         '''
@@ -203,7 +203,7 @@ class TUI(cmd.Cmd):
         print u'Successfully changed details for {0}!'.format(show.name)
 
     def help_change_show(self):
-        print 'Change the current season and ep for a show'
+        print u'Change the current season and ep for a show'
 
     def do_scan(self, line=None):
         '''
@@ -242,7 +242,7 @@ class TUI(cmd.Cmd):
                     self.add_show_details(found_show)
 
     def help_scan(self):
-        print 'Scan the local shows directory for shows that aren\'t in the database yet'
+        print u'Scan the local shows directory for shows that aren\'t in the database yet'
 
     def do_list(self, line=None):
         '''
@@ -251,7 +251,7 @@ class TUI(cmd.Cmd):
         try:
             shows = self.get_all_shows()
         except NoShowsException:
-            print 'There are no shows!'
+            print u'There are no shows!'
         else:
             print_shows(shows)
 
@@ -262,14 +262,14 @@ class TUI(cmd.Cmd):
         try:
             all_shows = self.get_all_shows()
         except NoShowsException:
-            print 'There are no shows!'
+            print u'There are no shows!'
         shows = []
         for show in all_shows:
             p = player.build_ep_path(self.conf, show)
             if p:
                 shows.append(show)
         if not shows:
-            print 'No new eps are available for your shows!'
+            print u'No new eps are available for your shows!'
             return
         print "New eps are on your computer for these shows:"
         print_shows(shows)
@@ -278,7 +278,7 @@ class TUI(cmd.Cmd):
         pass
 
     def help_list(self):
-        print 'List all the shows in the database'
+        print u'List all the shows in the database'
 
     def do_quit(self, line=None):
         '''
@@ -288,10 +288,10 @@ class TUI(cmd.Cmd):
         sys.exit(0)
 
     def help_quit(self):
-        'Quit the application'
+        print u'Quit the application'
 
     def help_help(self):
-        print 'Get help about a topic'
+        print u'Get help about a topic'
 
     def preloop(self):
         self.do_help("")
@@ -319,7 +319,7 @@ def get_input(term=u'next$ ', possibles=None):
         try:
             inp = raw_input(term)
         except EOFError:
-            print ''
+            print u''
             raise UserCancelled
 
         if possibles != None and inp in possibles:
