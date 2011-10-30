@@ -34,8 +34,9 @@ def parse_opts():
     if os.path.exists(path) and os.access(path, os.F_OK) and os.access(path, os.W_OK):
         config.read(path)
     else:
-        print u'No configfile found in "{0}", aborting!'.format(path)
-        sys.exit(2)
+        print u'No configfile found in "{0}", generating default configfile. Please modify, then start next again!'.format(path)
+        gen_example(path)
+        sys.exit(-1)
 
     result = dict(config.items(u'general'))
 
@@ -48,3 +49,11 @@ def parse_opts():
     t.conf = result
 
     return options, result, args
+
+def gen_example(path):
+    try:
+        with open(path, 'w+') as conf:
+            conf.write(constants.EXAMPLE_CONF)
+    except:
+        print 'Couldn\'t generate default configfile, path "{0}" is inaccessible!'.format(path)
+

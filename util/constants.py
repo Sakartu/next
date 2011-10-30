@@ -20,6 +20,8 @@ show. Only one option can be used at a time, the last option counts, previous
 options will be ignored
 """
 
+
+
 class ConfKeys:
     '''
     This enumeration class contains constants for all the configuration keys
@@ -45,3 +47,21 @@ class TVRage:
     EPLIST_EPNUM = u'seasonnum'
     EPLIST_AIRDATE = u'airdate'
     EPLIST_TITLE = u'title'
+
+EXAMLE_CONF = '''[general]
+
+# this option defines the path to your shows
+show_path=~/downloads/series/
+
+# set this option if you want your database to reside somewhere else
+#database_path=~/downloads/series/
+
+# this command is called by next when a show is to be played.
+# the full path to the desired episode is placed at the end before calling
+player_cmd=totem
+
+# set this command to True if you have an unstructured series folder
+# this is useful for people who just put all their new eps in 
+# ~/downloads/ or something.
+# unstructured_mode=False
+'''
