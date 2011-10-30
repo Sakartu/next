@@ -54,9 +54,14 @@ def build_ep_path(conf, show):
     '''
     # we search for an ep in the default shows folder and in each folder named
     # in the locations db
+
+    if ConfKeys.UNSTRUCTURED not in conf or not conf[ConfKeys.UNSTRUCTURED]:
+        unstructured = False
+    else:
+        unstructured = True
     path = None
     
-    if ConfKeys.UNSTRUCTURED not in conf or not conf[ConfKeys.UNSTRUCTURED]:
+    if not unstructured:
         bases = [os.path.join(conf[ConfKeys.SHOW_PATH], show.name)]
     else:
         # if we're in unstructured mode, we just set the base as the show dir
@@ -71,7 +76,7 @@ def build_ep_path(conf, show):
         path = base[:]
 
         # only search for season folder if we're not running in unstructured mode
-        if ConfKeys.UNSTRUCTURED not in conf or not conf[ConfKeys.UNSTRUCTURED]:
+        if not unstructured:
             # see which seasons there are and pick the right one
             for season in os.listdir(base):
                 if str(show.season) in season and os.path.isdir(os.path.join(path,
@@ -81,8 +86,16 @@ def build_ep_path(conf, show):
             if path == base: # no season found
                 continue
 
-        rexes = [re.compile(x.format(season=show.season, ep=show.ep) + ext) for
-                x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
+        if not unstructured:
+            rexes = [re.compile(x.format(show="", season=show.season, ep=show.ep) + ext) for
+                    x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
+        else:
+            show_words = show.name.split()
+            # filter for only normal words (handy in case of "Doctor Who (2005)"
+            show_words = filter(lambda x : re.compile(r'^\w*$').match(x), show_words)
+            rexes = [re.compile(x.format(show="".join([word + ".*" for word in
+                show_words]), season=show.season, ep=show.ep) + ext) for x in
+                constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
         for ep in os.listdir(path):
             for rex in rexes:
                 m = rex.match(ep)
