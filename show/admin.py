@@ -1,6 +1,7 @@
 from db import db
 from tvr import parser
 import os
+import re
 
 def find_unlisted(conf):
     '''
@@ -10,7 +11,11 @@ def find_unlisted(conf):
     listed = map(lambda x : x.name, db.all_shows(conf))
     basedir = os.path.expanduser(conf['show_path'])
     all_shows = filter(lambda x : os.path.isdir(os.path.join(basedir, x)), os.listdir(basedir))
-    return list(set(all_shows) - set(listed))
+    result = []
+    for s in all_shows:
+        if not [x for x in listed if shows_match(s, x)]:
+            result.append(s)
+    return result
 
 def find_next_ep(conf, show):
     '''
@@ -56,4 +61,25 @@ def process_maybe_finished(conf, all_shows):
             if next_ep:
                 db.change_show(conf, show.sid, next_ep.season, next_ep.epnum)
                 db.mark_not_maybe_finished(conf, show.sid)
+
+def shows_match(one, two):
+    '''
+    This method returns True if the names of the two shows provided as
+    parameters look very much alike
+
+    That is, if all the words that are in one are also in two when words that
+    contain only of strange characters aren't counted
+    '''
+    if type(one) != type("") and type(one) != type(u""): # assume type Show
+        one = one.name
+    if type(two) != type("") and type(two) != type(u""): # assume type Show
+        two = two.name
+    ones = map(lambda x : x.lower(), one.split())
+    twos = map(lambda x : x.lower(), two.split())
+    for word in [x for x in ones if re.compile('^\w*$').match(x)]:
+        if word not in twos:
+            return False
+    return True
+
+
 
