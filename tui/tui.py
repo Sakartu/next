@@ -1,6 +1,7 @@
 from show import player, admin
 from db import db
 from tvr import parser
+from util.constants import ConfKeys
 from exceptions import UserCancelled, NoShowsException
 import cmd
 import random
@@ -210,6 +211,9 @@ class TUI(cmd.Cmd):
         A TUI function that scans the user's series folder to find shows that aren't
         in the database yet, then ask the user show by show if he wants to add it
         '''
+        if ConfKeys.UNSTRUCTURED in self.conf and self.conf[ConfKeys.UNSTRUCTURED]:
+            print "Cannot scan disk in unstructured mode!"
+            return
         unlisted = admin.find_unlisted(self.conf)
         if not unlisted:
             print u'There are no shows to add!'
