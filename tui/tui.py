@@ -8,9 +8,10 @@ import random
 import sqlite3
 import sys
 
-class TUI(cmd.Cmd):
+class TUI(cmd.Cmd, object):
     def __init__(self, conf={}):
-        cmd.Cmd.__init__(self)
+        super(TUI, self).__init__()
+
         self.conf = conf
         self.prompt = u'next$ '
         self.intro = "Welcome to next!\n"
