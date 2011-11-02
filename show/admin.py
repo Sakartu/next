@@ -16,11 +16,8 @@ def find_unlisted(conf):
         print "Could not list directory {0}".format(basedir)
         all_shows = []
 
-    result = []
-    for s in all_shows:
-        if not [x for x in listed if shows_match(s, x)]:
-            result.append(s)
-    return result
+    has_match = lambda s: any(x for x in listed if shows_match(s, x))
+    return [ s for s in all_shows if not has_match(s) ]
 
 def find_next_ep(conf, show):
     '''
