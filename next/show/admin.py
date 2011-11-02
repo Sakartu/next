@@ -1,5 +1,5 @@
-from db import db
-from tvr import parser
+from next.db import db
+from next.tvr import parser
 import os
 import re
 

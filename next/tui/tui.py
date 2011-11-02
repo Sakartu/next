@@ -1,7 +1,7 @@
-from show import player, admin
-from db import db
-from tvr import parser
-from util.constants import ConfKeys
+from next.show import player, admin
+from next.db import db
+from next.tvr import parser
+from next.util.constants import ConfKeys
 from exceptions import UserCancelled, NoShowsException
 import cmd
 import random

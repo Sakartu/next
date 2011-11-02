@@ -1,7 +1,7 @@
 from optparse import OptionParser
-from util import constants
-from tui.tui import TUI
-from show import admin
+from next.util import constants
+from next.tui.tui import TUI
+from next.show import admin
 import ConfigParser
 import os
 import sys

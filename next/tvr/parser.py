@@ -1,7 +1,7 @@
 from tvrage import feeds
 from xml.etree import ElementTree as ET
 from tvrep import Episode
-from util.constants import TVRage as tvrpath
+from next.util.constants import TVRage as tvrpath
 
 def fuzzy_search(show_name):
     '''
