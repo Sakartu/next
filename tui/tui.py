@@ -8,9 +8,10 @@ import random
 import sqlite3
 import sys
 
-class TUI(cmd.Cmd):
+class TUI(cmd.Cmd, object):
     def __init__(self, conf={}):
-        cmd.Cmd.__init__(self)
+        super(TUI, self).__init__()
+
         self.conf = conf
         self.prompt = u'next$ '
         self.intro = "Welcome to next!\n"
@@ -126,11 +127,7 @@ class TUI(cmd.Cmd):
                 print u'No shows could be found, please try other keywords!'
                 return
             else:
-                print u'Which show would you like to add?'
-                for (i, show) in enumerate(shows):
-                    print u'{0:3d}. {1}'.format(i + 1, show[0])
-                number = int(get_input(u'Show number: ', range(1, len(shows) + 1)))
-                found_show = shows[number - 1]
+                found_show = read_show(shows)
 
         print u'Getting all show eps from TVRage... ',
         episodes = parser.get_all_eps(found_show[1]) #find eps by sid
@@ -229,11 +226,7 @@ class TUI(cmd.Cmd):
                     print u'No shows could be found, please try other keywords!'
                     return
                 else:
-                    print u'Which show would you like to add?'
-                    for (i, show) in enumerate(shows):
-                        print u'{0:3d}. {1}'.format(i + 1, show[0])
-                    number = int(get_input(u'Show number: ', range(1, len(shows) + 1)))
-                    found_show = shows[number - 1]
+                    found_show = read_show(shows)
 
                     print u'Getting all show eps from TVRage... ',
                     episodes = parser.get_all_eps(found_show[1]) #find eps by sid
@@ -309,6 +302,12 @@ class TUI(cmd.Cmd):
     def help_help(self):
         print u'Get help about a topic'
 
+    def do_EOF(self, line=None):
+        '''
+        Quit the program
+        '''
+        self.do_quit()
+
     def preloop(self):
         self.do_help("")
 
@@ -317,6 +316,13 @@ class TUI(cmd.Cmd):
 
     def postloop(self):
         print
+
+def read_show(shows):
+    print u'Which show would you like to add?'
+    for (i, show) in enumerate(shows):
+        print u'{0:3d}. {1}'.format(i + 1, show[0])
+    number = int(get_input(u'Show number: ', range(1, len(shows) + 1)))
+    return shows[number - 1]
 
 def get_input(term=u'next$ ', possibles=None):
     '''

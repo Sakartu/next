@@ -57,7 +57,7 @@ def main():
     #    us to start, so let's start it.
     # 2. there are no arguments provided. provide the user with a query what he wants
 
-    if len(args):
+    if args:
         # 1. user provided a showname, find it in the db, then play it.
         s = db.find_show(conf, u' '.join(args))
         if s:
