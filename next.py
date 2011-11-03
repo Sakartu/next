@@ -1,12 +1,12 @@
 #!/usr/bin/python -u
 # -*- coding: utf-8 -*-
 
-from util import config
-from util.constants import ConfKeys
-from db import db
-from show import player
-from tui.exceptions import UserCancelled
-from tui import TUI
+from next.util import config
+from next.util.constants import ConfKeys
+from next.db import db
+from next.show import player
+from next.tui.exceptions import UserCancelled
+from next.tui import TUI
 import sys
 import os
 import sqlite3
