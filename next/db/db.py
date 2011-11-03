@@ -18,7 +18,7 @@ def initialize(path):
                 AND name="shows"''').fetchall()
         if not test:
             c.execute(u'''CREATE TABLE shows(sid integer, name text, season
-                    integer, ep integer, maybe_finished integer)''')
+                    integer, ep integer, maybe_finished integer, status text)''')
             c.execute(u'''CREATE UNIQUE INDEX unique_shows ON shows(sid)''')
 
         #test to see if the tvr_shows table exists
@@ -60,15 +60,15 @@ def find_show(conf, show_name):
         ({0})'''.format(shows[0][0])
     return Show(shows[0])
 
-def add_show(conf, sid, showname, season, ep):
+def add_show(conf, sid, showname, season, ep, status):
     '''
     This method adds a show with a given sid, name, season and ep to the
     database
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''INSERT INTO shows VALUES (?, ?, ?, ?, 0)''', (sid,
-        showname, season, ep,))
+        c.execute(u'''INSERT INTO shows VALUES (?, ?, ?, ?, 0, ?)''', (sid,
+        showname, season, ep, status))
 
 def change_show(conf, sid, season, ep):
     '''
