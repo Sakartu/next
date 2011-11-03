@@ -14,5 +14,6 @@ setup(name='next',
       scripts=['next.py'],
       requires=[
           'python-tvrage',
+          'python-xdgapp',
           ],
      )
