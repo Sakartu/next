@@ -1,4 +1,3 @@
-CONF_PATH = u'~/.next/next.conf'
 VIDEO_EXTS = [u'.avi', u'.mpg', u'.mpeg', u'.mkv'] #need to have .'s in front!
 
 SHOW_REGEXES = [
