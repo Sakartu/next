@@ -85,7 +85,7 @@ class TUI(cmd.Cmd, object):
             show = candidates[0]
         else:
             print u'Which show would you like to play the next ep from?'
-            print_shows(all_shows)
+            print_shows(self.conf, all_shows)
             number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
             show = all_shows[number - 1]
 
@@ -152,7 +152,7 @@ class TUI(cmd.Cmd, object):
             print u'There are no shows to add a location for!'
             return
         print u'Which show would you like to add a location for?'
-        print_shows(all_shows)
+        print_shows(self.conf, all_shows)
         number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
         show = all_shows[number - 1]
         print u'What location do you want to add?'
@@ -174,7 +174,7 @@ class TUI(cmd.Cmd, object):
             return
 
         print u'Which show would you like to change?'
-        print_shows(all_shows)
+        print_shows(self.conf, all_shows)
         number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
         show = all_shows[number - 1]
 
@@ -250,7 +250,7 @@ class TUI(cmd.Cmd, object):
         except NoShowsException:
             print u'There are no shows!'
         else:
-            print_shows(shows)
+            print_shows(self.conf, shows, show_new=True)
 
     def help_list(self):
         print u'List all the shows in the database'
@@ -272,7 +272,7 @@ class TUI(cmd.Cmd, object):
             print u'No new eps are available for your shows!'
             return
         print "New eps are on your computer for these shows:"
-        print_shows(shows)
+        print_shows(self.conf, shows)
 
     def help_new(self):
         pass
@@ -352,11 +352,19 @@ def get_input(term=u'next$ ', possibles=None):
             print u'Invalid command!'
     return a
 
-def print_shows(shows):
+def print_shows(conf, shows, show_new=True):
     '''
     A helper function that prints a list of shows, each with the reached season and ep.
     '''
+    new_shows = []
+    if show_new:
+        # find all shows that have a new ep waiting
+        for show in shows:
+            p = player.build_ep_path(conf, show)
+            if p:
+                new_shows.append(show)
+
     max_len = max(map(len, map(lambda x : x.name, shows))) + 3
-    print u'{id:3s}  {name:{length}s} Next episode'.format(id=u'', name=u'Show Name', length=max_len)
+    print u'{id:3s}  {name:{length}s}  Next episode'.format(id=u'', name=u'Show Name', length=max_len)
     for (i, show) in enumerate(shows):
-        print u'{id:3d}. {name:{length}s} s{S:>02d}e{E:>02d}'.format(id=i + 1, name=show.name, length=max_len, S=show.season, E=show.ep)
+        print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}'.format(id=i + 1, name=show.name, length=max_len, new='*' if show in new_shows else ' ', S=show.season, E=show.ep)
