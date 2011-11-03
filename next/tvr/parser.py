@@ -12,7 +12,8 @@ def fuzzy_search(show_name):
     tree = ET.ElementTree(feeds.search(show_name))
     names = tree.findall(tvrpath.SEARCH_NAME)
     ids = tree.findall(tvrpath.SEARCH_ID)
-    results = map(lambda (x, y) : (x.text, y.text), zip(names, ids))
+    statuses = tree.findall(tvrpath.SEARCH_STATUS)
+    results = map(lambda (x, y, z) : (x.text, y.text, z.text), zip(names, ids, statuses))
     return results
 
 def get_all_eps(sid):
