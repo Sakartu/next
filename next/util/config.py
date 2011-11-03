@@ -1,7 +1,7 @@
 from optparse import OptionParser
 from next.util import constants
 from next.tui.tui import TUI
-from next.xdg import BaseDirectory
+from xdg import BaseDirectory
 import ConfigParser
 import os
 import sys
