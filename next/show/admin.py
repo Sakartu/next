@@ -10,12 +10,14 @@ def find_unlisted(conf):
     '''
     listed = map(lambda x : x.name, db.all_shows(conf))
     basedir = os.path.expanduser(conf['show_path'])
-    all_shows = filter(lambda x : os.path.isdir(os.path.join(basedir, x)), os.listdir(basedir))
-    result = []
-    for s in all_shows:
-        if not [x for x in listed if shows_match(s, x)]:
-            result.append(s)
-    return result
+    try:
+        all_shows = [ d for d in os.listdir(basedir) if os.path.isdir(os.path.join(basedir, d)) ]
+    except OSError:
+        print "Could not list directory {0}".format(basedir)
+        all_shows = []
+
+    has_match = lambda s: any(x for x in listed if shows_match(s, x))
+    return [ s for s in all_shows if not has_match(s) ]
 
 def find_next_ep(conf, show):
     '''

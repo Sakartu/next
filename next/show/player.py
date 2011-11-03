@@ -55,10 +55,7 @@ def build_ep_path(conf, show):
     # we search for an ep in the default shows folder and in each folder named
     # in the locations db
 
-    if ConfKeys.UNSTRUCTURED not in conf or not conf[ConfKeys.UNSTRUCTURED]:
-        unstructured = False
-    else:
-        unstructured = True
+    unstructured = conf.get(ConfKeys.UNSTRUCTURED, False)
     path = None
     
     if not unstructured:
