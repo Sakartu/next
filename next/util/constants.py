@@ -38,6 +38,11 @@ class TVRage:
     '''
     SEARCH_NAME = u'show/name'
     SEARCH_ID = u'show/showid'
+    SEARCH_STATUS = u'show/status'
+
+    STATUS_RETURNING = 'returning'
+    STATUS_CANCELLED = 'cancelled'
+    STATUS_UNKNOWN = 'unknown'
 
     EPLIST_NAME = u'name'
     EPLIST_SEASON = u'Episodelist/Season'
@@ -46,6 +51,7 @@ class TVRage:
     EPLIST_EPNUM = u'seasonnum'
     EPLIST_AIRDATE = u'airdate'
     EPLIST_TITLE = u'title'
+
 
 EXAMLE_CONF = '''[general]
 
