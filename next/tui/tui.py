@@ -258,7 +258,7 @@ class TUI(cmd.Cmd, object):
         except NoShowsException:
             print u'There are no shows!'
         else:
-            print_shows(self.conf, shows, show_new=True)
+            print_shows(self.conf, shows, extended=True)
 
     def help_list(self):
         print u'List all the shows in the database'
@@ -360,12 +360,12 @@ def get_input(term=u'next$ ', possibles=None):
             print u'Invalid command!'
     return a
 
-def print_shows(conf, shows, show_new=True):
+def print_shows(conf, shows, extended=False):
     '''
     A helper function that prints a list of shows, each with the reached season and ep.
     '''
     new_shows = []
-    if show_new:
+    if extended:
         # find all shows that have a new ep waiting
         for show in shows:
             p = player.build_ep_path(conf, show)
@@ -373,6 +373,8 @@ def print_shows(conf, shows, show_new=True):
                 new_shows.append(show)
 
     max_len = max(map(len, map(lambda x : x.name, shows))) + 3
-    print u'{id:3s}  {name:{length}s}  Next episode'.format(id=u'', name=u'Show Name', length=max_len)
+    print u'{id:3s}  {name:{length}s}  Next ep   {status}'.format(id=u'', name=u'Show Name', length=max_len, status='Status' if extended else '')
     for (i, show) in enumerate(shows):
-        print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}'.format(id=i + 1, name=show.name, length=max_len, new='*' if show in new_shows else ' ', S=show.season, E=show.ep)
+        print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}    {finished}'.format(id=i +
+                1, name=show.name, length=max_len, new='*' if show in new_shows
+                else ' ', S=show.season, E=show.ep, finished=show.finished if extended else "")
