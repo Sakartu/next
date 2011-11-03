@@ -13,8 +13,9 @@ import sqlite3
 
 try:
     import tvrage
+    import xdg
 except:
-    print "next needs the tvrage module to work. See https://bitbucket.org/ckreutzer/python-tvrage/"
+    print "next needs the tvrage module and the xdg module to work. See the README for more information!"
     sys.exit(-1)
 
 def main():
