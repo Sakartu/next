@@ -1,7 +1,7 @@
 from next.show import player, admin
 from next.db import db
 from next.tvr import parser
-from next.util.constants import ConfKeys
+from next.util.constants import ConfKeys, TVRage
 from exceptions import UserCancelled, NoShowsException
 import cmd
 import random
@@ -36,6 +36,14 @@ class TUI(cmd.Cmd, object):
         #found out which season and ep the user is
         showname = show[0]
         sid = show[1]
+
+        if TVRage.STATUS_RETURNING in show[2].lower():
+            status = TVRage.STATUS_RETURNING
+        elif TVRage.STATUS_CANCELLED in show[2].lower():
+            status = TVRage.STATUS_RETURNING
+        else:
+            status = TVRage.STATUS_UNKNOWN
+        
         seasons = db.find_seasons(self.conf, sid)
 
         #then the season in the show
@@ -57,7 +65,7 @@ class TUI(cmd.Cmd, object):
 
         #and finally put everything in the database
         try:
-            db.add_show(self.conf, sid, showname, season, ep)
+            db.add_show(self.conf, sid, showname, season, ep, status)
             print u'Successfully added {0} to the database!'.format(showname)
         except sqlite3.IntegrityError:
             print u'Show already exists, use change command to change season and ep!'
