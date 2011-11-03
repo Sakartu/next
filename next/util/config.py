@@ -44,7 +44,7 @@ def parse_opts():
             gen_example(path)
             sys.exit(-1)
     else:
-        path = BaseDirectory.load_first_config('next.conf')
+        path = BaseDirectory.load_first_config('next/next.conf')
 
     if path:
         config.read(path)
