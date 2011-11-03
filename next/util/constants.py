@@ -9,10 +9,10 @@ USAGE = u"""Usage: next ([options] | [show])
 
 This program helps you in maintaining your episodes. It will remember which eps
 you've already seen and start a new named (or a new random) ep for you. The
-configuration file for next can be found in ~/.next/. next uses the TVRage
-database to search for information about shows but it can also be used offline.
-Make sure you update your database regularly, or next will not be aware of new
-episodes!
+configuration file for next can be found in ~/.config/next/. next uses the
+TVRage database to search for information about shows but it can also be used
+offline.  Make sure you update your database regularly, or next will not be
+aware of new episodes!
 
 next can be called either with an option or with words identifying a certain
 show. Only one option can be used at a time, the last option counts, previous
