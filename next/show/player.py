@@ -52,6 +52,10 @@ def build_ep_path(conf, show):
     the default show location. It will return None if no path could be built, in
     case the show isn't available on the disk yet.
     '''
+    # we can never find eps for shows that are maybe_finished
+    if show.maybe_finished:
+        return None
+
     # we search for an ep in the default shows folder and in each folder named
     # in the locations db
 
