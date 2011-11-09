@@ -26,7 +26,6 @@ class ConfKeys:
     This enumeration class contains constants for all the configuration keys
     '''
     DB_PATH = u'database_path'
-    DB_CONN = u'db_conn'
     PLAYER_CMD = u'player_cmd'
     LOCATIONS = u'locations'
     UNSTRUCTURED = u'unstructured'

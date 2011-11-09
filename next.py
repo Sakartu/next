@@ -12,12 +12,10 @@ except ImportError:
 
 from next.util import config
 from next.util.constants import ConfKeys
-from next.db import db
 from next.show import player
 from next.tui.exceptions import UserCancelled
 from next.tui import TUI
 import os
-import sqlite3
 
 def main():
     (options, conf, args) = config.parse_opts()
@@ -27,18 +25,6 @@ def main():
         database_path = os.path.expanduser(os.path.expandvars(database_path))
     except KeyError:
         print(u'No show_path or database_path defined in configuration, aborting!')
-        sys.exit(-1)
-
-    # initialize the sqlite database
-    try:
-        if os.path.exists(database_path) or os.access(os.path.dirname(database_path), os.W_OK | os.R_OK):
-            conf[ConfKeys.DB_CONN] = db.initialize(database_path)
-        else:
-            print(u'Could not access shows database, path "{0}" does not exist or we don\'t have write access!'.format(database_path))
-            sys.exit(-1)
-
-    except sqlite3.OperationalError:
-        print(u'Could not access shows database, are the permissions correct for "{0}"?'.format(database_path))
         sys.exit(-1)
 
     # first check for commandline options
