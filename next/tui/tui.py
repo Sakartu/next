@@ -1,11 +1,10 @@
 from next.show import player, admin
-from next.db import db
+from next.db.util import DB
 from next.tvr import parser
 from next.util.constants import ConfKeys, TVRage
 from exceptions import UserCancelled, NoShowsException
 import cmd
 import random
-import sqlite3
 import sys
 
 class TUI(cmd.Cmd, object):
@@ -23,6 +22,12 @@ class TUI(cmd.Cmd, object):
 
     def set_conf(self, conf):
         self.conf = conf
+
+        try:
+            path = "sqlite:///{0}/next.db".format(conf[ConfKeys.DB_PATH])
+            self.db = DB(path)
+        except KeyError:
+            pass
 
     def cmdloop(self, intro=None):
         while True:
@@ -48,7 +53,7 @@ class TUI(cmd.Cmd, object):
         else:
             status = TVRage.STATUS_UNKNOWN
         
-        seasons = db.find_seasons(self.conf, sid)
+        seasons = self.db.find_seasons(sid)
 
         #then the season in the show
         if not seasons:
@@ -58,7 +63,7 @@ class TUI(cmd.Cmd, object):
         season = int(get_input(u'Season: ', range(1, len(seasons) + 1)))
 
         #then the ep in the season
-        eps = db.find_all_eps(self.conf, sid, season)
+        eps = self.db.find_all_eps(sid, season)
         if not eps:
             print u'This season has no eps!'
             return
@@ -69,13 +74,13 @@ class TUI(cmd.Cmd, object):
 
         #and finally put everything in the database
         try:
-            db.add_show(self.conf, sid, showname, season, ep, status)
+            self.db.add_show(sid, showname, season, ep, status)
             print u'Successfully added {0} to the database!'.format(showname)
-        except sqlite3.IntegrityError:
+        except: # FIXME
             print u'Show already exists, use change command to change season and ep!'
 
     def get_all_shows(self):
-        shows = db.all_shows(self.conf)
+        shows = self.db.all_shows()
         if not shows:
             raise NoShowsException
         return shows
@@ -102,7 +107,7 @@ class TUI(cmd.Cmd, object):
             show = all_shows[number - 1]
 
         if show:
-            player.play_next(self.conf, show)
+            player.play_next(self.conf, self.db, show)
 
     def help_play(self):
         print u'Play an ep. If keywords are provided, a show with a corresponding name will be searched.'
@@ -116,7 +121,7 @@ class TUI(cmd.Cmd, object):
             print u'There are no shows to play!'
             return
         s = db.find_show(self.conf, random.choice(all_shows).name)
-        player.play_next(self.conf, s)
+        player.play_next(self.conf, self.db, s)
 
     def help_random(self):
         print u'Play a random ep'
@@ -146,7 +151,7 @@ class TUI(cmd.Cmd, object):
         print u'done.'
         
         print u'Storing eps in db... ',
-        db.store_tvr_eps(self.conf, episodes)
+        self.db.store_tvr_eps(episodes)
         print u'done.'
 
         self.add_show_details(found_show)
@@ -171,7 +176,7 @@ class TUI(cmd.Cmd, object):
         show = all_shows[number - 1]
 
         #then the season in the show
-        seasons = db.find_seasons(self.conf, show.sid)
+        seasons = self.db.find_seasons(show.sid)
         if not seasons:
             print u'There are no seasons for this show!'
             return
@@ -179,7 +184,7 @@ class TUI(cmd.Cmd, object):
         season = int(get_input(u'Season: ', range(1, len(seasons) + 1)))
 
         #then the ep in the season
-        eps = db.find_all_eps(self.conf, show.sid, season)
+        eps = self.db.find_all_eps(show.sid, season)
         if not eps:
             print u'This season has no eps!'
             return
@@ -189,7 +194,7 @@ class TUI(cmd.Cmd, object):
         ep = int(get_input(u'Episode: ', range(1, len(eps) + 1)))
 
         #and finally put everything in the database
-        db.change_show(self.conf, show.sid, season, ep)
+        self.db.change_show(show.sid, season, ep)
         print u'Successfully changed details for {0}!'.format(show.name)
 
     def help_change_show(self):
@@ -203,7 +208,7 @@ class TUI(cmd.Cmd, object):
         if ConfKeys.UNSTRUCTURED in self.conf and self.conf[ConfKeys.UNSTRUCTURED]:
             print "Cannot scan disk in unstructured mode!"
             return
-        unlisted = admin.find_unlisted(self.conf)
+        unlisted = admin.find_unlisted(self.conf, self.db)
         if not unlisted:
             print u'There are no shows to add!'
             return
@@ -225,7 +230,7 @@ class TUI(cmd.Cmd, object):
                     print u'done.'
                     
                     print u'Storing eps in db... ',
-                    db.store_tvr_eps(self.conf, episodes)
+                    self.db.store_tvr_eps(episodes)
                     print u'done.'
 
                     self.add_show_details(found_show)
@@ -274,7 +279,7 @@ class TUI(cmd.Cmd, object):
         A function that updates the internal TVRage database
         '''
         try:
-            admin.update_eps(self.conf)
+            admin.update_eps(self.db)
         except:
             print u'Update failed!'
 

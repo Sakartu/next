@@ -1,6 +1,6 @@
 from tvrage import feeds
 from xml.etree import ElementTree as ET
-from tvrep import Episode
+from next.db.models import TVRShow
 from next.util.constants import TVRage as tvrpath
 
 def fuzzy_search(show_name):
@@ -32,6 +32,6 @@ def get_all_eps(sid):
             epnum = ep.find(tvrpath.EPLIST_EPNUM).text
             title = ep.find(tvrpath.EPLIST_TITLE).text
             airdate = ep.find(tvrpath.EPLIST_AIRDATE).text
-            results.append(Episode(sid, showname, seasonnum, epnum, title, airdate))
+            results.append(TVRShow(sid=sid, showname=showname, season=seasonnum, episode=epnum, title=title, airdate=airdate))
     return results
 

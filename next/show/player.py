@@ -1,14 +1,13 @@
 from next.util import constants
 from next.util.constants import ConfKeys
 from next.show import admin
-from next.db import db
 import os
 import sys
 import re
 import time
 import subprocess
 
-def play_next(conf, show):
+def play_next(conf, db, show):
     '''
     This method plays the next episode for the given show.
     '''
@@ -35,7 +34,7 @@ def play_next(conf, show):
     print u'Should I update the database for you?'
     answer = raw_input(u'Update [yes]? ')
     if u'y' in answer.lower() or answer == '':
-        next_ep = admin.find_next_ep(conf, show)
+        next_ep = admin.find_next_ep(db, show)
         if next_ep:
             db.change_show(conf, show.sid, next_ep.season, next_ep.epnum)
         else:
