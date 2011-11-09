@@ -12,13 +12,17 @@ class TUI(cmd.Cmd, object):
     def __init__(self, conf={}):
         super(TUI, self).__init__()
 
-        self.conf = conf
+        self.set_conf(conf)
+
         self.prompt = u'next$ '
         self.intro = "Welcome to next!\n"
         self.intro += "This program helps you maintain your show watching habits\n"
         self.intro += "by logging which ep you have reached for a show. Please\n"
         self.intro += "enter a command to continue!\n"
         self.doc_header = "Commands (press help <command> to get help):"
+
+    def set_conf(self, conf):
+        self.conf = conf
 
     def cmdloop(self, intro=None):
         while True:

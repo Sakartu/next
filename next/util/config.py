@@ -59,7 +59,7 @@ def parse_opts():
 
     result[ConfKeys.LOCATIONS] = parse_locations(config.items(ConfKeys.LOCATIONS))
 
-    t.conf = result
+    t.set_conf(result)
 
     return options, result, args
 
