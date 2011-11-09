@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
+
+try:
+    import tvrage
+    import xdg
+except ImportError:
+    print "next needs the tvrage module and the xdg module to work. See the README for more information!"
+    sys.exit(-1)
+
 from next.util import config
 from next.util.constants import ConfKeys
 from next.db import db
 from next.show import player
 from next.tui.exceptions import UserCancelled
 from next.tui import TUI
-import sys
 import os
 import sqlite3
-
-try:
-    import tvrage
-    import xdg
-except:
-    print "next needs the tvrage module and the xdg module to work. See the README for more information!"
-    sys.exit(-1)
 
 def main():
     (options, conf, args) = config.parse_opts()
