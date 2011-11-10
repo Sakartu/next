@@ -15,7 +15,7 @@ def play_next(conf, show):
     cmd_line = conf[ConfKeys.PLAYER_CMD]
     ep_path = build_ep_path(conf, show)
     if not ep_path:
-        print u'Could not find s{S:02d}e{E:02d} for {name}!'.format(S=show.season, E=show.ep, name=show.name)
+        print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available or marked maybe_finished?'.format(S=show.season, E=show.ep, name=show.name)
         return
     command = cmd_line.split(' ') + [ep_path]
     #play the show
