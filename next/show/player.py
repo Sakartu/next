@@ -88,7 +88,7 @@ def build_ep_path(conf, show):
                 continue
 
         if not unstructured:
-            rexes = [re.compile(x.format(show="", season=show.season, ep=show.ep) + ext) for
+            rexes = [re.compile("^" + x.format(show="", season=show.season, ep=show.ep) + ext + "$") for
                     x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
         else:
             show_words = show.name.split()
