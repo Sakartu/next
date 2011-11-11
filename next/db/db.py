@@ -137,15 +137,6 @@ def find_ep(conf, sid, season, ep):
         except:
             return None
 
-def add_location(conf, sid, location):
-    '''
-    This method adds the given location to the show in the locations database
-    '''
-    with conf[ConfKeys.DB_CONN] as conn:
-        c = conn.cursor()
-        c.execute(u'''INSERT OR IGNORE INTO locations VALUES (?, ?, ?, ?)''', (sid,
-            location,))
-
 def find_all_locations(conf, sid):
     '''
     This method returns all the stored locations for the given show

@@ -150,26 +150,6 @@ class TUI(cmd.Cmd, object):
     def help_add_show(self):
         print u'Add a show to the local database'
 
-    def do_add_show_location(self, line=None):
-        '''
-        A TUI function that adds a custom location to a show. Can be used if shows
-        are spread across the disk instead of centrally located.
-        '''
-        all_shows = db.all_shows(self.conf)
-        if not all_shows:
-            print u'There are no shows to add a location for!'
-            return
-        print u'Which show would you like to add a location for?'
-        print_shows(self.conf, all_shows)
-        number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
-        show = all_shows[number - 1]
-        print u'What location do you want to add?'
-        location = get_input(u'Location: ')
-        db.add_location(self.conf, show.sid, location)
-
-    def help_add_show_location(self):
-        print u'Add a location to a show. next will check each added location for eps to play'
-
     def do_change_show(self, line=None):
         '''
         A TUI function used to change the season and episode of a show where the
