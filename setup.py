@@ -16,4 +16,5 @@ setup(name='next',
           'python-tvrage',
           'pyxdg',
           ],
+      test_suite='tests.runtests.runtests',
      )
