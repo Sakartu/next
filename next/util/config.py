@@ -1,5 +1,6 @@
 from optparse import OptionParser
 from next.util import constants
+from next.util.constants import ConfKeys
 from next.tui.tui import TUI
 from xdg import BaseDirectory
 import ConfigParser
@@ -60,6 +61,10 @@ def parse_opts():
     t.conf = result
 
     return options, result, args
+
+def parse_locations(locations):
+    f = lambda x: os.path.expandvars(os.path.expanduser(x))
+    return dict((f(l), m == ConfKeys.UNSTRUCTURED) for l, m in locations)
 
 def gen_example(path):
     try:

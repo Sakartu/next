@@ -1,6 +1,7 @@
 import unittest
 
 testmodules = [
+    'tests.util.config',
     ]
 
 def runtests():
