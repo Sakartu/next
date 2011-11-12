@@ -27,9 +27,9 @@ class ConfKeys:
     '''
     DB_PATH = u'database_path'
     DB_CONN = u'db_conn'
-    SHOW_PATH = u'show_path'
     PLAYER_CMD = u'player_cmd'
-    UNSTRUCTURED = u'unstructured_mode'
+    LOCATIONS = u'locations'
+    UNSTRUCTURED = u'unstructured'
 
 class TVRage:
     '''
@@ -55,9 +55,6 @@ class TVRage:
 
 EXAMLE_CONF = '''[general]
 
-# this option defines the path to your shows
-show_path=~/downloads/series/
-
 # set this option if you want your database to reside somewhere else
 #database_path=~/downloads/series/
 
@@ -65,8 +62,6 @@ show_path=~/downloads/series/
 # the full path to the desired episode is placed at the end before calling
 player_cmd=totem
 
-# set this command to True if you have an unstructured series folder
-# this is useful for people who just put all their new eps in 
-# ~/downloads/ or something.
-# unstructured_mode=False
+[locations]
+~/downloads/series=structured
 '''

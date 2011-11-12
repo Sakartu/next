@@ -28,9 +28,9 @@ def parse_opts():
 
     # Load a default config
     config = ConfigParser.SafeConfigParser()
+    config.add_section(ConfKeys.LOCATIONS)
     config.add_section(u'general')
     config.set(u'general', constants.ConfKeys.PLAYER_CMD, u'mplayer')
-    config.set(u'general', constants.ConfKeys.SHOW_PATH, u'~/downloads/series')
 
     db_path = BaseDirectory.save_data_path('next')
     config.set(u'general', constants.ConfKeys.DB_PATH, db_path)
@@ -56,6 +56,8 @@ def parse_opts():
             result[k] = False
         if 'true' == v.lower() or 'yes' == v.lower() or '1' == v:
             result[k] = True
+
+    result[ConfKeys.LOCATIONS] = parse_locations(config.items(ConfKeys.LOCATIONS))
 
     t.conf = result
 
