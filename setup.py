@@ -15,6 +15,7 @@ setup(name='next',
       install_requires=[
           'python-tvrage',
           'pyxdg',
+          'SQLAlchemy',
           ],
       test_suite='tests.runtests.runtests',
      )
