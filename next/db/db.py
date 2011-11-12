@@ -30,15 +30,6 @@ def initialize(path):
                     season integer, ep integer, title text, airdate text)''')
             c.execute(u'''CREATE UNIQUE INDEX unique_tvr_shows ON tvr_shows(sid,
                     season, ep)''')
-
-        #test to see if the locations table exists
-        test = c.execute(u'''SELECT name FROM sqlite_master
-                WHERE type="table"
-                AND name="locations"''').fetchall()
-        if not test:
-            c.execute(u'''CREATE TABLE locations(sid integer, location text)''')
-            c.execute(u'''CREATE UNIQUE INDEX unique_locations ON locations(sid,
-                    location)''')
     return conn
 
 def find_show(conf, show_name):
@@ -136,15 +127,6 @@ def find_ep(conf, sid, season, ep):
             return Episode.from_db_row(c.fetchone())
         except:
             return None
-
-def find_all_locations(conf, sid):
-    '''
-    This method returns all the stored locations for the given show
-    '''
-    with conf[ConfKeys.DB_CONN] as conn:
-        c = conn.cursor()
-        c.execute(u'''SELECT location FROM locations WHERE sid = ?''', (sid,))
-        return map(lambda x : x[0], c.fetchall())
 
 def mark_maybe_finished(conf, sid):
     '''
