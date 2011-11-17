@@ -33,17 +33,20 @@ def play_next(conf, show):
 
     #update the db
     print u'Should I update the database for you?'
-    answer = raw_input(u'Update [yes]? ')
-    if u'y' in answer.lower() or answer == '':
-        next_ep = admin.find_next_ep(conf, show)
-        if next_ep:
-            db.change_show(conf, show.sid, next_ep.season, next_ep.epnum)
-        else:
-            print u'No information about new eps yet, try updating later!'
-            db.mark_maybe_finished(conf, show.sid)
-        print u'Player stopped, database updated.'
-    else:
-        print u'Database unmodified.'
+    try:
+        answer = raw_input(u'Update [yes]? ')
+        if u'y' in answer.lower() or answer == '':
+            next_ep = admin.find_next_ep(conf, show)
+            if next_ep:
+                db.change_show(conf, show.sid, next_ep.season, next_ep.epnum)
+            else:
+                print u'No information about new eps yet, try updating later!'
+                db.mark_maybe_finished(conf, show.sid)
+            print u'Player stopped, database updated.'
+            return
+    except:
+        print ""
+    print u'Database unmodified.'
 
 def build_ep_path(conf, show):
     '''
