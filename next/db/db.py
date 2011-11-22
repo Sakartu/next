@@ -99,7 +99,7 @@ def store_tvr_eps(conf, eps):
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         for ep in eps:
-            c.execute(u'''INSERT OR IGNORE INTO tvr_shows VALUES (?, ?, ?, ?, ?, ?)''',
+            c.execute(u'''INSERT OR REPLACE INTO tvr_shows VALUES (?, ?, ?, ?, ?, ?)''',
                     (ep.sid, ep.showname, ep.season, ep.epnum, ep.title,
                         ep.airdate))
 
