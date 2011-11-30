@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 packages = ['next', 'next.db', 'next.show', 'next.tui', 'next.tvr', 'next.util']
 
@@ -12,8 +12,9 @@ setup(name='next',
       url='https://github.com/Sakartu/next',
       packages=packages,
       scripts=['next.py'],
-      requires=[
+      install_requires=[
           'python-tvrage',
-          'python-xdgapp',
+          'pyxdg',
           ],
+      test_suite='tests.runtests.runtests',
      )
