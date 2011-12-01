@@ -91,14 +91,14 @@ def build_ep_path(conf, show):
                 continue
 
         if not unstructured:
-            rexes = [re.compile("^" + x.format(show="", season=show.season, ep=show.ep) + ext + "$") for
+            rexes = [re.compile("^" + x.format(show="", season=show.season, ep=show.ep) + ext + "$", re.I) for
                     x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
         else:
             show_words = show.name.split()
             # filter for only normal words (handy in case of "Doctor Who (2005)"
             show_words = filter(lambda x : re.compile(r'^\w*$').match(x), show_words)
             rexes = [re.compile(x.format(show="".join([word + ".*" for word in
-                show_words]), season=show.season, ep=show.ep) + ext) for x in
+                show_words]), season=show.season, ep=show.ep) + ext, re.I) for x in
                 constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
         for ep in os.listdir(path):
             for rex in rexes:
