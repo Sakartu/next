@@ -41,7 +41,9 @@ def update_eps(conf):
     all_shows = db.all_shows(conf)
     try:
         for show in all_shows:
+            status = parser.get_status(show.sid)
             all_eps = parser.get_all_eps(show.sid)
+            db.change_status(conf, show.sid, status)
             db.store_tvr_eps(conf, all_eps)
     except:#probably no internet connection
         print "Could not connect to TVRage, aborting update!"
