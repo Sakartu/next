@@ -8,4 +8,4 @@ class Show:
         self.season = int(db_row[2])
         self.ep = int(db_row[3])
         self.maybe_finished = int(db_row[4])
-        self.finished = db_row[5]
+        self.status = db_row[5]
