@@ -1,7 +1,7 @@
 from next.show import player, admin
 from next.db import db
 from next.tvr import parser
-from next.util.constants import ConfKeys, TVRage
+from next.util.constants import ConfKeys
 from exceptions import UserCancelled, NoShowsException
 import cmd
 import random
@@ -36,16 +36,7 @@ class TUI(cmd.Cmd, object):
         #found out which season and ep the user is
         showname = show[0]
         sid = show[1]
-
-        show_status = show[2].lower()
-        if TVRage.STATUS_RETURNING in show_status:
-            status = TVRage.STATUS_RETURNING
-        elif TVRage.STATUS_CANCELLED in show_status:
-            status = TVRage.STATUS_CANCELLED
-        elif TVRage.STATUS_NEW in show_status:
-            status = TVRage.STATUS_NEW
-        else:
-            status = TVRage.STATUS_UNKNOWN
+        status = show[2]
         
         seasons = db.find_seasons(self.conf, sid)
 
@@ -378,7 +369,7 @@ def print_shows(conf, shows, extended=False):
     max_len = max(map(len, map(lambda x : x.name, shows))) + 3
     print u'{id:3s}  {name:{length}s}  Next ep   {status}'.format(id=u'', name=u'Show Name', length=max_len, status='Status' if extended else '')
     for (i, show) in enumerate(shows):
-        print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d} {finished}'.format(
+        print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}    {status}'.format(
                 id=i + 1, name=show.name, length=max_len, new='*' if show in
                 new_shows and not show.maybe_finished else ' ', S=show.season,
-                E=show.ep, finished=show.finished if extended else "")
+                E=show.ep, status=show.status if extended else "")
