@@ -37,10 +37,11 @@ def update_eps(conf):
     This method updates the eplist for a given show using the TVRage database
     '''
     #first we check tvr to see if there are any updates for our shows
-    print "Updating TVRage episode database...",
+    print "Updating TVRage episode database",
     all_shows = db.all_shows(conf)
     try:
         for show in all_shows:
+            print '.',
             status = parser.get_status(show.sid)
             all_eps = parser.get_all_eps(show.sid)
             db.change_status(conf, show.sid, status)
