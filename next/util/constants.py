@@ -40,10 +40,7 @@ class TVRage:
     SEARCH_ID = u'show/showid'
     SEARCH_STATUS = u'show/status'
 
-    STATUS_RETURNING = 'returning'
-    STATUS_CANCELLED = 'cancelled'
-    STATUS_NEW = 'new'
-    STATUS_UNKNOWN = 'unknown'
+    STATUS_STATUS = u'status'
 
     EPLIST_NAME = u'name'
     EPLIST_SEASON = u'Episodelist/Season'
