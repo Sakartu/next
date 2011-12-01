@@ -37,10 +37,13 @@ class TUI(cmd.Cmd, object):
         showname = show[0]
         sid = show[1]
 
-        if TVRage.STATUS_RETURNING in show[2].lower():
+        show_status = show[2].lower()
+        if TVRage.STATUS_RETURNING in show_status:
             status = TVRage.STATUS_RETURNING
-        elif TVRage.STATUS_CANCELLED in show[2].lower():
+        elif TVRage.STATUS_CANCELLED in show_status:
             status = TVRage.STATUS_CANCELLED
+        elif TVRage.STATUS_NEW in show_status:
+            status = TVRage.STATUS_NEW
         else:
             status = TVRage.STATUS_UNKNOWN
         

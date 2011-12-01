@@ -42,6 +42,7 @@ class TVRage:
 
     STATUS_RETURNING = 'returning'
     STATUS_CANCELLED = 'cancelled'
+    STATUS_NEW = 'new'
     STATUS_UNKNOWN = 'unknown'
 
     EPLIST_NAME = u'name'
