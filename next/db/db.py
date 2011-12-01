@@ -89,6 +89,15 @@ def all_shows(conf):
         shows = c.fetchall()
         return map(Show, shows)
 
+def change_status(conf, sid, status):
+    '''
+    This method changes status of a given show in the database
+    '''
+    with conf[ConfKeys.DB_CONN] as conn:
+        c = conn.cursor()
+        c.execute(u'''UPDATE shows SET status=? where sid = ?''',
+                (status, sid))
+
 def store_tvr_eps(conf, eps):
     '''
     This method stores all the eps in the given eps list in the database
