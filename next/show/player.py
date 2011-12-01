@@ -63,10 +63,19 @@ def build_ep_path(conf, show):
     # in the locations db
 
     unstructured = conf.get(ConfKeys.UNSTRUCTURED, False)
+    if ConfKeys.SHOW_PATH not in conf:
+        return None
+
+    shows_base = os.path.expandvars(os.path.expanduser(conf[ConfKeys.SHOW_PATH]))
     path = None
     
     if not unstructured:
-        bases = [os.path.join(conf[ConfKeys.SHOW_PATH], show.name)]
+        bases = []
+        show_words = get_words(show.name)
+        for name in os.listdir(shows_base):
+            full = os.path.join(shows_base, name)
+            if os.path.isdir(full) and all([x in get_words(name.lower()) for x in show_words]):
+                bases.append(full)
     else:
         # if we're in unstructured mode, we just set the base as the show dir
         bases = [conf[ConfKeys.SHOW_PATH]]
@@ -94,9 +103,7 @@ def build_ep_path(conf, show):
             rexes = [re.compile("^" + x.format(show="", season=show.season, ep=show.ep) + ext + "$", re.I) for
                     x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
         else:
-            show_words = show.name.split()
-            # filter for only normal words (handy in case of "Doctor Who (2005)"
-            show_words = filter(lambda x : re.compile(r'^\w*$').match(x), show_words)
+            show_words = get_words(show.name)
             rexes = [re.compile(x.format(show="".join([word + ".*" for word in
                 show_words]), season=show.season, ep=show.ep) + ext, re.I) for x in
                 constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
@@ -108,4 +115,17 @@ def build_ep_path(conf, show):
                     return path
 
     return None #if no ep could be found in any of the bases
+
+def get_words(text):
+    '''
+    Utility function that splits a given text on spaces, dots and _'s, then
+    returns only those parts which contain only word characters
+    '''
+    # filter out dots, underscores and multiple spaces
+    text = re.sub('\s+', ' ', text.lower())
+    text = re.sub('[\._]', ' ', text)
+    # split on spaces
+    words = text.split()
+    # filter for only normal words (handy in case of "Doctor Who (2005)"
+    return filter(lambda x : re.compile(r'^\w*$').match(x), words)
 
