@@ -92,7 +92,7 @@ class TUI(cmd.Cmd, object):
             show = all_shows[number - 1]
 
         if show:
-            player.play_next(self.conf, show)
+            player.play_show(self.conf, show)
 
     def help_play(self):
         print u'Play an ep. If keywords are provided, a show with a corresponding name will be searched.'
