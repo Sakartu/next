@@ -1,4 +1,4 @@
-VIDEO_EXTS = [u'.avi', u'.mpg', u'.mpeg', u'.mkv'] #need to have .'s in front!
+VIDEO_EXTS = [u'avi', u'mpg', u'mpeg', u'mkv'] #need to have .'s in front!
 
 SHOW_REGEXES = [
     r'(?P<show>{show}).*S0*(?P<season>{season})E0*(?P<ep>{ep})\D.*',  #accounts for most S12E12 type of shows
