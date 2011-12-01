@@ -40,5 +40,4 @@ def get_status(sid):
     try:
         return tree.find(tvrpath.STATUS_STATUS).text
     except:
-        return tvrpath.STATUS_UNKNOWN
-
+        return "Unknown"
