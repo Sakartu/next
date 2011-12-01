@@ -35,3 +35,10 @@ def get_all_eps(sid):
             results.append(Episode(sid, showname, seasonnum, epnum, title, airdate))
     return results
 
+def get_status(sid):
+    tree = ET.ElementTree(feeds.showinfo(sid))
+    try:
+        return tree.find(tvrpath.STATUS_STATUS).text
+    except:
+        return tvrpath.STATUS_UNKNOWN
+
