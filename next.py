@@ -66,7 +66,7 @@ def main():
         # 1. user provided a showname, find it in the db, then play it.
         s = db.find_show(conf, u' '.join(args))
         if s:
-            player.play_next(conf, s)
+            player.play_show(conf, s)
         else:
             print u'Show "{0}" could not be found!'.format(u' '.join(args))
     else:
