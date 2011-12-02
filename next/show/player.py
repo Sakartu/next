@@ -108,7 +108,7 @@ def build_ep_path(conf, show):
                     x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
         else:
             show_words = get_words(show.name)
-            rexes = [re.compile(x.format(show="".join([word + ".*" for word in
+            rexes = [re.compile(x.format(show="".join([word + "\W" for word in
                 show_words]), season=show.season, ep=show.ep) + ext, re.I) for x in
                 constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
         for ep in os.listdir(path):
