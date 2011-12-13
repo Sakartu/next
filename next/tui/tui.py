@@ -3,10 +3,11 @@ from next.db import db
 from next.tvr import parser
 from next.util.constants import ConfKeys
 from exceptions import UserCancelled, NoShowsException
+import sys
 import cmd
 import random
 import sqlite3
-import sys
+import textwrap
 
 class TUI(cmd.Cmd, object):
     def __init__(self, conf={}):
@@ -95,7 +96,9 @@ class TUI(cmd.Cmd, object):
             player.play_show(self.conf, show)
 
     def help_play(self):
-        print u'Play an ep. If keywords are provided, a show with a corresponding name will be searched.'
+        self.print_formatted(u'''
+        Play an ep. If keywords are provided, a show with a corresponding 
+        name will be searched.''')
 
     def do_random(self, line=None):
         '''
@@ -162,7 +165,9 @@ class TUI(cmd.Cmd, object):
         db.add_location(self.conf, show.sid, location)
 
     def help_add_show_location(self):
-        print u'Add a location to a show. next will check each added location for eps to play'
+        self.print_formatted(u'''
+        Add a location to a show. next will check each added location for eps to
+        play''')
 
     def do_change_show(self, line=None):
         '''
@@ -241,7 +246,9 @@ class TUI(cmd.Cmd, object):
                     self.add_show_details(found_show)
 
     def help_scan(self):
-        print u'Scan the local shows directory for shows that aren\'t in the database yet'
+        self.print_formatted(u'''
+        Scan the local shows directory for shows that aren\'t in the database 
+        yet''')
 
     def do_list(self, line=None):
         '''
@@ -252,10 +259,13 @@ class TUI(cmd.Cmd, object):
         except NoShowsException:
             print u'There are no shows!'
         else:
-            print_shows(self.conf, shows, extended=True)
+            print_shows(self.conf, shows, display_new=True, display_subs=True, display_status=True)
 
     def help_list(self):
-        print u'List all the shows in the database'
+        self.print_formatted(u'''
+        List all the shows in the database. A single * in front of an ep means
+        there\'s a new ep available on the drive. A double * in front of an ep
+        means there\'s a new ep available and it also has subtitles.''')
 
     def do_new(self, line=None):
         '''
@@ -274,10 +284,13 @@ class TUI(cmd.Cmd, object):
             print u'No new eps are available for your shows!'
             return
         print "New eps are on your computer for these shows:"
-        print_shows(self.conf, shows)
+        print_shows(self.conf, shows, display_subs=True)
 
     def help_new(self):
-        pass
+        self.print_formatted(u'''
+        Prints a list of all shows for which there are new eps available.
+        A * in front of an ep means that there are subtitles available for the
+        new ep''')
 
     def do_update(self, line=None):
         '''
@@ -318,6 +331,9 @@ class TUI(cmd.Cmd, object):
 
     def postloop(self):
         print
+    
+    def print_formatted(self, msg):
+        print textwrap.fill(textwrap.dedent(msg.strip()), 80)
 
 def read_show(shows):
     print u'Which show would you like to add?'
@@ -354,22 +370,32 @@ def get_input(term=u'next$ ', possibles=None):
             print u'Invalid command!'
     return a
 
-def print_shows(conf, shows, extended=False):
+def print_shows(conf, shows, display_new=False, display_subs=False, display_status=False):
     '''
     A helper function that prints a list of shows, each with the reached season and ep.
     '''
-    new_shows = []
-    if extended:
+    new_shows = {}
+    if display_new or display_subs:
         # find all shows that have a new ep waiting
         for show in shows:
             p = player.build_ep_path(conf, show)
+            subp = player.build_sub_path(conf, p)
             if p:
-                new_shows.append(show)
+                new_shows[show.name] = subp
 
     max_len = max(map(len, map(lambda x : x.name, shows))) + 3
-    print u'{id:3s}  {name:{length}s}  Next ep   {status}'.format(id=u'', name=u'Show Name', length=max_len, status='Status' if extended else '')
+    print u'{id:3s}  {name:{length}s}   Next ep   {status}'.format(id=u'', 
+        name=u'Show Name', length=max_len, status='Status' if 
+        display_status else '')
     for (i, show) in enumerate(shows):
+        newline = '  '
+        if show.name in new_shows and not show.maybe_finished:
+            newline = '*' if display_new else ' '
+            if display_subs and new_shows[show.name]:
+                newline += '*'
+            else:
+                newline += ' '
         print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}    {status}'.format(
-                id=i + 1, name=show.name, length=max_len, new='*' if show in
-                new_shows and not show.maybe_finished else ' ', S=show.season,
-                E=show.ep, status=show.status if extended else "")
+            id=i + 1, name=show.name, length=max_len, 
+            new=newline, S=show.season, E=show.ep, 
+            status=show.status if display_status else "")

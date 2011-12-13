@@ -120,6 +120,20 @@ def build_ep_path(conf, show):
 
     return None #if no ep could be found in any of the bases
 
+def build_sub_path(conf, path):
+    '''
+    A helper function to tell you whether subs are available for a given ep and
+    if so, return the full path to the subtitle file
+    '''
+    if not path:
+        return None
+    (base, _) = os.path.splitext(path)
+    for ext in constants.SUB_EXTS:
+        sub_path = base + '.' + ext
+        if os.path.exists(sub_path):
+            return sub_path
+    return None
+
 def get_words(text):
     '''
     Utility function that splits a given text on spaces, dots and _'s, then
