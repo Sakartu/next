@@ -1,7 +1,7 @@
 from optparse import OptionParser
-from util import constants
-from tui.tui import TUI
-from show import admin
+from next.util import constants
+from next.tui.tui import TUI
+from xdg import BaseDirectory
 import ConfigParser
 import os
 import sys
@@ -26,17 +26,28 @@ def parse_opts():
     parser.add_option(u'--scan', action="store_const", dest="func", const=t.do_scan, help=u'Scan your series path for shows')
     (options, args) = parser.parse_args()
 
-    path = os.path.expanduser(constants.CONF_PATH)
+    # Load a default config
+    config = ConfigParser.SafeConfigParser()
+    config.add_section(u'general')
+    config.set(u'general', constants.ConfKeys.PLAYER_CMD, u'mplayer')
+    config.set(u'general', constants.ConfKeys.SHOW_PATH, u'~/downloads/series')
+
+    db_path = BaseDirectory.save_data_path('next')
+    config.set(u'general', constants.ConfKeys.DB_PATH, db_path)
+
+    # Load the config override
     if options.new_path:
         path = options.new_path
-
-    config = ConfigParser.SafeConfigParser()
-    if os.path.exists(path) and os.access(path, os.F_OK) and os.access(path, os.W_OK):
-        config.read(path)
+        if not (os.path.exists(path) and os.access(path, os.F_OK) and
+                os.access(path, os.W_OK)):
+            print u'No configfile found in "{0}", generating default configfile. Please modify, then start next again!'.format(path)
+            gen_example(path)
+            sys.exit(-1)
     else:
-        print u'No configfile found in "{0}", generating default configfile. Please modify, then start next again!'.format(path)
-        gen_example(path)
-        sys.exit(-1)
+        path = BaseDirectory.load_first_config('next', 'next.conf')
+
+    if path:
+        config.read(path)
 
     result = dict(config.items(u'general'))
 

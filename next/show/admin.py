@@ -1,6 +1,7 @@
-from db import db
-from tvr import parser
+from next.db import db
+from next.tvr import parser
 import os
+import re
 
 def find_unlisted(conf):
     '''
@@ -9,8 +10,14 @@ def find_unlisted(conf):
     '''
     listed = map(lambda x : x.name, db.all_shows(conf))
     basedir = os.path.expanduser(conf['show_path'])
-    all_shows = filter(lambda x : os.path.isdir(os.path.join(basedir, x)), os.listdir(basedir))
-    return list(set(all_shows) - set(listed))
+    try:
+        all_shows = [ d for d in os.listdir(basedir) if os.path.isdir(os.path.join(basedir, d)) ]
+    except OSError:
+        print "Could not list directory {0}".format(basedir)
+        all_shows = []
+
+    has_match = lambda s: any(x for x in listed if shows_match(s, x))
+    return [ s for s in all_shows if not has_match(s) ]
 
 def find_next_ep(conf, show):
     '''
@@ -30,11 +37,14 @@ def update_eps(conf):
     This method updates the eplist for a given show using the TVRage database
     '''
     #first we check tvr to see if there are any updates for our shows
-    print "Updating TVRage episode database...",
+    print "Updating TVRage episode database",
     all_shows = db.all_shows(conf)
     try:
         for show in all_shows:
+            print '.',
+            status = parser.get_status(show.sid)
             all_eps = parser.get_all_eps(show.sid)
+            db.change_status(conf, show.sid, status)
             db.store_tvr_eps(conf, all_eps)
     except:#probably no internet connection
         print "Could not connect to TVRage, aborting update!"
@@ -56,4 +66,25 @@ def process_maybe_finished(conf, all_shows):
             if next_ep:
                 db.change_show(conf, show.sid, next_ep.season, next_ep.epnum)
                 db.mark_not_maybe_finished(conf, show.sid)
+
+def shows_match(one, two):
+    '''
+    This method returns True if the names of the two shows provided as
+    parameters look very much alike
+
+    That is, if all the words that are in one are also in two when words that
+    contain only of strange characters aren't counted
+    '''
+    if type(one) != type("") and type(one) != type(u""): # assume type Show
+        one = one.name
+    if type(two) != type("") and type(two) != type(u""): # assume type Show
+        two = two.name
+    ones = map(lambda x : x.lower(), one.split())
+    twos = map(lambda x : x.lower(), two.split())
+    for word in [x for x in ones if re.compile('^\w*$').match(x)]:
+        if word not in twos:
+            return False
+    return True
+
+
 

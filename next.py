@@ -1,30 +1,35 @@
-#!/usr/bin/python -u
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from util import config
-from util.constants import ConfKeys
-from db import db
-from show import player
-from tui.exceptions import UserCancelled
-from tui import TUI
 import sys
-import os
-import sqlite3
 
 try:
     import tvrage
-except:
-    print "next needs the tvrage module to work. See https://bitbucket.org/ckreutzer/python-tvrage/"
+    import xdg
+except ImportError:
+    print "next needs the tvrage module and the xdg module to work. See the README for more information!"
     sys.exit(-1)
+
+from next.util import config
+from next.util.constants import ConfKeys
+from next.db import db
+from next.show import player
+from next.tui.exceptions import UserCancelled
+from next.tui import TUI
+import os
+import sqlite3
 
 def main():
     (options, conf, args) = config.parse_opts()
 
+    # make sure stdout is unbuffered
+    sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+
     try: # the database_path is usually the show_path, but can be defined in conf
         if ConfKeys.DB_PATH in conf:
-            database_path = os.path.join(conf[ConfKeys.DB_PATH], u'.next.db')
+            database_path = os.path.join(conf[ConfKeys.DB_PATH], u'next.db')
         else:
-            database_path = os.path.join(conf[ConfKeys.SHOW_PATH], u'.next.db')
+            database_path = os.path.join(conf[ConfKeys.SHOW_PATH], u'next.db')
         database_path = os.path.expanduser(os.path.expandvars(database_path))
     except KeyError:
         print(u'No show_path or database_path defined in configuration, aborting!')
@@ -57,11 +62,11 @@ def main():
     #    us to start, so let's start it.
     # 2. there are no arguments provided. provide the user with a query what he wants
 
-    if len(args):
+    if args:
         # 1. user provided a showname, find it in the db, then play it.
         s = db.find_show(conf, u' '.join(args))
         if s:
-            player.play_next(conf, s)
+            player.play_show(conf, s)
         else:
             print u'Show "{0}" could not be found!'.format(u' '.join(args))
     else:

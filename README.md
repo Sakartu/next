@@ -30,6 +30,10 @@ Other methods can be found on pypi:
 
 http://pypi.python.org/pypi/python-tvrage/0.1.4
 
+For the configuration files we use the XDG Base Directory Specification (see
+http://bit.ly/tulYTA). This needs the package python-xdgapp to be installed, you
+can probably find this in your distro's repository somewhere.
+
 Installation
 ------------
 
@@ -49,7 +53,7 @@ installation that's required :)
 Configuration
 -------------
 
-Out of the box next will look in ~/.next/ to find it's configurationfile.
+Out of the box next will look in ~/.config/next/ to find it's configurationfile.
 You can put it elsewhere, if you want to, just use the -c flag to specify
 the new location. In the configurationfile we have a few options that 
 we'll discuss below:

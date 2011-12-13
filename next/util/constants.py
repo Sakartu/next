@@ -1,5 +1,4 @@
-CONF_PATH = u'~/.next/next.conf'
-VIDEO_EXTS = [u'.avi', u'.mpg', u'.mpeg', u'.mkv'] #need to have .'s in front!
+VIDEO_EXTS = [u'avi', u'mpg', u'mpeg', u'mkv'] #need to have .'s in front!
 
 SHOW_REGEXES = [
     r'(?P<show>{show}).*S0*(?P<season>{season})E0*(?P<ep>{ep})\D.*',  #accounts for most S12E12 type of shows
@@ -10,10 +9,10 @@ USAGE = u"""Usage: next ([options] | [show])
 
 This program helps you in maintaining your episodes. It will remember which eps
 you've already seen and start a new named (or a new random) ep for you. The
-configuration file for next can be found in ~/.next/. next uses the TVRage
-database to search for information about shows but it can also be used offline.
-Make sure you update your database regularly, or next will not be aware of new
-episodes!
+configuration file for next can be found in ~/.config/next/. next uses the
+TVRage database to search for information about shows but it can also be used
+offline.  Make sure you update your database regularly, or next will not be
+aware of new episodes!
 
 next can be called either with an option or with words identifying a certain
 show. Only one option can be used at a time, the last option counts, previous
@@ -39,6 +38,9 @@ class TVRage:
     '''
     SEARCH_NAME = u'show/name'
     SEARCH_ID = u'show/showid'
+    SEARCH_STATUS = u'show/status'
+
+    STATUS_STATUS = u'status'
 
     EPLIST_NAME = u'name'
     EPLIST_SEASON = u'Episodelist/Season'
@@ -47,6 +49,7 @@ class TVRage:
     EPLIST_EPNUM = u'seasonnum'
     EPLIST_AIRDATE = u'airdate'
     EPLIST_TITLE = u'title'
+
 
 EXAMLE_CONF = '''[general]
 

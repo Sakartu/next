@@ -1,7 +1,7 @@
 from tvrage import feeds
 from xml.etree import ElementTree as ET
 from tvrep import Episode
-from util.constants import TVRage as tvrpath
+from next.util.constants import TVRage as tvrpath
 
 def fuzzy_search(show_name):
     '''
@@ -12,7 +12,8 @@ def fuzzy_search(show_name):
     tree = ET.ElementTree(feeds.search(show_name))
     names = tree.findall(tvrpath.SEARCH_NAME)
     ids = tree.findall(tvrpath.SEARCH_ID)
-    results = map(lambda (x, y) : (x.text, y.text), zip(names, ids))
+    statuses = tree.findall(tvrpath.SEARCH_STATUS)
+    results = map(lambda (x, y, z) : (x.text, y.text, z.text), zip(names, ids, statuses))
     return results
 
 def get_all_eps(sid):
@@ -34,3 +35,9 @@ def get_all_eps(sid):
             results.append(Episode(sid, showname, seasonnum, epnum, title, airdate))
     return results
 
+def get_status(sid):
+    tree = ET.ElementTree(feeds.showinfo(sid))
+    try:
+        return tree.find(tvrpath.STATUS_STATUS).text
+    except:
+        return "Unknown"
