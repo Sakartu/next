@@ -3,8 +3,8 @@ VIDEO_EXTS = [u'avi', u'mpg', u'mpeg', u'mkv']
 SUB_EXTS = [u'srt', u'sub', u'idx', u'ssa', u'ass']
 
 SHOW_REGEXES = [
-    r'(?P<show>{show}).*S0*(?P<season>{season})E0*(?P<ep>{ep})\D.*',  #accounts for most S12E12 type of shows
-    r'(?P<show>{show}).*0*(?P<season>{season})x0*(?P<ep>{ep})\D.*'    #accounts for most 12x12 type of shows
+    r'(?P<show>{show}).*S0*(?P<season>{season})E0*(?P<ep>{ep})\D.*',  # accounts for most S12E12 type of shows
+    r'(?P<show>{show}).*0*(?P<season>{season})x0*(?P<ep>{ep})\D.*'    # accounts for most 12x12 type of shows
     ] 
 
 
@@ -54,13 +54,13 @@ class TVRage:
     EPLIST_TITLE = u'title'
 
 
-EXAMLE_CONF = '''[general]
+EXAMPLE_CONF = '''[general]
 
 # this option defines the path to your shows
 show_path=~/downloads/series/
 
 # set this option if you want your database to reside somewhere else
-#database_path=~/downloads/series/
+# database_path=~/downloads/series/
 
 # this command is called by next when a show is to be played.
 # the full path to the desired episode is placed at the end before calling
