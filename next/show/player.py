@@ -31,7 +31,7 @@ def play_next(conf, show):
     if not util.play(command, show):
         return
 
-    #update the db
+    # update the db
     print u'Should I update the database for you?'
     try:
         answer = raw_input(u'Update [yes]? ')
@@ -85,7 +85,7 @@ def build_ep_path(conf, show):
     bases = map(os.path.expanduser, bases)
     bases = map(os.path.expandvars, bases)
 
-    for base in bases: #search each base for the wanted ep
+    for base in bases: # search each base for the wanted ep
         if not os.path.exists(base):
             continue
         path = base[:]
@@ -116,18 +116,4 @@ def build_ep_path(conf, show):
                     path = os.path.join(path, ep)
                     return path
 
-    return None #if no ep could be found in any of the bases
-
-def build_sub_path(conf, path):
-    '''
-    A helper function to tell you whether subs are available for a given ep and
-    if so, return the full path to the subtitle file
-    '''
-    if not path:
-        return None
-    (base, _) = os.path.splitext(path)
-    for ext in constants.SUB_EXTS:
-        sub_path = base + '.' + ext
-        if os.path.exists(sub_path):
-            return sub_path
-    return None
+    return None # if no ep could be found in any of the bases
