@@ -58,7 +58,7 @@ def find_show(conf, show_name):
 
     if len(shows) > 2:
         print_formatted( u'''\
-                Found multiple shows with the same name, picking first 
+                Found multiple shows with the same name, picking first
                 ({0})'''.format(shows[0][0]))
     return Show(shows[0])
 
