@@ -3,7 +3,7 @@ from next.db import db
 from next.tvr import parser
 from next.util.constants import ConfKeys
 import next.util.util as util
-from exceptions import UserCancelled, NoShowsException
+from next.tui.exceptions import UserCancelled, NoShowsException
 import sys
 import cmd
 import random
@@ -11,7 +11,7 @@ import sqlite3
 
 class TUI(cmd.Cmd, object):
     def __init__(self, conf={}):
-        super(TUI, self).__init__()
+        cmd.Cmd.__init__(self)
 
         self.conf = conf
         self.prompt = u'next$ '
@@ -21,7 +21,7 @@ class TUI(cmd.Cmd, object):
         self.intro += "enter a command to continue!\n"
         self.doc_header = "Commands (press help <command> to get help):"
 
-    def cmdloop(self, intro=None):
+    def cmdloop(self):
         while True:
             try:
                 cmd.Cmd.cmdloop(self)
@@ -34,21 +34,21 @@ class TUI(cmd.Cmd, object):
         A helper function that is used (amongst others) by the add_show function to
         query the user as to what season and episode the user is
         '''
-        #found out which season and ep the user is
+        # found out which season and ep the user is
         showname = show[0]
         sid = show[1]
         status = show[2]
         
         seasons = db.find_seasons(self.conf, sid)
 
-        #then the season in the show
+        # then the season in the show
         if not seasons:
             print u'There are no seasons for this show!'
             return
         print u'What season are you at for {0} ({1}-{2})?'.format(showname, min(seasons), max(seasons))
         season = int(self.get_input(u'Season: ', range(1, len(seasons) + 1)))
 
-        #then the ep in the season
+        # then the ep in the season
         eps = db.find_all_eps(self.conf, sid, season)
         if not eps:
             print u'This season has no eps!'
@@ -58,7 +58,7 @@ class TUI(cmd.Cmd, object):
             print u'{id:3d}. s{S:>02d}e{E:>02d} - {title}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title)
         ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
 
-        #and finally put everything in the database
+        # and finally put everything in the database
         try:
             db.add_show(self.conf, sid, showname, season, ep, status)
             print u'Successfully added {0} to the database!'.format(showname)
@@ -84,7 +84,7 @@ class TUI(cmd.Cmd, object):
             if not candidates:
                 print u'No show found for "{0}"'.format(line)
                 return
-            #just assume the first show
+            # just assume the first show
             show = candidates[0]
         else:
             print u'Which show would you like to play the next ep from?'
@@ -119,12 +119,12 @@ class TUI(cmd.Cmd, object):
         A TUI function that adds a user-specified show to the database. Uses TVRage
         to find out details about the show.
         '''
-        #query the user for the show they want to add
+        # query the user for the show they want to add
         found_show = None
         while not found_show:
             print u'Please enter the name of the show you would like to add.'
             wanted = self.get_input(term=u'Showname: ')
-            #find the show in tvrage
+            # find the show in tvrage
             print u'Searching for show in TVRage database... ',
             shows = parser.fuzzy_search(wanted)
             print u'done.'
@@ -135,7 +135,7 @@ class TUI(cmd.Cmd, object):
                 found_show = self.read_show(shows)
 
         print u'Getting all show eps from TVRage... ',
-        episodes = parser.get_all_eps(found_show[1]) #find eps by sid
+        episodes = parser.get_all_eps(found_show[1]) # find eps by sid
         print u'done.'
         
         print u'Storing eps in db... ',
@@ -185,7 +185,7 @@ class TUI(cmd.Cmd, object):
         number = int(self.get_input(u'Show number: ', range(1, len(all_shows) + 1)))
         show = all_shows[number - 1]
 
-        #then the season in the show
+        # then the season in the show
         seasons = db.find_seasons(self.conf, show.sid)
         if not seasons:
             print u'There are no seasons for this show!'
@@ -193,7 +193,7 @@ class TUI(cmd.Cmd, object):
         print u'What season are you at for {0} ({1}-{2})?'.format(show.name, min(seasons), max(seasons))
         season = int(self.get_input(u'Season: ', range(1, len(seasons) + 1)))
 
-        #then the ep in the season
+        # then the ep in the season
         eps = db.find_all_eps(self.conf, show.sid, season)
         if not eps:
             print u'This season has no eps!'
@@ -203,7 +203,7 @@ class TUI(cmd.Cmd, object):
             print u'{id:3d}. s{S:>02d}e{E:>02d} - {title}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title)
         ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
 
-        #and finally put everything in the database
+        # and finally put everything in the database
         db.change_show(self.conf, show.sid, season, ep)
         print u'Successfully changed details for {0}!'.format(show.name)
 
@@ -222,7 +222,7 @@ class TUI(cmd.Cmd, object):
         if not unlisted:
             print u'There are no shows to add!'
             return
-        for (i, path) in enumerate(unlisted):
+        for path in unlisted:
             print u'Would you like to add {0}?'.format(path)
             answer = self.get_input(u'Add [yes]? ')
             if u'y' in answer.lower() or answer == '':
@@ -236,7 +236,7 @@ class TUI(cmd.Cmd, object):
                     found_show = self.read_show(shows)
 
                     print u'Getting all show eps from TVRage... ',
-                    episodes = parser.get_all_eps(found_show[1]) #find eps by sid
+                    episodes = parser.get_all_eps(found_show[1]) # find eps by sid
                     print u'done.'
                     
                     print u'Storing eps in db... ',
@@ -376,7 +376,7 @@ class TUI(cmd.Cmd, object):
             # find all shows that have a new ep waiting
             for show in shows:
                 p = player.build_ep_path(conf, show)
-                subp = player.build_sub_path(conf, p)
+                subp = util.build_sub_path(p)
                 if p:
                     new_shows[show.name] = subp
 
