@@ -26,7 +26,7 @@ def find_next_ep(conf, show):
     next_season = show.season
     next_ep = show.ep + 1
     ep = db.find_ep(conf, show.sid, next_season, next_ep)
-    if ep == None: #maybe forward to next season?
+    if ep == None: # maybe forward to next season?
         next_season = show.season + 1
         next_ep = 1
         ep = db.find_ep(conf, show.sid, next_season, next_ep)
@@ -36,7 +36,7 @@ def update_eps(conf):
     '''
     This method updates the eplist for a given show using the TVRage database
     '''
-    #first we check tvr to see if there are any updates for our shows
+    # first we check tvr to see if there are any updates for our shows
     print "Updating TVRage episode database",
     all_shows = db.all_shows(conf)
     try:
@@ -46,7 +46,7 @@ def update_eps(conf):
             all_eps = parser.get_all_eps(show.sid)
             db.change_status(conf, show.sid, status)
             db.store_tvr_eps(conf, all_eps)
-    except:#probably no internet connection
+    except: # probably no internet connection
         print "Could not connect to TVRage, aborting update!"
         return
 
