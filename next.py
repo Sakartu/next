@@ -15,7 +15,7 @@ from next.util.constants import ConfKeys
 from next.db import db
 from next.show import player
 from next.tui.exceptions import UserCancelled
-from next.tui import TUI
+from next.tui.tui import TUI
 import os
 import sqlite3
 
