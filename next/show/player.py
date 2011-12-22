@@ -11,8 +11,9 @@ def play_show(conf, show):
     while another:
         show = play_next(conf, show)
         # ask the user for another ep
-        if not show:
+        if not show or not build_ep_path(conf, show):
             break
+
         print u"Shall I play another ep?"
         answer = raw_input(u'Another [yes]? ')
         if u'y' not in answer.lower() and answer.strip() != '':
