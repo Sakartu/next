@@ -2,12 +2,12 @@ from next.show import player, admin
 from next.db import db
 from next.tvr import parser
 from next.util.constants import ConfKeys
+import next.util.util as util
 from exceptions import UserCancelled, NoShowsException
 import sys
 import cmd
 import random
 import sqlite3
-import textwrap
 
 class TUI(cmd.Cmd, object):
     def __init__(self, conf={}):
@@ -46,7 +46,7 @@ class TUI(cmd.Cmd, object):
             print u'There are no seasons for this show!'
             return
         print u'What season are you at for {0} ({1}-{2})?'.format(showname, min(seasons), max(seasons))
-        season = int(get_input(u'Season: ', range(1, len(seasons) + 1)))
+        season = int(self.get_input(u'Season: ', range(1, len(seasons) + 1)))
 
         #then the ep in the season
         eps = db.find_all_eps(self.conf, sid, season)
@@ -56,7 +56,7 @@ class TUI(cmd.Cmd, object):
         print u'What ep are you at in season {0}?'.format(season)
         for (i, ep) in enumerate(eps):
             print u'{id:3d}. s{S:>02d}e{E:>02d} - {title}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title)
-        ep = int(get_input(u'Episode: ', range(1, len(eps) + 1)))
+        ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
 
         #and finally put everything in the database
         try:
@@ -88,15 +88,15 @@ class TUI(cmd.Cmd, object):
             show = candidates[0]
         else:
             print u'Which show would you like to play the next ep from?'
-            print_shows(self.conf, all_shows)
-            number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
+            self.print_shows(self.conf, all_shows)
+            number = int(self.get_input(u'Show number: ', range(1, len(all_shows) + 1)))
             show = all_shows[number - 1]
 
         if show:
             player.play_show(self.conf, show)
 
     def help_play(self):
-        self.print_formatted(u'''\
+        util.print_formatted(u'''\
         Play an ep. If keywords are provided, a show with a corresponding 
         name will be searched.''')
 
@@ -123,7 +123,7 @@ class TUI(cmd.Cmd, object):
         found_show = None
         while not found_show:
             print u'Please enter the name of the show you would like to add.'
-            wanted = get_input(term=u'Showname: ')
+            wanted = self.get_input(term=u'Showname: ')
             #find the show in tvrage
             print u'Searching for show in TVRage database... ',
             shows = parser.fuzzy_search(wanted)
@@ -132,7 +132,7 @@ class TUI(cmd.Cmd, object):
                 print u'No shows could be found, please try other keywords!'
                 return
             else:
-                found_show = read_show(shows)
+                found_show = self.read_show(shows)
 
         print u'Getting all show eps from TVRage... ',
         episodes = parser.get_all_eps(found_show[1]) #find eps by sid
@@ -157,15 +157,15 @@ class TUI(cmd.Cmd, object):
             print u'There are no shows to add a location for!'
             return
         print u'Which show would you like to add a location for?'
-        print_shows(self.conf, all_shows)
-        number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
+        self.print_shows(self.conf, all_shows)
+        number = int(self.get_input(u'Show number: ', range(1, len(all_shows) + 1)))
         show = all_shows[number - 1]
         print u'What location do you want to add?'
-        location = get_input(u'Location: ')
+        location = self.get_input(u'Location: ')
         db.add_location(self.conf, show.sid, location)
 
     def help_add_show_location(self):
-        self.print_formatted(u'''\
+        util.print_formatted(u'''\
         Add a location to a show. next will check each added location for eps to
         play''')
 
@@ -181,8 +181,8 @@ class TUI(cmd.Cmd, object):
             return
 
         print u'Which show would you like to change?'
-        print_shows(self.conf, all_shows)
-        number = int(get_input(u'Show number: ', range(1, len(all_shows) + 1)))
+        self.print_shows(self.conf, all_shows)
+        number = int(self.get_input(u'Show number: ', range(1, len(all_shows) + 1)))
         show = all_shows[number - 1]
 
         #then the season in the show
@@ -191,7 +191,7 @@ class TUI(cmd.Cmd, object):
             print u'There are no seasons for this show!'
             return
         print u'What season are you at for {0} ({1}-{2})?'.format(show.name, min(seasons), max(seasons))
-        season = int(get_input(u'Season: ', range(1, len(seasons) + 1)))
+        season = int(self.get_input(u'Season: ', range(1, len(seasons) + 1)))
 
         #then the ep in the season
         eps = db.find_all_eps(self.conf, show.sid, season)
@@ -201,7 +201,7 @@ class TUI(cmd.Cmd, object):
         print u'What ep are you at in season {0}?'.format(season)
         for (i, ep) in enumerate(eps):
             print u'{id:3d}. s{S:>02d}e{E:>02d} - {title}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title)
-        ep = int(get_input(u'Episode: ', range(1, len(eps) + 1)))
+        ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
 
         #and finally put everything in the database
         db.change_show(self.conf, show.sid, season, ep)
@@ -224,7 +224,7 @@ class TUI(cmd.Cmd, object):
             return
         for (i, path) in enumerate(unlisted):
             print u'Would you like to add {0}?'.format(path)
-            answer = get_input(u'Add [yes]? ')
+            answer = self.get_input(u'Add [yes]? ')
             if u'y' in answer.lower() or answer == '':
                 print u'Searching for show in TVRage database... ',
                 shows = parser.fuzzy_search(path.split(' ')[0])
@@ -233,7 +233,7 @@ class TUI(cmd.Cmd, object):
                     print u'No shows could be found, please try other keywords!'
                     return
                 else:
-                    found_show = read_show(shows)
+                    found_show = self.read_show(shows)
 
                     print u'Getting all show eps from TVRage... ',
                     episodes = parser.get_all_eps(found_show[1]) #find eps by sid
@@ -246,7 +246,7 @@ class TUI(cmd.Cmd, object):
                     self.add_show_details(found_show)
 
     def help_scan(self):
-        self.print_formatted(u'''\
+        util.print_formatted(u'''\
         Scan the local shows directory for shows that aren\'t in the database 
         yet''')
 
@@ -259,10 +259,10 @@ class TUI(cmd.Cmd, object):
         except NoShowsException:
             print u'There are no shows!'
         else:
-            print_shows(self.conf, shows, display_new=True, display_subs=True, display_status=True)
+            self.print_shows(self.conf, shows, display_new=True, display_subs=True, display_status=True)
 
     def help_list(self):
-        self.print_formatted(u'''\
+        util.print_formatted(u'''\
         List all the shows in the database. A single * in front of an ep means
         there\'s a new ep available on the drive. A double * in front of an ep
         means there\'s a new ep available and it also has subtitles.''')
@@ -284,10 +284,10 @@ class TUI(cmd.Cmd, object):
             print u'No new eps are available for your shows!'
             return
         print "New eps are on your computer for these shows:"
-        print_shows(self.conf, shows, display_subs=True)
+        self.print_shows(self.conf, shows, display_subs=True)
 
     def help_new(self):
-        self.print_formatted(u'''\
+        util.print_formatted(u'''\
         Prints a list of all shows for which there are new eps available.
         A * in front of an ep means that there are subtitles available for the
         new ep''')
@@ -331,71 +331,68 @@ class TUI(cmd.Cmd, object):
 
     def postloop(self):
         print
-    
-    def print_formatted(self, msg):
-        print textwrap.fill(textwrap.dedent(msg), 80)
+        
+    def read_show(self, shows):
+        print u'Which show would you like to add?'
+        for (i, show) in enumerate(shows):
+            print u'{0:3d}. {1}'.format(i + 1, show[0])
+        number = int(self.get_input(u'Show number: ', range(1, len(shows) + 1)))
+        return shows[number - 1]
 
-def read_show(shows):
-    print u'Which show would you like to add?'
-    for (i, show) in enumerate(shows):
-        print u'{0:3d}. {1}'.format(i + 1, show[0])
-    number = int(get_input(u'Show number: ', range(1, len(shows) + 1)))
-    return shows[number - 1]
+    def get_input(self, term=u'next$ ', possibles=None):
+        '''
+        A helper function that queries the user for input. Can be given a terminal
+        line to show (term) and a list of possible answers the user can give. If
+        possibles is None, we assume a plaintext answer.
+        '''
+        if possibles != None and type(possibles) != type([]):
+            possibles = None
 
-def get_input(term=u'next$ ', possibles=None):
-    '''
-    A helper function that queries the user for input. Can be given a terminal
-    line to show (term) and a list of possible answers the user can give. If
-    possibles is None, we assume a plaintext answer.
-    '''
-    if possibles != None and type(possibles) != type([]):
-        possibles = None
+        if possibles != None:
+            possibles = map(str, possibles)
 
-    if possibles != None:
-        possibles = map(str, possibles)
+        a = None
+        while a == None:
+            try:
+                inp = raw_input(term)
+            except EOFError:
+                print u''
+                raise UserCancelled
 
-    a = None
-    while a == None:
-        try:
-            inp = raw_input(term)
-        except EOFError:
-            print u''
-            raise UserCancelled
-
-        if possibles != None and inp in possibles:
-            a = inp
-        elif possibles == None:
-            a = inp
-        else:
-            print u'Invalid command!'
-    return a
-
-def print_shows(conf, shows, display_new=False, display_subs=False, display_status=False):
-    '''
-    A helper function that prints a list of shows, each with the reached season and ep.
-    '''
-    new_shows = {}
-    if display_new or display_subs:
-        # find all shows that have a new ep waiting
-        for show in shows:
-            p = player.build_ep_path(conf, show)
-            subp = player.build_sub_path(conf, p)
-            if p:
-                new_shows[show.name] = subp
-
-    max_len = max(map(len, map(lambda x : x.name, shows))) + 3
-    print u'{id:3s}  {name:{length}s}   Next ep   {status}'.format(id=u'', 
-        name=u'Show Name', length=max_len, status='Status' if 
-        display_status else '')
-    for (i, show) in enumerate(shows):
-        newline = '  '
-        if show.name in new_shows and not show.maybe_finished:
-            newline = '*' if display_new else ' '
-            if display_subs and new_shows[show.name]:
-                newline += '*'
+            if possibles != None and inp in possibles:
+                a = inp
+            elif possibles == None:
+                a = inp
             else:
-                newline += ' '
-        print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}    {status}'.format(
-            id=i + 1, name=show.name, length=max_len, 
-            new=newline, S=show.season, E=show.ep, 
-            status=show.status if display_status else "")
+                print u'Invalid command!'
+        return a
+
+    def print_shows(self, conf, shows, display_new=False, display_subs=False, display_status=False):
+        '''
+        A helper function that prints a list of shows, each with the reached season and ep.
+        '''
+        new_shows = {}
+        if display_new or display_subs:
+            # find all shows that have a new ep waiting
+            for show in shows:
+                p = player.build_ep_path(conf, show)
+                subp = player.build_sub_path(conf, p)
+                if p:
+                    new_shows[show.name] = subp
+
+        max_len = max(map(len, map(lambda x : x.name, shows))) + 3
+        print u'{id:3s}  {name:{length}s}   Next ep   {status}'.format(id=u'', 
+            name=u'Show Name', length=max_len, status='Status' if 
+            display_status else '')
+        for (i, show) in enumerate(shows):
+            newline = '  '
+            if show.name in new_shows and not show.maybe_finished:
+                newline = '*' if display_new else ' '
+                if display_subs and new_shows[show.name]:
+                    newline += '*'
+                else:
+                    newline += ' '
+            print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}    {status}'.format(
+                id=i + 1, name=show.name, length=max_len, 
+                new=newline, S=show.season, E=show.ep, 
+                status=show.status if display_status else "")
