@@ -2,6 +2,7 @@ from next.util import constants
 from next.util.constants import ConfKeys
 from next.show import admin
 from next.db import db
+import next.util.util as util
 import os
 import re
 
@@ -27,7 +28,7 @@ def play_next(conf, show):
         print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available or marked maybe_finished?'.format(S=show.season, E=show.ep, name=show.name)
         return
     command = cmd_line.split(' ') + [ep_path]
-    if not play(command, show):
+    if not util.play(command, show):
         return
 
     #update the db
@@ -72,10 +73,10 @@ def build_ep_path(conf, show):
     
     if not unstructured:
         bases = []
-        show_words = get_words(show.name)
+        show_words = util.get_words(show.name)
         for name in os.listdir(shows_base):
             full = os.path.join(shows_base, name)
-            if os.path.isdir(full) and all([x in get_words(name.lower()) for x in show_words]):
+            if os.path.isdir(full) and all([x in util.get_words(name.lower()) for x in show_words]):
                 bases.append(full)
     else:
         # if we're in unstructured mode, we just set the base as the show dir
@@ -104,7 +105,7 @@ def build_ep_path(conf, show):
             rexes = [re.compile("^" + x.format(show="", season=show.season, ep=show.ep) + ext + "$", re.I) for
                     x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
         else:
-            show_words = get_words(show.name)
+            show_words = util.get_words(show.name)
             rexes = [re.compile(x.format(show="".join([word + "\W" for word in
                 show_words]), season=show.season, ep=show.ep) + ext, re.I) for x in
                 constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
