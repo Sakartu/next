@@ -96,7 +96,7 @@ class TUI(cmd.Cmd, object):
             player.play_show(self.conf, show)
 
     def help_play(self):
-        self.print_formatted(u'''
+        self.print_formatted(u'''\
         Play an ep. If keywords are provided, a show with a corresponding 
         name will be searched.''')
 
@@ -165,7 +165,7 @@ class TUI(cmd.Cmd, object):
         db.add_location(self.conf, show.sid, location)
 
     def help_add_show_location(self):
-        self.print_formatted(u'''
+        self.print_formatted(u'''\
         Add a location to a show. next will check each added location for eps to
         play''')
 
@@ -246,7 +246,7 @@ class TUI(cmd.Cmd, object):
                     self.add_show_details(found_show)
 
     def help_scan(self):
-        self.print_formatted(u'''
+        self.print_formatted(u'''\
         Scan the local shows directory for shows that aren\'t in the database 
         yet''')
 
@@ -262,7 +262,7 @@ class TUI(cmd.Cmd, object):
             print_shows(self.conf, shows, display_new=True, display_subs=True, display_status=True)
 
     def help_list(self):
-        self.print_formatted(u'''
+        self.print_formatted(u'''\
         List all the shows in the database. A single * in front of an ep means
         there\'s a new ep available on the drive. A double * in front of an ep
         means there\'s a new ep available and it also has subtitles.''')
@@ -287,7 +287,7 @@ class TUI(cmd.Cmd, object):
         print_shows(self.conf, shows, display_subs=True)
 
     def help_new(self):
-        self.print_formatted(u'''
+        self.print_formatted(u'''\
         Prints a list of all shows for which there are new eps available.
         A * in front of an ep means that there are subtitles available for the
         new ep''')
@@ -333,7 +333,7 @@ class TUI(cmd.Cmd, object):
         print
     
     def print_formatted(self, msg):
-        print textwrap.fill(textwrap.dedent(msg.strip()), 80)
+        print textwrap.fill(textwrap.dedent(msg), 80)
 
 def read_show(shows):
     print u'Which show would you like to add?'
