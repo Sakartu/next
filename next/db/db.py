@@ -13,7 +13,7 @@ def initialize(path):
     conn = sqlite3.connect(os.path.expanduser(path))
     with conn:
         c = conn.cursor()
-        #test to see if the shows table exists
+        # test to see if the shows table exists
         test = c.execute(u'''SELECT name FROM sqlite_master
                 WHERE type="table"
                 AND name="shows"''').fetchall()
@@ -22,7 +22,7 @@ def initialize(path):
                     integer, ep integer, maybe_finished integer, status text)''')
             c.execute(u'''CREATE UNIQUE INDEX unique_shows ON shows(sid)''')
 
-        #test to see if the tvr_shows table exists
+        # test to see if the tvr_shows table exists
         test = c.execute(u'''SELECT name FROM sqlite_master
                 WHERE type="table"
                 AND name="tvr_shows"''').fetchall()
@@ -32,7 +32,7 @@ def initialize(path):
             c.execute(u'''CREATE UNIQUE INDEX unique_tvr_shows ON tvr_shows(sid,
                     season, ep)''')
 
-        #test to see if the locations table exists
+        # test to see if the locations table exists
         test = c.execute(u'''SELECT name FROM sqlite_master
                 WHERE type="table"
                 AND name="locations"''').fetchall()
