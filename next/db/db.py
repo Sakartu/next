@@ -1,8 +1,9 @@
-import sqlite3
 import os
+import sqlite3
 from next.tvr.tvrshow import Show
 from next.tvr.tvrep import Episode
 from next.util.constants import ConfKeys
+from next.util.util import print_formatted
 
 def initialize(path):
     '''
@@ -52,12 +53,13 @@ def find_show(conf, show_name):
         shows = c.fetchall()
 
     if not shows:
-        print u'No shows found with that name, try again!'
+        print_formatted(u'No shows found with that name, try again!')
         return None
 
     if len(shows) > 2:
-        print u'''Found multiple shows with the same name, picking first\
-        ({0})'''.format(shows[0][0])
+        print_formatted( u'''\
+                Found multiple shows with the same name, picking first 
+                ({0})'''.format(shows[0][0]))
     return Show(shows[0])
 
 def add_show(conf, sid, showname, season, ep, status):
