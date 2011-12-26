@@ -78,7 +78,7 @@ def change_show(conf, sid, season, ep):
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''UPDATE shows SET season=?, ep=? where sid = ?''',
+        c.execute(u'''UPDATE shows SET season=?, ep=?, maybe_finished=0 where sid = ?''',
                 (season, ep, sid))
 
 def all_shows(conf):
