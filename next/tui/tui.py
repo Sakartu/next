@@ -29,6 +29,18 @@ class TUI(cmd.Cmd, object):
                 self.intro = ""
                 continue
 
+    def preloop(self):
+        self.do_help("")
+
+    def postloop(self):
+        print
+
+    def precmd(self, line):
+        if line == "EOF":
+            raise UserCancelled
+        else:
+            return line
+        
     def add_show_details(self, show):
         '''
         A helper function that is used (amongst others) by the add_show function to
@@ -317,18 +329,6 @@ class TUI(cmd.Cmd, object):
     def help_help(self):
         print u'Get help about a topic'
 
-    def preloop(self):
-        self.do_help("")
-
-    def postloop(self):
-        print
-
-    def precmd(self, line):
-        if line == "EOF":
-            raise UserCancelled
-        else:
-            return line
-        
     def read_show(self, shows):
         print u'Which show would you like to add?'
         for (i, show) in enumerate(shows):
