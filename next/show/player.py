@@ -30,7 +30,7 @@ def play_next(conf, show):
         print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available or marked maybe_finished?'.format(S=show.season, E=show.ep, name=show.name)
         return
     command = cmd_line.split(' ') + [ep_path]
-    if not util.play(command, show):
+    if not play(command, show):
         return
 
     # update the db
