@@ -1,7 +1,5 @@
-import constants
 import textwrap
 import re
-import os
 
 def print_formatted(msg):
     '''
@@ -22,19 +20,3 @@ def get_words(text):
     # filter for only normal words (handy in case of "Doctor Who (2005)"
     return filter(lambda x : re.compile(r'^\w*$').match(x), words)
 
-def build_sub_path(path):
-    '''
-    A helper function to tell you whether subs are available for a given ep and
-    if so, return the full path to the subtitle file
-    '''
-    if not path:
-        return None
-    (base, _) = os.path.splitext(path)
-    for ext in constants.SUB_EXTS:
-        sub_path = base + '.' + ext
-        if os.path.exists(sub_path):
-            return sub_path
-    return None
-
-def fix_subs(ep):
-    pass
