@@ -269,6 +269,7 @@ class TUI(cmd.Cmd, object):
         corresponding ep file if necessary''')
 
     def do_fix_subs(self, line=None):
+        pass
         #TODO: fixme
 
     def help_update(self, line=None):
@@ -324,6 +325,10 @@ class TUI(cmd.Cmd, object):
             print u'Show already exists, use change command to change season and ep!'
 
     def get_all_shows(self):
+        '''
+        Helper method that returns all shows from database, or NoShowsException
+        if there are none
+        '''
         shows = db.all_shows(self.conf)
         if not shows:
             raise NoShowsException
