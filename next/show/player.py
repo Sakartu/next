@@ -3,6 +3,9 @@ from next.util.constants import ConfKeys
 from next.show import admin
 from next.db import db
 import next.util.util as util
+import subprocess
+import time
+import sys
 import os
 import re
 
@@ -50,6 +53,25 @@ def play_next(conf, show):
         print ''
     print u'Database unmodified.'
     return
+
+def play(command, show):
+    '''
+    A helper method that executes the given command
+    '''
+    # play the show
+    print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season, E=show.ep, name=show.name)
+    try:
+        print " ".join(command)
+        subprocess.call(command)
+        return True
+    except KeyboardInterrupt:
+        sys.stdout.flush()
+        time.sleep(1) # give the movie player some time to clean up
+        return True
+    except OSError:
+        # maybe the player isn't installed or something?
+        print u'An error occurred while starting the player, check your config!'
+        return False
 
 def build_ep_path(conf, show):
     '''
