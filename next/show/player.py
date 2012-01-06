@@ -1,20 +1,18 @@
-from next.util import constants
 from next.util.constants import ConfKeys
 from next.show import admin
 from next.db import db
 import next.util.util as util
+import next.util.fs as fs
 import subprocess
 import time
 import sys
-import os
-import re
 
 def play_show(conf, show):
     another = True
     while another:
         show = play_next(conf, show)
         # ask the user for another ep
-        if not show or not build_ep_path(conf, show):
+        if not show or not fs.build_ep_path(conf, show):
             break
 
         print u"Shall I play another ep?"
@@ -27,7 +25,7 @@ def play_next(conf, show):
     This method plays the next episode for the given show.
     '''
     cmd_line = conf[ConfKeys.PLAYER_CMD]
-    ep_path = build_ep_path(conf, show)
+    ep_path = fs.build_ep_path(conf, show)
     if not ep_path:
         print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available or marked maybe_finished?'.format(S=show.season, E=show.ep, name=show.name)
         return
@@ -73,70 +71,3 @@ def play(command, show):
         print u'An error occurred while starting the player, check your config!'
         return False
 
-def build_ep_path(conf, show):
-    '''
-    This is a helper function for the play_next method. It tries to build a path
-    to the next episode. It checks all the locations in the database, as well as
-    the default show location. It will return None if no path could be built, in
-    case the show isn't available on the disk yet.
-    '''
-    # we can never find eps for shows that are maybe_finished
-    if show.maybe_finished:
-        return None
-
-    # we search for an ep in the default shows folder and in each folder named
-    # in the locations db
-
-    unstructured = conf.get(ConfKeys.UNSTRUCTURED, False)
-    if ConfKeys.SHOW_PATH not in conf:
-        return None
-
-    shows_base = os.path.expandvars(os.path.expanduser(conf[ConfKeys.SHOW_PATH]))
-    path = None
-    
-    if not unstructured:
-        bases = []
-        show_words = util.get_words(show.name)
-        for name in os.listdir(shows_base):
-            full = os.path.join(shows_base, name)
-            if os.path.isdir(full) and all([x in util.get_words(name.lower()) for x in show_words]):
-                bases.append(full)
-    else:
-        # if we're in unstructured mode, we just set the base as the show dir
-        bases = [conf[ConfKeys.SHOW_PATH]]
-    bases.extend(db.find_all_locations(conf, show.sid))
-    bases = map(os.path.expanduser, bases)
-    bases = map(os.path.expandvars, bases)
-
-    for base in bases: # search each base for the wanted ep
-        if not os.path.exists(base):
-            continue
-        path = base[:]
-
-        # only search for season folder if we're not running in unstructured mode
-        if not unstructured:
-            # see which seasons there are and pick the right one
-            for season in os.listdir(base):
-                if str(show.season) in season and os.path.isdir(os.path.join(path,
-                    season)):
-                    path = os.path.join(path, season)
-
-            if path == base: # no season found
-                continue
-
-        if not unstructured:
-            rexes = [re.compile("^" + x.format(show="", season=show.season, ep=show.ep) + ext + "$", re.I) for
-                    x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
-        else:
-            show_words = util.get_words(show.name)
-            rexes = [re.compile(x.format(show="".join([word + "\W" for word in
-                show_words]), season=show.season, ep=show.ep) + ext, re.I) for x in
-                constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
-        for ep in os.listdir(path):
-            for rex in rexes:
-                m = rex.match(ep)
-                if m:
-                    path = os.path.join(path, ep)
-                    return path
-
-    return None # if no ep could be found in any of the bases
