@@ -3,6 +3,7 @@ from next.db import db
 from next.tvr import parser
 from next.util.constants import ConfKeys
 import next.util.util as util
+import next.util.fs as fs
 from next.tui.exceptions import UserCancelled, NoShowsException
 import sys
 import cmd
@@ -239,7 +240,7 @@ class TUI(cmd.Cmd, object):
             return
         shows = []
         for show in all_shows:
-            p = player.build_ep_path(self.conf, show)
+            p = fs.build_ep_path(self.conf, show)
             if p:
                 shows.append(show)
         if not shows:
@@ -269,8 +270,17 @@ class TUI(cmd.Cmd, object):
         corresponding ep file if necessary''')
 
     def do_fix_subs(self, line=None):
-        pass
-        #TODO: fixme
+        '''
+        A function that fixes the names of subtitle files for a given show
+        '''
+        show = self.get_show(u'For which show do you want to fix the subtitles?',
+                u'There are no shows for which to fix subs!')
+        if not show:
+            return
+
+        all_eps = db.find_all_eps_recur(self.conf, show.sid)
+        
+        return
 
     def help_update(self, line=None):
         print u'Update the internal TVRage database'
@@ -389,8 +399,8 @@ class TUI(cmd.Cmd, object):
         if display_new or display_subs:
             # find all shows that have a new ep waiting
             for show in shows:
-                p = player.build_ep_path(conf, show)
-                subp = util.build_sub_path(p)
+                p = fs.build_ep_path(conf, show)
+                subp = fs.build_sub_path(p)
                 if p:
                     new_shows[show.name] = subp
 
