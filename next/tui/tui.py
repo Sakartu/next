@@ -227,7 +227,8 @@ class TUI(cmd.Cmd, object):
             answer = self.get_input(u'Add [yes]? ')
             if u'y' in answer.lower() or answer == '':
                 print u'Searching for show in TVRage database... ',
-                shows = parser.fuzzy_search(path.split(' ')[0])
+
+                shows = parser.fuzzy_search(" ".join(util.get_words(path)))
                 print u'done.'
                 if not shows:
                     print u'No shows could be found, please try other keywords!'
