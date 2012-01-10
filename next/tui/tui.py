@@ -15,18 +15,18 @@ class TUI(cmd.Cmd, object):
 
         self.conf = conf
         self.prompt = u'next$ '
-        self.intro = "Welcome to next!\n"
-        self.intro += "This program helps you maintain your show watching habits\n"
-        self.intro += "by logging which ep you have reached for a show. Please\n"
-        self.intro += "enter a command to continue!\n"
-        self.doc_header = "Commands (press help <command> to get help):"
+        self.intro = u'Welcome to next!\n'
+        self.intro += u'This program helps you maintain your show watching habits\n'
+        self.intro += u'by logging which ep you have reached for a show. Please\n'
+        self.intro += u'enter a command to continue!\n'
+        self.doc_header = u'Commands (press help <command> to get help):'
 
     def cmdloop(self):
         while True:
             try:
                 cmd.Cmd.cmdloop(self)
             except UserCancelled:
-                self.intro = ""
+                self.intro = u''
                 continue
 
     def add_show_details(self, show):
