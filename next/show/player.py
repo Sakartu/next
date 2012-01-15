@@ -46,6 +46,7 @@ def play_next(conf, show):
             else:
                 print u'No information about new eps yet, try updating later!'
                 db.mark_maybe_finished(conf, show.sid)
+                show.maybe_finished = True
             return show
     except:
         print ''
