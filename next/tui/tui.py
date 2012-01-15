@@ -16,18 +16,18 @@ class TUI(cmd.Cmd, object):
 
         self.conf = conf
         self.prompt = u'next$ '
-        self.intro = "Welcome to next!\n"
-        self.intro += "This program helps you maintain your show watching habits\n"
-        self.intro += "by logging which ep you have reached for a show. Please\n"
-        self.intro += "enter a command to continue!\n"
-        self.doc_header = "Commands (press help <command> to get help):"
+        self.intro = u'Welcome to next!\n'
+        self.intro += u'This program helps you maintain your show watching habits\n'
+        self.intro += u'by logging which ep you have reached for a show. Please\n'
+        self.intro += u'enter a command to continue!\n'
+        self.doc_header = u'Commands (press help <command> to get help):'
 
     def cmdloop(self):
         while True:
             try:
                 cmd.Cmd.cmdloop(self)
             except UserCancelled:
-                self.intro = ""
+                self.intro = u''
                 continue
 
     def preloop(self):
@@ -188,7 +188,8 @@ class TUI(cmd.Cmd, object):
             answer = self.get_input(u'Add [yes]? ')
             if u'y' in answer.lower() or answer == '':
                 print u'Searching for show in TVRage database... ',
-                shows = parser.fuzzy_search(path.split(' ')[0])
+
+                shows = parser.fuzzy_search(" ".join(util.get_words(path)))
                 print u'done.'
                 if not shows:
                     print u'No shows could be found, please try other keywords!'

@@ -17,13 +17,15 @@ from next.show import player
 from next.tui.exceptions import UserCancelled
 from next.tui.tui import TUI
 import os
+import codecs
 import sqlite3
 
 def main():
     (options, conf, args) = config.parse_opts()
 
-    # make sure stdout is unbuffered
-    sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+    # make sure stdout is unbuffered and has full utf8 support 
+    # (see http://wiki.python.org/moin/PrintFails)
+    sys.stdout = codecs.getwriter('utf8')(os.fdopen(sys.stdout.fileno(), 'w', 0))
 
     try: # the database_path is usually the show_path, but can be defined in conf
         if ConfKeys.DB_PATH in conf:
