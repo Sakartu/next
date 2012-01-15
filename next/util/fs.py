@@ -18,8 +18,48 @@ def build_sub_path(path):
             return sub_path
     return None
 
-def fix_subs(ep):
-    pass
+def fix_subs(conf, show):
+    '''
+    A method that looks in the season folders for the given show to see if there
+    are subtitles available and renames them to have the same name as the
+    accompanying ep
+    '''
+    unstructured = conf.get(constants.ConfKeys.UNSTRUCTURED, False)
+    if constants.ConfKeys.SHOW_PATH not in conf:
+        return None
+    bases = get_show_bases(unstructured, conf, show)
+    to_rename = []
+    for base in bases:
+        for dirpath, dirnames, filenames in os.walk(base):
+            vids = [f for f in filenames if os.path.splitext(f)[1] and
+                    os.path.splitext(f)[1][1:] in constants.VIDEO_EXTS] #filter video's
+            subs = [f for f in filenames if os.path.splitext(f)[1] and
+                    os.path.splitext(f)[1][1:] in constants.SUB_EXTS] #filter subs
+            no_subs = [vid for vid in vids if os.path.splitext(vid)[0] not in
+                    [os.path.splitext(sub)[0] for sub in subs]] #filter vids that have no sub
+            for vid in no_subs:
+                _, s, e = util.get_ep_details(vid)
+                # see if there's a scene group known for the avi
+                scene_group = util.get_scene_group(vid)
+                if s and e:
+                    # found season and ep number, find sub
+                    candidate_subs = filter(lambda name : util.get_ep_details(name, season=s, ep=e)[0], subs)
+                    for sub in candidate_subs:
+                        if scene_group and scene_group in sub or not scene_group:
+                            curname, newname = util.get_new_sub_name(sub, vid)
+                            to_rename.append((dirpath, curname, newname))
+    if not to_rename:
+        print "Nothing to rename!"
+        return
+    for (path, cur, new) in to_rename:
+        try:
+            os.rename(os.path.join(path, cur), os.path.join(path, new))
+            print "Renamed {cur} to {new} in {path}".format(cur=cur, new=new,
+                    path=path)
+        except OSError, e:
+            print "Could not rename {cur} to {new} in {path}:".format(cur=cur,
+                    new=new, path=path)
+            print e
 
 def build_ep_path(conf, show):
     '''
@@ -32,29 +72,10 @@ def build_ep_path(conf, show):
     if show.maybe_finished:
         return None
 
-    # we search for an ep in the default shows folder and in each folder named
-    # in the locations db
-
     unstructured = conf.get(constants.ConfKeys.UNSTRUCTURED, False)
     if constants.ConfKeys.SHOW_PATH not in conf:
         return None
-
-    shows_base = os.path.expandvars(os.path.expanduser(conf[constants.ConfKeys.SHOW_PATH]))
-    path = None
-    
-    if not unstructured:
-        bases = []
-        show_words = util.get_words(show.name)
-        for name in os.listdir(shows_base):
-            full = os.path.join(shows_base, name)
-            if os.path.isdir(full) and all([x in util.get_words(name.lower()) for x in show_words]):
-                bases.append(full)
-    else:
-        # if we're in unstructured mode, we just set the base as the show dir
-        bases = [conf[constants.ConfKeys.SHOW_PATH]]
-    bases.extend(db.find_all_locations(conf, show.sid))
-    bases = map(os.path.expanduser, bases)
-    bases = map(os.path.expandvars, bases)
+    bases = get_show_bases(unstructured, conf, show)
 
     for base in bases: # search each base for the wanted ep
         if not os.path.exists(base):
@@ -88,3 +109,29 @@ def build_ep_path(conf, show):
                     return path
 
     return None # if no ep could be found in any of the bases
+
+def get_show_bases(unstructured, conf, show):
+    '''
+    A helper method that returns all the paths in which a given show may be
+    found
+    '''
+    # we search for an ep in the default shows folder and in each folder named
+    # in the locations db
+
+    shows_base = os.path.expandvars(os.path.expanduser(conf[constants.ConfKeys.SHOW_PATH]))
+    
+    if not unstructured:
+        bases = []
+        show_words = util.get_words(show.name)
+        for name in os.listdir(shows_base):
+            full = os.path.join(shows_base, name)
+            if os.path.isdir(full) and all([x in util.get_words(name.lower()) for x in show_words]):
+                bases.append(full)
+    else:
+        # if we're in unstructured mode, we just set the base as the show dir
+        bases = [conf[constants.ConfKeys.SHOW_PATH]]
+    bases.extend(db.find_all_locations(conf, show.sid))
+    bases = map(os.path.expanduser, bases)
+    bases = map(os.path.expandvars, bases)
+    return bases
+
