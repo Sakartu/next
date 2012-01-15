@@ -1,5 +1,6 @@
 from next.db import db
 from next.tvr import parser
+import next.util.util as util
 import os
 import re
 
@@ -16,7 +17,7 @@ def find_unlisted(conf):
         print "Could not list directory {0}".format(basedir)
         all_shows = []
 
-    has_match = lambda s: any(x for x in listed if shows_match(s, x))
+    has_match = lambda s: any(x for x in listed if util.shows_match(s, x))
     return [ s for s in all_shows if not has_match(s) ]
 
 def find_next_ep(conf, show):
@@ -66,25 +67,6 @@ def process_maybe_finished(conf, all_shows):
             if next_ep:
                 db.change_show(conf, show.sid, next_ep.season, next_ep.epnum)
                 db.mark_not_maybe_finished(conf, show.sid)
-
-def shows_match(one, two):
-    '''
-    This method returns True if the names of the two shows provided as
-    parameters look very much alike
-
-    That is, if all the words that are in one are also in two when words that
-    contain only of strange characters aren't counted
-    '''
-    if type(one) != type("") and type(one) != type(u""): # assume type Show
-        one = one.name
-    if type(two) != type("") and type(two) != type(u""): # assume type Show
-        two = two.name
-    ones = map(lambda x : x.lower(), one.split())
-    twos = map(lambda x : x.lower(), two.split())
-    for word in [x for x in ones if re.compile('^\w*$').match(x)]:
-        if word not in twos:
-            return False
-    return True
 
 
 
