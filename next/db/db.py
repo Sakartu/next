@@ -134,16 +134,6 @@ def find_all_eps(conf, sid, season):
                 (sid, season,))
         return map(Episode.from_db_row, c.fetchall())
 
-def find_all_eps_recur(conf, sid):
-    '''
-    This method returns all the eps, wrapped in Episode objects for a given show
-    '''
-    with conf[ConfKeys.DB_CONN] as conn:
-        c = conn.cursor()
-        c.execute(u'''SELECT * FROM tvr_shows WHERE sid = ?''',
-                (sid, ))
-        return map(Episode.from_db_row, c.fetchall())
-
 def find_ep(conf, sid, season, ep):
     '''
     This method returns a single Episode object for the given show, season and
