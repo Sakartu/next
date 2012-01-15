@@ -278,9 +278,7 @@ class TUI(cmd.Cmd, object):
         if not show:
             return
 
-        all_eps = db.find_all_eps_recur(self.conf, show.sid)
-        
-        return
+        fs.fix_subs(self.conf, show)
 
     def help_update(self, line=None):
         print u'Update the internal TVRage database'
