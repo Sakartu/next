@@ -1,4 +1,6 @@
+import next.util.constants as constants
 import textwrap
+import os
 import re
 
 def print_formatted(msg):
@@ -20,3 +22,58 @@ def get_words(text):
     # filter for only normal words (handy in case of "Doctor Who (2005)"
     return filter(lambda x : re.compile(r'^\w*$').match(x), words)
 
+def shows_match(one, two):
+    '''
+    This method returns True if the names of the two shows provided as
+    parameters look very much alike
+
+    That is, if all the words that are in one are also in two when words that
+    contain only of strange characters aren't counted
+    '''
+    if type(one) != type("") and type(one) != type(u""): # assume type Show
+        one = one.name
+    if type(two) != type("") and type(two) != type(u""): # assume type Show
+        two = two.name
+    ones = map(lambda x : x.lower(), one.split())
+    twos = map(lambda x : x.lower(), two.split())
+    for word in [x for x in ones if re.compile('^\w*$').match(x)]:
+        if word not in twos:
+            return False
+    return True
+
+def get_ep_details(filename, show='.*', season='\d{1,2}', ep='\d{1,2}', postfix=''):
+    '''
+    Helper method to get the epname, season and episode from a filename.
+    Will use the provided show, season and ep as a filter, or not if not
+    provided. A postfix can be added if necessary.
+    '''
+    rexes = []
+    for rex in constants.SHOW_REGEXES:
+        rexes.append(re.compile(rex.format(show=show, season=season, ep=ep) + postfix))
+    for rex in rexes: # try to find season and ep number
+        m = rex.match(filename)
+        if m:
+            show, s, e = m.group('show'), int(m.group('season')), int(m.group('ep'))
+            return show, s, e
+    return None, None, None
+
+def get_scene_group(name):
+    '''
+    Helper method to retrieve the scene group name from a file
+    Returns "" if no group can be found
+    '''
+    grp = ""
+    if '-' in name:
+        grp, _ = os.path.splitext(name[name.rfind('-'):])
+    return grp
+
+def get_new_sub_name(sub, vid):
+    '''
+    Helper method to return a tuple containing the current name and
+    the new name of a sub file, given provided video file name.
+    Returns a tuple containing (oldname, newname). Can handle paths
+    as well as loose filenames
+    '''
+    vidname, _ = os.path.splitext(vid)
+    subname, subext = os.path.splitext(sub)
+    return (sub, vidname + subext)
