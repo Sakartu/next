@@ -48,10 +48,15 @@ def update_eps(conf):
             db.change_status(conf, show.sid, status)
             db.store_tvr_eps(conf, all_eps)
     except: # probably no internet connection
-        print "Could not connect to TVRage, aborting update!"
+        print "\nCould not connect to TVRage, aborting update!"
         return
 
-    process_maybe_finished(conf, all_shows)
+    try:
+        process_maybe_finished(conf, all_shows)
+    except:
+        print u'maybe_finished processing failed, database may be in an inconsistant state!'
+        raise Exception
+
     print "done."
 
 def process_maybe_finished(conf, all_shows):
