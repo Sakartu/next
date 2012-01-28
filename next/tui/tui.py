@@ -289,10 +289,8 @@ class TUI(cmd.Cmd, object):
         except:
             print u'Update failed!'
 
-    def help_fix_subs(self):
-        util.print_formatted(u'''\
-        Recursively check subtitle names and rename to name of 
-        corresponding ep file if necessary''')
+    def help_update(self, line=None):
+        print u'Update the internal TVRage database'
 
     def do_fix_subs(self, line=None):
         '''
@@ -305,8 +303,10 @@ class TUI(cmd.Cmd, object):
 
         fs.fix_subs(self.conf, show)
 
-    def help_update(self, line=None):
-        print u'Update the internal TVRage database'
+    def help_fix_subs(self):
+        util.print_formatted(u'''\
+        Recursively check subtitle names and rename to name of 
+        corresponding ep file if necessary''')
 
     def do_quit(self, line=None):
         '''
