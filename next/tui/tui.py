@@ -171,6 +171,30 @@ class TUI(cmd.Cmd, object):
     def help_change_show(self):
         print u'Change the current season and ep for a show'
 
+    def do_further_show(self, line=None):
+        '''
+        A TUI function used to further the season and episode of a show where the
+        user is
+        '''
+
+        show = self.get_show(u'Which show would you like to further?', 
+                u'There are no shows to further!')
+        if not show:
+            return
+
+        next_ep = admin.find_next_ep(self.conf, show)
+        if not next_ep:
+            print u'No information about new eps yet, try updating later!'
+            db.mark_maybe_finished(self.conf, show.sid)
+            show.maybe_finished = True
+            return
+
+        db.change_show(self.conf, show.sid, next_ep.season, next_ep.epnum)
+        print u'Successfully changed details for {0}!'.format(show.name)
+
+    def help_further_show(self):
+        print u'Set a show to the next episode without playing the ep'
+
     def do_scan(self, line=None):
         '''
         A TUI function that scans the user's series folder to find shows that aren't
