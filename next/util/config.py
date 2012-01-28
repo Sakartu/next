@@ -24,6 +24,7 @@ def parse_opts():
     parser.add_option(u'-f', u'--fix_subs', action="store_const", dest="func", const=t.do_fix_subs, help=u'Fix the subtitles for a given show')
     parser.add_option(u'--add_location', action="store_const", dest="func", const=t.do_add_show_location, help=u'Add a location for a show to the database')
     parser.add_option(u'--change', action="store_const", dest="func", const=t.do_change_show, help=u'Change the current season and ep for a show')
+    parser.add_option(u'--further', action="store_const", dest="func", const=t.do_further_show, help=u'Further the current season and ep for a show')
     parser.add_option(u'--scan', action="store_const", dest="func", const=t.do_scan, help=u'Scan your series path for shows')
     (options, args) = parser.parse_args()
 
