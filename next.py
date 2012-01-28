@@ -23,10 +23,6 @@ import sqlite3
 def main():
     (options, conf, args) = config.parse_opts()
 
-    # make sure stdout is unbuffered and has full utf8 support 
-    # (see http://wiki.python.org/moin/PrintFails)
-    sys.stdout = codecs.getwriter('utf8')(os.fdopen(sys.stdout.fileno(), 'w', 0))
-
     try: # the database_path is usually the show_path, but can be defined in conf
         if ConfKeys.DB_PATH in conf:
             database_path = os.path.join(conf[ConfKeys.DB_PATH], u'next.db')
@@ -73,7 +69,10 @@ def main():
             print u'Show "{0}" could not be found!'.format(u' '.join(args))
     else:
         # 2. user provided nothing, popup a list of options
-        ui = TUI(conf)
+        # make sure stdout is unbuffered and has full utf8 support 
+        # (see http://wiki.python.org/moin/PrintFails)
+        out = codecs.getwriter('utf8')(os.fdopen(sys.stdout.fileno(), 'w', 0))
+        ui = TUI(conf, stdin=sys.stdin, stdout=out)
         try:
             ui.cmdloop()
         except KeyboardInterrupt:

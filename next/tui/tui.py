@@ -11,8 +11,8 @@ import random
 import sqlite3
 
 class TUI(cmd.Cmd, object):
-    def __init__(self, conf={}):
-        cmd.Cmd.__init__(self)
+    def __init__(self, conf={}, stdin=sys.stdin, stdout=sys.stdout):
+        cmd.Cmd.__init__(self, stdin=stdin, stdout=stdout)
 
         self.conf = conf
         self.prompt = u'next$ '
