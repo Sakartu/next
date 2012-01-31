@@ -33,6 +33,7 @@ class ConfKeys:
     SHOW_PATH = u'show_path'
     PLAYER_CMD = u'player_cmd'
     UNSTRUCTURED = u'unstructured_mode'
+    POSTPROCESSING = u'post_hook'
 
 class TVRage:
     '''
@@ -70,4 +71,11 @@ player_cmd=totem
 # this is useful for people who just put all their new eps in 
 # ~/downloads/ or something.
 #unstructured_mode=False
+
+# a comma-separated list of scripts to call after an ep is watched and the
+# database is updated. The script will be called always when the database is
+# updated. It will be called with a single argument, namely the full path to the
+# watched episode.
+#post_hook=~/bin/test.py
+#post_hook=~/bin/test.py,~/bin/test2.py
 '''

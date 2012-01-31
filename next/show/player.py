@@ -4,8 +4,10 @@ from next.db import db
 import next.util.util as util
 import next.util.fs as fs
 import subprocess
+import shlex
 import time
 import sys
+import os
 
 def play_show(conf, show):
     another = True
@@ -47,6 +49,15 @@ def play_next(conf, show):
                 print u'No information about new eps yet, try updating later!'
                 db.mark_maybe_finished(conf, show.sid)
                 show.maybe_finished = True
+            # call post-processing script
+            post_processing = conf.get(ConfKeys.POSTPROCESSING, '')
+            if post_processing:
+                for script in post_processing.split(','):
+                    to_call = os.path.expandvars(os.path.expanduser(script))
+                    to_call = shlex.split(to_call)
+                    to_call.append(ep_path)
+                    subprocess.call(to_call)
+
             return show
     except:
         print ''
