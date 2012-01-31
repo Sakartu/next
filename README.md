@@ -24,7 +24,7 @@ Because next uses the TVRage database to retrieve show information you need to
 install the tvrage python module. The easiest way to install this module is
 using the python-setuptools package:
 
-$ sudo easy_install python-tvrage
+$ sudo pip install python-tvrage
 
 Other methods can be found on pypi:
 
