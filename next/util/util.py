@@ -46,7 +46,7 @@ def shows_match(one, two):
         two = two.name
     ones = map(lambda x : x.lower(), one.split())
     twos = map(lambda x : x.lower(), two.split())
-    for word in [x for x in ones if re.compile('^\w*$').match(x)]:
+    for word in [x for x in ones if re.compile('^\w*$', re.U).match(x)]:
         if word not in twos:
             return False
     return True
@@ -59,7 +59,7 @@ def get_ep_details(filename, show='.*', season='\d{1,2}', ep='\d{1,2}', postfix=
     '''
     rexes = []
     for rex in constants.SHOW_REGEXES:
-        rexes.append(re.compile(rex.format(show=show, season=season, ep=ep) + postfix))
+        rexes.append(re.compile(rex.format(show=show, season=season, ep=ep) + postfix, re.U))
     for rex in rexes: # try to find season and ep number
         m = rex.match(filename)
         if m:
