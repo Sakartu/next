@@ -69,5 +69,5 @@ player_cmd=totem
 # set this command to True if you have an unstructured series folder
 # this is useful for people who just put all their new eps in 
 # ~/downloads/ or something.
-# unstructured_mode=False
+#unstructured_mode=False
 '''
