@@ -1,4 +1,5 @@
 import next.util.constants as constants
+import unicodedata
 import textwrap
 import os
 import re
@@ -15,12 +16,21 @@ def get_words(text):
     returns only those parts which contain only word characters
     '''
     # filter out dots, underscores and multiple spaces
-    text = re.sub('\s+', ' ', text.lower())
-    text = re.sub('[\._]', ' ', text)
+    text = re.sub('\s+', ' ', text.lower(), re.U)
+    text = re.sub('[\._]', ' ', text, re.U)
     # split on spaces
     words = text.split()
     # filter for only normal words (handy in case of "Doctor Who (2005)"
-    return filter(lambda x : re.compile(r'^\w*$').match(x), words)
+    filtered = filter(lambda x : re.compile(r'^\w*$', re.U).match(x), words)
+    return filtered
+
+def normalize(wordlist):
+    '''
+    Utility function that goes over each word in the list and tries to normalize
+    the words by 'un-unicoding' them
+    '''
+    return [unicodedata.normalize('NFKD', x).encode('ascii', 'ignore') for x in
+            wordlist]
 
 def shows_match(one, two):
     '''

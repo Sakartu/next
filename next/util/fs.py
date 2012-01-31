@@ -1,6 +1,8 @@
 from next.db import db
 import constants
+import codecs
 import util
+import sys
 import os
 import re
 
@@ -118,14 +120,16 @@ def get_show_bases(unstructured, conf, show):
     # we search for an ep in the default shows folder and in each folder named
     # in the locations db
 
-    shows_base = os.path.expandvars(os.path.expanduser(conf[constants.ConfKeys.SHOW_PATH]))
+    shows_base = unicode(os.path.expandvars(os.path.expanduser(conf[constants.ConfKeys.SHOW_PATH])))
     
     if not unstructured:
         bases = []
-        show_words = util.get_words(show.name)
+        show_words = util.normalize(util.get_words(show.name))
         for name in os.listdir(shows_base):
             full = os.path.join(shows_base, name)
-            if os.path.isdir(full) and all([x in util.get_words(name.lower()) for x in show_words]):
+            if os.path.isdir(full) and all([x in
+                util.normalize(util.get_words(name.lower())) for x in
+                show_words]):
                 bases.append(full)
     else:
         # if we're in unstructured mode, we just set the base as the show dir
