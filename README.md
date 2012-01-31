@@ -65,7 +65,7 @@ database_path | If you want your database to reside somewhere other than in show
 show_path | This is your series directory, something like ~/downloads/series/ | no | ~/downloads/series/
 unstructured_mode | Set this option to True if you have all your eps (from every show) in a single download dir | yes | False
 
-There is a documented example configuration file in the repository in the conf/
+There is a documented example configuration file in the repository in the config/
 dir.
 
 TUI manual
