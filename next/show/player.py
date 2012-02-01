@@ -28,6 +28,7 @@ def play_next(conf, show):
     '''
     cmd_line = conf[ConfKeys.PLAYER_CMD]
     ep_path = fs.build_ep_path(conf, show)
+    show.path = ep_path
     if not ep_path:
         print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available or marked maybe_finished?'.format(S=show.season, E=show.ep, name=show.name)
         return
@@ -55,7 +56,13 @@ def play_next(conf, show):
                 for script in post_processing.split(','):
                     to_call = os.path.expandvars(os.path.expanduser(script))
                     to_call = shlex.split(to_call)
-                    to_call.append(ep_path)
+                    try:
+                        # fill all the parameters with info from show
+                        to_call = [x.format(**show.__dict__) for x in to_call]
+                    except KeyError, e:
+                        print u'You used a post-processing parameter that doesn\'t exist: '\
+                                + str(e).strip() + u', skipping hook \"' + str(script) + '\"'
+                        continue
                     subprocess.call(to_call)
 
             return show

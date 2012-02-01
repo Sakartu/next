@@ -1,4 +1,4 @@
-class Episode:
+class Episode(object):
     '''
     This is a wrapper class around the episode information available in the
     TVRage database for a given episode.

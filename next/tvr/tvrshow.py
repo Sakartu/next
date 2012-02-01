@@ -1,4 +1,4 @@
-class Show:
+class Show(object):
     '''
     This is a wrapper around show information coming from the TVRage database
     '''
@@ -9,3 +9,4 @@ class Show:
         self.ep = int(db_row[3])
         self.maybe_finished = int(db_row[4])
         self.status = db_row[5]
+        self.path = ''
