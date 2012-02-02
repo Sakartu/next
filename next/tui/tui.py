@@ -246,7 +246,7 @@ class TUI(cmd.Cmd, object):
             print u'There are no shows!'
             return
         else:
-            self.print_shows(self.conf, shows, display_new=True, display_subs=True, display_status=True)
+            self.print_shows_detailed(shows, display_new=True, display_subs=True, display_status=True)
 
     def help_list(self):
         util.print_formatted(u'''\
@@ -272,7 +272,7 @@ class TUI(cmd.Cmd, object):
             print u'No new eps are available for your shows!'
             return
         print "New eps are on your computer for these shows:"
-        self.print_shows(self.conf, shows, display_subs=True)
+        self.print_shows_detailed(shows, display_subs=True)
 
     def help_new(self):
         util.print_formatted(u'''\
@@ -375,7 +375,7 @@ class TUI(cmd.Cmd, object):
             return
 
         util.print_formatted(header)
-        self.print_shows(self.conf, all_shows)
+        self.print_shows_detailed(all_shows)
         number = int(self.get_input(u'Show number: ', range(1, len(all_shows) + 1)))
         return all_shows[number - 1] if number <= len(all_shows) else None
 
@@ -414,7 +414,7 @@ class TUI(cmd.Cmd, object):
                 print u'Invalid command!'
         return a
 
-    def print_shows(self, conf, shows, display_new=False, display_subs=False, display_status=False):
+    def print_shows_detailed(self, shows, display_new=False, display_subs=False, display_status=False):
         '''
         A helper function that prints a list of shows, each with the reached season and ep.
         '''
@@ -422,7 +422,7 @@ class TUI(cmd.Cmd, object):
         if display_new or display_subs:
             # find all shows that have a new ep waiting
             for show in shows:
-                p = fs.build_ep_path(conf, show)
+                p = fs.build_ep_path(self.conf, show)
                 subp = fs.build_sub_path(p)
                 if p:
                     new_shows[show.name] = subp
