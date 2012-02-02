@@ -17,11 +17,12 @@ def parse_opts():
     parser.add_option(u'-c', u'--conf', nargs=1, dest=u'new_path', 
             help=u'NEW_PATH specifies a different configuration file')
     parser.add_option(u'-r', u'--random', action="store_const", dest="func", const=t.do_random, help=u'Start an ep for a random show')
-    parser.add_option(u'-l', u'--list', action="store_const", dest="func", const=t.do_list, help=u'List all your shows')
+    parser.add_option(u'-l', u'--list', action="store_const", dest="func", const=t.do_list, help=u'List all your shows with detailed information')
     parser.add_option(u'-n', u'--new', action="store_const", dest="func", const=t.do_new, help=u'List shows for which there are new eps on your system')
     parser.add_option(u'-u', u'--update', action="store_const", dest="func", const=t.do_update, help=u'Connect to the TVRage database and update your show information')
     parser.add_option(u'-a', u'--add', action="store_const", dest="func", const=t.do_add_show, help=u'Add a show to the database')
     parser.add_option(u'-f', u'--fix_subs', action="store_const", dest="func", const=t.do_fix_subs, help=u'Fix the subtitles for a given show')
+    parser.add_option(u'-s', u'--shows', action="store_const", dest="func", const=t.print_shows_simple, help=u'Print a plain list of your shows')
     parser.add_option(u'--add_location', action="store_const", dest="func", const=t.do_add_show_location, help=u'Add a location for a show to the database')
     parser.add_option(u'--change', action="store_const", dest="func", const=t.do_change_show, help=u'Change the current season and ep for a show')
     parser.add_option(u'--further', action="store_const", dest="func", const=t.do_further_show, help=u'Further the current season and ep for a show')
