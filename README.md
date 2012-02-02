@@ -81,4 +81,5 @@ The completion file found in ./completion/ can be put in /etc/bash_completion.d/
 to provide tab completion for your shows. Although this isn't completely
 necessary (next matches your shows even if you only provide a few letters, if
 there are multiple matches it will pick the first one) it's a nice extra feature
-:)
+:). If you want to enable the completion features without restarting your shell,
+use the command
