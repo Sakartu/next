@@ -1,0 +1,12 @@
+_next()
+{
+	local cur prev opts
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	opts=`next -s | awk '{print "\x22" $0 "\x22 "}' | tr '\n' ' '}`
+	opts=`next -s | tr '\n' ' ' | tr 'A-Z' 'a-z'`
+	COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+	return 0
+}
+complete -F _next next
