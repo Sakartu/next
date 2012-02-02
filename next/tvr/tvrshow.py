@@ -10,3 +10,6 @@ class Show(object):
         self.maybe_finished = int(db_row[4])
         self.status = db_row[5]
         self.path = ''
+    
+    def __repr__(self):
+        return self.name
