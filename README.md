@@ -24,11 +24,11 @@ Because next uses the TVRage database to retrieve show information you need to
 install the tvrage python module. The easiest way to install this module is
 using the python-setuptools package:
 
-$ sudo pip install python-tvrage
+    user@box$ sudo pip install python-tvrage
 
 Other methods can be found on pypi:
 
-http://pypi.python.org/pypi/python-tvrage/0.1.4
+    http://pypi.python.org/pypi/python-tvrage/0.1.4
 
 For the configuration files we use the XDG Base Directory Specification (see
 http://bit.ly/tulYTA). This needs the package python-xdgapp to be installed, you
@@ -44,8 +44,8 @@ Since next is just a small python script, installing it is really easy.
 Just checkout the source somewhere (we'll use ~/src/ as an example) and
 put next.py in your path:
 
-user@box$ git clone git://github.com/Sakartu/next.git  
-user@box$ sudo ln -s ~/src/next/next.py /usr/bin/next
+    user@box$ git clone git://github.com/Sakartu/next.git src/next
+    user@box$ sudo ln -s ~/src/next/next.py /usr/bin/next
 
 After this next will be at your disposal from your terminal. That's the
 installation that's required :)
@@ -81,5 +81,12 @@ The completion file found in ./completion/ can be put in /etc/bash_completion.d/
 to provide tab completion for your shows. Although this isn't completely
 necessary (next matches your shows even if you only provide a few letters, if
 there are multiple matches it will pick the first one) it's a nice extra feature
-:). If you want to enable the completion features without restarting your shell,
-use the command
+:)
+
+If you want to enable the completion features right away, just use the following 
+commands:
+
+    user@box$ sudo cp ~/src/next/completion/next /etc/bash_completion.d/
+    user@box$ . /etc/bash_completion.d/next
+    
+The last command will "source" the completion file to enable it immediately.
