@@ -22,7 +22,7 @@ whatever you want!
 
 Because next uses the TVRage database to retrieve show information you need to
 install the tvrage python module. The easiest way to install this module is
-using the python-setuptools package:
+using the python-pip package:
 
     user@box$ sudo pip install python-tvrage
 
@@ -30,9 +30,13 @@ Other methods can be found on pypi:
 
     http://pypi.python.org/pypi/python-tvrage/0.1.4
 
-For the configuration files we use the XDG Base Directory Specification (see
-http://bit.ly/tulYTA). This needs the package python-xdgapp to be installed, you
-can probably find this in your distro's repository somewhere.
+For the configuration and database files we use the XDG Base Directory 
+Specification (see http://bit.ly/tulYTA). This needs the package 
+python-xdgapp to be installed, you can probably find this in your distro's 
+repository somewhere, or use pip to install it:
+
+    user@box$ sudo pip install python-xdgapp
+
 
 Installation
 ------------
@@ -47,7 +51,7 @@ put next.py in your path:
     user@box$ git clone git://github.com/Sakartu/next.git src/next
     user@box$ sudo ln -s ~/src/next/next.py /usr/bin/next
 
-After this next will be at your disposal from your terminal. That's the
+After this next will be at your disposal from your terminal. That's all the
 installation that's required :)
 
 Configuration
@@ -55,7 +59,7 @@ Configuration
 
 Out of the box next will look in ~/.config/next/ to find it's configuration file.
 You can put it elsewhere, if you want to, just use the -c flag to specify
-the new location. In the configuration file we have a few options that 
+another location. In the configuration file there are a few options that 
 we'll discuss below:
 
 Option | Explanation | Optional? | Default
@@ -78,11 +82,15 @@ help <command> you can learn some more about a command.
 Completion
 ----------
 
+next also features bash commandline completion. This will complete the names of your
+shows when next is used directly from your terminal, without the TUI. For instance, 
+to play the next ep of the show "White Collar", just execute the following command:
+
+    user@box$ next white
+
+If you press <tab> just after typing "wh" it will complete to white for you. 
 The completion file found in ./completion/ can be put in /etc/bash_completion.d/
-to provide tab completion for your shows. Although this isn't completely
-necessary (next matches your shows even if you only provide a few letters, if
-there are multiple matches it will pick the first one) it's a nice extra feature
-:)
+to provide tab completion for your shows. 
 
 If you want to enable the completion features right away, just use the following 
 commands:
@@ -91,3 +99,43 @@ commands:
     user@box$ . /etc/bash_completion.d/next
     
 The last command will "source" the completion file to enable it immediately.
+
+next features fuzzy show name matching, meaning that if you have no other shows 
+that have the letters "wh" in them, in that order, typing
+
+    user@box$ next wh
+    
+is enough to start the next "White Collar" ep.
+
+Usage
+-----
+
+Some basic usage has already been discussed in the previous sections. Here follows
+a more complete guide.
+
+The first thing you need to do is add a show to the database. Adding a show looks 
+up the show by name in the (remote) TVRage database and adds all the
+information it can find to the local database. To make sure you always have the
+latest ep information available you should update the database regularly, see the
+"-u" (CLI) or "update" (TUI) commands. Playing a show has already been covered in
+the bash completion part above.
+
+next will look for eps for your shows in the given location in the configuration 
+file. If, for some reason, you have the eps for a specific show in another location
+you can add this manually by using the "--add_location" (CLI) or "add_location" 
+(TUI) commands.
+
+A final feature worth mentioning is the scan option. The first time you start next, 
+after configuring it's options in the config file, you can use the "--scan" (CLI)
+or "scan" (TUI) command to scan the specified show path for shows and add them
+to the database. This will take you through a wizard to add shows and specify what
+ep you are in what season.
+
+Credits
+-------
+
+Credits go out to:
+
+-   atum for bèta-testing one of the earlier versions
+-   akaIDIOT for providing me with nice feature requests
+-   Emthigious for being the first one brave enough to give it a whirl
