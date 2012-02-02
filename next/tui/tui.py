@@ -443,3 +443,12 @@ class TUI(cmd.Cmd, object):
                 id=i + 1, name=show.name, length=max_len, 
                 new=newline, S=show.season, E=show.ep, 
                 status=show.status if display_status else "")
+
+    def print_shows_simple(self):
+        try:
+            print '\n'.join(map(str, self.get_all_shows()))
+        except NoShowsException:
+            print u'There are no shows!'
+            return
+
+
