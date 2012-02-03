@@ -136,6 +136,7 @@ Credits
 
 Credits go out to:
 
+-	ewoud for helping me in the development and guiding me towards a more pythonesque next :)
 -   atum for bèta-testing one of the earlier versions
 -   akaIDIOT for providing me with nice feature requests
 -   Emthigious for being the first one brave enough to give it a whirl
