@@ -22,8 +22,13 @@ import sqlite3
 
 def main():
     (options, conf, args) = config.parse_opts()
-    # we want an unbuffered stdout
-    sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+    # create an unbuffered, unicode supporting output file descriptor
+    # (see http://wiki.python.org/moin/PrintFails)
+    out = codecs.getwriter('utf8')(os.fdopen(sys.stdout.fileno(), 'w', 0))
+    # save old stdout fd to restore later if necessary
+    old_stdout = sys.stdout
+    # and redirect the current stdout
+    sys.stdout = out
 
     try: # the database_path is usually the show_path, but can be defined in conf
         if ConfKeys.DB_PATH in conf:
@@ -61,13 +66,7 @@ def main():
     # 1. there is an argument provided. this is probably a show that the user wants
     #    us to start, so let's start it.
     # 2. there are no arguments provided. provide the user with a query what he wants
-
-    # create an unbuffered, unicode supporting output file descriptor
-    out = codecs.getwriter('utf8')(os.fdopen(sys.stdout.fileno(), 'w', 0))
     if args:
-        # if we don't have a Cmd instance, make sure stdout is unbuffered
-        # and supports unicode printing
-        sys.stdout = out
         # 1. user provided a showname, find it in the db, then play it.
         s = db.find_show(conf, u' '.join(args))
         if s:
@@ -76,8 +75,8 @@ def main():
             print u'Show "{0}" could not be found!'.format(u' '.join(args))
     else:
         # 2. user provided nothing, popup a list of options
-        # make sure stdout is unbuffered and has full utf8 support 
-        # (see http://wiki.python.org/moin/PrintFails)
+        # restore the old stdout and build the TUI with the new out
+        sys.stdout = old_stdout
         ui = TUI(conf, stdin=sys.stdin, stdout=out)
         try:
             ui.cmdloop()
