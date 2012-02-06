@@ -42,7 +42,11 @@ def play_next(conf, show):
     # update the db
     length_detection = conf.get(ConfKeys.LENGTH_DETECTION, 0)
     if (after - before).total_seconds() <= length_detection * 60:
-        return show
+        next_ep = admin.find_next_ep(conf, show)
+        if next_ep:
+            return show
+        else:
+            return None
 
     print u'Should I update the database for you?'
     try:
