@@ -96,7 +96,12 @@ class TUI(cmd.Cmd, object):
             wanted = self.get_input(term=u'Showname: ')
             # find the show in tvrage
             print u'Searching for show in TVRage database... ',
-            shows = parser.fuzzy_search(wanted)
+            try:
+                shows = parser.fuzzy_search(wanted)
+            except:
+                # possibly no internet or no conn to tvr
+                print u'\nCould not connect to tvr, try again later!'
+                return
             print u'done.'
             if not shows:
                 print u'No shows could be found, please try other keywords!'
