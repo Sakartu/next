@@ -81,7 +81,7 @@ def main():
         try:
             ui.cmdloop()
         except KeyboardInterrupt:
-            print "\nUser pressed ^C, exitting!"
+            print "\nUser pressed ^C, exiting!"
 
 if __name__ == '__main__':
 	main()

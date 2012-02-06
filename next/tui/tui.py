@@ -317,7 +317,7 @@ class TUI(cmd.Cmd, object):
         '''
         Quits the program
         '''
-        print "Exitting..."
+        print "Exiting..."
         sys.exit(0)
 
     def help_quit(self):
