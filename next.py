@@ -1,4 +1,4 @@
-#!/usr/bin/python -u
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
@@ -22,7 +22,8 @@ import sqlite3
 
 def main():
     (options, conf, args) = config.parse_opts()
-
+    # we want an unbuffered stdout
+    sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
     try: # the database_path is usually the show_path, but can be defined in conf
         if ConfKeys.DB_PATH in conf:
