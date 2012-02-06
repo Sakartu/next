@@ -4,6 +4,7 @@ from next.db import db
 import next.util.util as util
 import next.util.fs as fs
 import subprocess
+import datetime
 import shlex
 import time
 import sys
@@ -33,10 +34,16 @@ def play_next(conf, show):
         print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available or marked maybe_finished?'.format(S=show.season, E=show.ep, name=show.name)
         return
     command = cmd_line.split(' ') + [ep_path]
+    before = datetime.datetime.now()
     if not play(command, show):
         return
+    after = datetime.datetime.now()
 
     # update the db
+    length_detection = conf.get(ConfKeys.LENGTH_DETECTION, 0)
+    if (after - before).total_seconds() <= length_detection * 60:
+        return show
+
     print u'Should I update the database for you?'
     try:
         answer = raw_input(u'Update [yes]? ')

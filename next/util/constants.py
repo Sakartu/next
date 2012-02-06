@@ -34,6 +34,7 @@ class ConfKeys:
     PLAYER_CMD = u'player_cmd'
     UNSTRUCTURED = u'unstructured_mode'
     POSTPROCESSING = u'post_hook'
+    LENGTH_DETECTION = u'length_detecion'
 
 class TVRage:
     '''
