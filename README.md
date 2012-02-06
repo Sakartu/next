@@ -68,7 +68,8 @@ player_cmd | This is the command line that next will use to start an episode | n
 database_path | If you want your database to reside somewhere other than in show_path, you can specify it here | yes | ~/downloads/series
 show_path | This is your series directory, something like ~/downloads/series/ | no | ~/downloads/series/
 unstructured_mode | Set this option to True if you have all your eps (from every show) in a single download dir | yes | False
-post_hook | A comma-separated list of scripts to call after an ep is watched. See the config file for possible parameters. | no | /bin/rm {path}
+post_hook | A comma-separated list of scripts to call after an ep is watched. See the config file for possible parameters. | yes | /bin/rm {path}
+length_detection | The number of minutes you have to watch an ep before next will ask you to update the database. | yes | 0
 
 There is a documented example configuration file in the repository in the config/
 dir.
