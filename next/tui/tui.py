@@ -61,7 +61,7 @@ class TUI(cmd.Cmd, object):
 
     def help_play(self):
         util.print_formatted(u'''\
-        Play an ep. If keywords are provided, a show with a corresponding 
+        Play an ep. If keywords are provided, a show with a corresponding
         name will be searched.''')
 
     def do_random(self, line=None):
@@ -246,7 +246,7 @@ class TUI(cmd.Cmd, object):
 
     def help_scan(self):
         util.print_formatted(u'''\
-        Scan the local shows directory for shows that aren\'t in the database 
+        Scan the local shows directory for shows that aren\'t in the database
         yet''')
 
     def do_list(self, line=None):
@@ -318,7 +318,7 @@ class TUI(cmd.Cmd, object):
 
     def help_fix_subs(self):
         util.print_formatted(u'''\
-        Recursively check subtitle names and rename to name of 
+        Recursively check subtitle names and rename to name of
         corresponding ep file if necessary''')
 
     def do_quit(self, line=None):
