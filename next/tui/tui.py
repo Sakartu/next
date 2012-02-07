@@ -54,7 +54,7 @@ class TUI(cmd.Cmd, object):
                 print u'No show found for "{0}"'.format(line)
                 return
         else:
-            show = self.get_show(u'Which show would you like to play the next ep from?', 
+            show = self.ask_show(u'Which show would you like to play the next ep from?', 
                     u'There are no shows to play!')
         if show:
             player.play_show(self.conf, show)
@@ -125,7 +125,7 @@ class TUI(cmd.Cmd, object):
         are spread across the disk instead of centrally located.
         '''
 
-        show = self.get_show(u'Which show would you like to add a location for?', 
+        show = self.ask_show(u'Which show would you like to add a location for?', 
                 u'There are no shows to add a location for!')
         if not show:
             return
@@ -143,13 +143,13 @@ class TUI(cmd.Cmd, object):
         A TUI function used to change the season and episode of a show where the
         user is
         '''
-        show = self.get_show(u'Which show would you like to change?', 
+        show = self.ask_show(u'Which show would you like to change?', 
                 u'There are no shows to change!')
         if not show:
             return
 
-        season = self.get_show_season(show.name, show.sid)
-        ep = self.get_show_ep(show.sid, season)
+        season = self.ask_show_season(show.name, show.sid)
+        ep = self.ask_show_ep(show.sid, season)
 
         # and finally put everything in the database
 
@@ -165,7 +165,7 @@ class TUI(cmd.Cmd, object):
         user is
         '''
 
-        show = self.get_show(u'Which show would you like to further?', 
+        show = self.ask_show(u'Which show would you like to further?', 
                 u'There are no shows to further!')
         if not show:
             return
@@ -284,7 +284,7 @@ class TUI(cmd.Cmd, object):
         '''
         A function that fixes the names of subtitle files for a given show
         '''
-        show = self.get_show(u'For which show do you want to fix the subtitles?',
+        show = self.ask_show(u'For which show do you want to fix the subtitles?',
                 u'There are no shows for which to fix subs!')
         if not show:
             return
@@ -319,8 +319,8 @@ class TUI(cmd.Cmd, object):
         status = show[2]
         
         # found out which season and ep the user is
-        season = self.get_show_season(name, sid)
-        ep = self.get_show_ep(sid, season)
+        season = self.ask_show_season(name, sid)
+        ep = self.ask_show_ep(sid, season)
 
         # and finally put everything in the database
         try:
@@ -329,7 +329,7 @@ class TUI(cmd.Cmd, object):
         except sqlite3.IntegrityError:
             print u'Show already exists, use change command to change season and ep!'
 
-    def get_show_season(self, name, sid):
+    def ask_show_season(self, name, sid):
         '''
         Convenience function to ask the user which season he is given the name
         and sid
@@ -342,7 +342,7 @@ class TUI(cmd.Cmd, object):
         print u'What season are you at for {0} ({1}-{2})?'.format(name, min(seasons), max(seasons))
         return int(self.get_input(u'Season: ', range(1, len(seasons) + 1)))
 
-    def get_show_ep(self, sid, season):
+    def ask_show_ep(self, sid, season):
         '''
         Convenience function to ask the user which ep he is given the sid and
         season
@@ -362,7 +362,6 @@ class TUI(cmd.Cmd, object):
         ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
         return ep
 
-
     def get_all_shows(self):
         '''
         Helper method that returns all shows from database, or NoShowsException
@@ -373,7 +372,7 @@ class TUI(cmd.Cmd, object):
             raise NoShowsException
         return shows
 
-    def get_show(self, header, errmsg):
+    def ask_show(self, header, errmsg):
         try:
             all_shows = self.get_all_shows()
         except NoShowsException:
