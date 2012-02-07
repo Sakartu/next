@@ -14,19 +14,107 @@ def parse_opts():
     t = TUI()
 
     parser = OptionParser(usage=constants.USAGE)
-    parser.add_option(u'-c', u'--conf', nargs=1, dest=u'new_path', help=u'NEW_PATH specifies a different configuration file')
-    parser.add_option(u'-r', u'--random', action="store_const", dest="func", const=t.do_random, help=u'Start an ep for a random show')
-    parser.add_option(u'-l', u'--list', action="store_const", dest="func", const=t.do_list, help=u'List all your shows with detailed information')
-    parser.add_option(u'-n', u'--new', action="store_const", dest="func", const=t.do_new, help=u'List shows for which there are new eps on your system')
-    parser.add_option(u'-u', u'--update', action="store_const", dest="func", const=t.do_update, help=u'Connect to the TVRage database and update your show information')
-    parser.add_option(u'-a', u'--add', action="store_const", dest="func", const=t.do_add_show, help=u'Add a show to the database')
-    parser.add_option(u'-d', u'--del', u'--rm', action="store_const", dest="func", const=t.do_del_show, help=u'Remove a show from the database')
-    parser.add_option(u'-f', u'--fix_subs', action="store_const", dest="func", const=t.do_fix_subs, help=u'Fix the subtitles for a given show')
-    parser.add_option(u'-s', u'--shows', action="store_const", dest="func", const=t.print_shows_simple, help=u'Print a plain list of your shows')
-    parser.add_option(u'--add_location', action="store_const", dest="func", const=t.do_add_show_location, help=u'Add a location for a show to the database')
-    parser.add_option(u'--change', action="store_const", dest="func", const=t.do_change_show, help=u'Change the current season and ep for a show')
-    parser.add_option(u'--further', action="store_const", dest="func", const=t.do_further_show, help=u'Further the current season and ep for a show')
-    parser.add_option(u'--scan', action="store_const", dest="func", const=t.do_scan, help=u'Scan your series path for shows')
+
+    # -c, --conf
+    parser.add_option(u'-c',
+	u'--conf',
+	nargs=1,
+	dest=u'new_path',
+	help=u'NEW_PATH specifies a different configuration file')
+
+    # -r, --random
+    parser.add_option(u'-r',
+	u'--random',
+	action="store_const",
+	dest="func",
+	const=t.do_random,
+	help=u'Start an ep for a random show')
+
+    # -l, --list
+    parser.add_option(u'-l',
+	u'--list',
+	action="store_const",
+	dest="func",
+	const=t.do_list,
+	help=u'List all your shows with detailed information')
+
+    # -n, --new
+    parser.add_option(u'-n',
+	u'--new',
+	action="store_const",
+	dest="func",
+	const=t.do_new,
+	help=u'List shows for which there are new eps on your system')
+
+    # -u, --update
+    parser.add_option(u'-u',
+	u'--update',
+	action="store_const",
+	dest="func",
+	const=t.do_update,
+	help=u'Connect to the TVRage database and update your show information')
+
+    # -a, --add
+    parser.add_option(u'-a',
+	u'--add',
+	action="store_const",
+	dest="func",
+	const=t.do_add_show,
+	help=u'Add a show to the database. If arguments are provided they will be used for a search, otherwise the user will be prompted.')
+
+    # -d, --del, --rm
+    parser.add_option(u'-d',
+	u'--del',
+	u'--rm',
+	action="store_const",
+	dest="func",
+	const=t.do_del_show,
+	help=u'Remove a show from the database. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+
+    # -f, --fix_subs
+    parser.add_option(u'-f',
+	u'--fix_subs',
+	action="store_const",
+	dest="func",
+	const=t.do_fix_subs,
+	help=u'Fix the subtitles for a given show. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+
+    # -s, --shows
+    parser.add_option(u'-s',
+	u'--shows',
+	action="store_const",
+	dest="func",
+	const=t.print_shows_simple,
+	help=u'Print a plain list of your shows')
+
+    # --add_location
+    parser.add_option(u'--add_location',
+	action="store_const",
+	dest="func",
+	const=t.do_add_show_location,
+	help=u'Add a location for a show to the database. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+
+    # --change
+    parser.add_option(u'--change',
+	action="store_const",
+	dest="func",
+	const=t.do_change_show,
+	help=u'Change the current season and ep for a show. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+
+    # --further
+    parser.add_option(u'--further',
+	action="store_const",
+	dest="func",
+	const=t.do_further_show,
+	help=u'Further the current season and ep for a show. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+
+    # --scan
+    parser.add_option(u'--scan',
+	action="store_const",
+	dest="func",
+	const=t.do_scan,
+	help=u'Scan your series path for shows')
+
     (options, args) = parser.parse_args()
 
     # Load a default config
