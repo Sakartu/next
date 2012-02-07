@@ -118,6 +118,31 @@ class TUI(cmd.Cmd, object):
 
     def help_add_show(self):
         print u'Add a show to the local database'
+    
+    def do_del_show(self, line=None):
+        '''
+        A TUI function used to delete a show from the database
+        '''
+        show = self.ask_show(u'Which show would you like to delete?', 
+                u'There are no shows to delete!')
+        if not show:
+            return
+
+        
+        print u'Are you ABSOLUTELY sure you want to delete the show?'
+        answer = self.get_input(u'Add [no]? ')
+        if 'y' in answer.lower():
+            try:
+                db.delete_show(self.conf, show.sid)
+            except:
+                print u'Something went wrong while deleting, database reverted'
+            print u'Successfully removed {name} from the database!'.format(
+                    name=show.name)
+        else:
+            print u'Database unmodified.'
+
+    def help_del_show(self, line=None):
+        print u'Remove a show from the local database'
 
     def do_add_show_location(self, line=None):
         '''

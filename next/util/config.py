@@ -20,6 +20,7 @@ def parse_opts():
     parser.add_option(u'-n', u'--new', action="store_const", dest="func", const=t.do_new, help=u'List shows for which there are new eps on your system')
     parser.add_option(u'-u', u'--update', action="store_const", dest="func", const=t.do_update, help=u'Connect to the TVRage database and update your show information')
     parser.add_option(u'-a', u'--add', action="store_const", dest="func", const=t.do_add_show, help=u'Add a show to the database')
+    parser.add_option(u'-d', u'--del', u'--rm', action="store_const", dest="func", const=t.do_del_show, help=u'Remove a show from the database')
     parser.add_option(u'-f', u'--fix_subs', action="store_const", dest="func", const=t.do_fix_subs, help=u'Fix the subtitles for a given show')
     parser.add_option(u'-s', u'--shows', action="store_const", dest="func", const=t.print_shows_simple, help=u'Print a plain list of your shows')
     parser.add_option(u'--add_location', action="store_const", dest="func", const=t.do_add_show_location, help=u'Add a location for a show to the database')

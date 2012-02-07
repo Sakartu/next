@@ -68,6 +68,17 @@ def add_show(conf, sid, showname, season, ep, status):
         c.execute(u'''INSERT INTO shows VALUES (?, ?, ?, ?, 0, ?)''', (sid,
         showname, season, ep, status))
 
+def delete_show(conf, sid):
+    '''
+    This method deletes a show with a given sid from the database
+    '''
+    with conf[ConfKeys.DB_CONN] as conn:
+        c = conn.cursor()
+        c.execute(u'''DELETE FROM shows WHERE sid = ?''', (sid, ))
+        c.execute(u'''DELETE FROM locations WHERE sid = ?''', (sid, ))
+        c.execute(u'''DELETE FROM tvr_shows WHERE sid = ?''', (sid, ))
+    
+
 def change_show(conf, sid, season, ep):
     '''
     This method changes the season and ep of a given show in the database
