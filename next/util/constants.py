@@ -35,6 +35,7 @@ class ConfKeys:
     UNSTRUCTURED = u'unstructured_mode'
     POSTPROCESSING = u'post_hook'
     LENGTH_DETECTION = u'length_detecion'
+    FUNC_ARGS = u'func_args'
 
 class TVRage:
     '''

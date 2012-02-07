@@ -148,6 +148,9 @@ def parse_opts():
         if 'true' == v.lower() or 'yes' == v.lower() or '1' == v:
             result[k] = True
 
+    # put the remaining args in the conf
+    result['func_args'] = args
+
     t.conf = result
 
     return options, result, args

@@ -45,19 +45,12 @@ class TUI(cmd.Cmd, object):
 
     def do_play(self, line=None):
         '''
-        A TUI function that plays a new episode from the user-specified show
+        A TUI function that plays a new episode from the user-specified show. If
+        keywords are provided, a show with a corresponding name will be searched
         '''
-        if line:
-            candidates = db.find_shows(self.conf, line)
-            show = util.filter_shows(candidates, line)
-            if not show:
-                print u'No show found for "{0}"'.format(line)
-                return
-        else:
-            show = self.ask_show(u'Which show would you like to play the next ep from?', 
-                    u'There are no shows to play!')
-        if show:
-            player.play_show(self.conf, show)
+        show = self.ask_show(line, u'Which show would you like to play the next ep from?')
+
+        player.play_show(self.conf, show)
 
     def help_play(self):
         util.print_formatted(u'''\
@@ -84,13 +77,19 @@ class TUI(cmd.Cmd, object):
     def do_add_show(self, line=None):
         '''
         A TUI function that adds a user-specified show to the database. Uses TVRage
-        to find out details about the show.
+        to find out details about the show. If keywords are provided, a show with
+        a corresponding name will be searched
         '''
+
+        if ConfKeys.FUNC_ARGS in self.conf:
+            wanted = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
+
         # query the user for the show they want to add
         found_show = None
         while not found_show:
-            print u'Please enter the name of the show you would like to add.'
-            wanted = self.get_input(term=u'Showname: ')
+            if not wanted:
+                print u'Please enter the name of the show you would like to add.'
+                wanted = self.get_input(term=u'Showname: ')
             # find the show in tvrage
             print u'Searching for show in TVRage database... ',
             try:
@@ -105,6 +104,7 @@ class TUI(cmd.Cmd, object):
                 return
             else:
                 found_show = self.read_show(shows)
+            wanted = ''
 
         print u'Getting all show eps from TVRage... ',
         episodes = parser.get_all_eps(found_show[1]) # find eps by sid
@@ -121,13 +121,10 @@ class TUI(cmd.Cmd, object):
     
     def do_del_show(self, line=None):
         '''
-        A TUI function used to delete a show from the database
+        A TUI function used to delete a show from the database. If keywords are
+        provided, a show with a corresponding name will be searched
         '''
-        show = self.ask_show(u'Which show would you like to delete?', 
-                u'There are no shows to delete!')
-        if not show:
-            return
-
+        show = self.ask_show(line, u'Which show would you like to delete?')
         
         print u'Are you ABSOLUTELY sure you want to delete the show?'
         answer = self.get_input(u'Add [no]? ')
@@ -147,13 +144,11 @@ class TUI(cmd.Cmd, object):
     def do_add_show_location(self, line=None):
         '''
         A TUI function that adds a custom location to a show. Can be used if shows
-        are spread across the disk instead of centrally located.
+        are spread across the disk instead of centrally located. If keywords are
+        provided, a show with a corresponding name will be searched
         '''
-
-        show = self.ask_show(u'Which show would you like to add a location for?', 
-                u'There are no shows to add a location for!')
-        if not show:
-            return
+        show = self.ask_show(line, u'Which show would you like to add a location for?')
+            
         print u'What location do you want to add?'
         location = self.get_input(u'Location: ')
         db.add_location(self.conf, show.sid, location)
@@ -166,12 +161,10 @@ class TUI(cmd.Cmd, object):
     def do_change_show(self, line=None):
         '''
         A TUI function used to change the season and episode of a show where the
-        user is
+        user is. If keywords are provided, a show with a corresponding name will
+        be searched
         '''
-        show = self.ask_show(u'Which show would you like to change?', 
-                u'There are no shows to change!')
-        if not show:
-            return
+        show = self.ask_show(line, u'Which show would you like to change?')
 
         season = self.ask_show_season(show.name, show.sid)
         ep = self.ask_show_ep(show.sid, season)
@@ -186,14 +179,11 @@ class TUI(cmd.Cmd, object):
 
     def do_further_show(self, line=None):
         '''
-        A TUI function used to further the season and episode of a show where the
-        user is
+        A TUI function used to further the season and episode of a show where
+        the user is. If keywords are provided, a show with a corresponding name
+        will be searched
         '''
-
-        show = self.ask_show(u'Which show would you like to further?', 
-                u'There are no shows to further!')
-        if not show:
-            return
+        show = self.ask_show(line, u'Which show would you like to further?')
 
         next_ep = admin.find_next_ep(self.conf, show)
         if not next_ep:
@@ -307,12 +297,11 @@ class TUI(cmd.Cmd, object):
 
     def do_fix_subs(self, line=None):
         '''
-        A function that fixes the names of subtitle files for a given show
+        A function that fixes the names of subtitle files for a given show. If
+        keywords are provided, a show with a corresponding name will be searched
         '''
-        show = self.ask_show(u'For which show do you want to fix the subtitles?',
-                u'There are no shows for which to fix subs!')
-        if not show:
-            return
+        show = self.ask_show(line, 
+                    u'For which show do you want to fix the subtitles?')
 
         fs.fix_subs(self.conf, show)
 
@@ -333,7 +322,7 @@ class TUI(cmd.Cmd, object):
 
     def help_help(self):
         print u'Get help about a topic'
-        
+
     def add_show_details(self, show):
         '''
         A helper function that is used (amongst others) by the add_show function to
@@ -397,17 +386,40 @@ class TUI(cmd.Cmd, object):
             raise NoShowsException
         return shows
 
-    def ask_show(self, header, errmsg):
-        try:
-            all_shows = self.get_all_shows()
-        except NoShowsException:
-            util.print_formatted(errmsg)
-            return
+    def ask_show(self, line, header):
+        '''
+        A method that tries to find out which show a user means, using
+        various methods. It checks the line to see if the user filled in
+        anything there. If not, it checks to see whether the conf contains a
+        hint to which show the user means in case of a CLI call. Finally, if
+        none of these work, it'll list all the shows and ask the user which one
+        it wants.
 
-        util.print_formatted(header)
-        self.print_shows_detailed(all_shows)
-        number = int(self.get_input(u'Show number: ', range(1, len(all_shows) + 1)))
-        return all_shows[number - 1] if number <= len(all_shows) else None
+        This method guarantees to produce a show, or keep asking the user. Only
+        a ^C can let the user exit.
+        '''
+        show = None
+        if line:
+            while not show:
+                candidates = db.find_shows(self.conf, line)
+                show = util.filter_shows(candidates, line)
+        elif ConfKeys.FUNC_ARGS in self.conf:
+            while not show:
+                name = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
+                shows = db.find_shows(self.conf, name)
+                show = util.filter_shows(shows, name)
+        else:
+            try:
+                all_shows = self.get_all_shows()
+            except NoShowsException:
+                util.print_formatted(u'There are no shows!')
+                return
+
+            util.print_formatted(header)
+            self.print_shows_detailed(all_shows)
+            number = int(self.get_input(u'Show number: ', range(1, len(all_shows) + 1)))
+            show = all_shows[number - 1]
+        return show
 
     def read_show(self, shows):
         print u'Which show would you like to add?'
