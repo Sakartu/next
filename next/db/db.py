@@ -77,7 +77,6 @@ def delete_show(conf, sid):
         c.execute(u'''DELETE FROM shows WHERE sid = ?''', (sid, ))
         c.execute(u'''DELETE FROM locations WHERE sid = ?''', (sid, ))
         c.execute(u'''DELETE FROM tvr_shows WHERE sid = ?''', (sid, ))
-    
 
 def change_show(conf, sid, season, ep):
     '''
