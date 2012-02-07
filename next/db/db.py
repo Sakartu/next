@@ -42,7 +42,7 @@ def initialize(path):
                     location)''')
     return conn
 
-def find_show(conf, show_name):
+def find_shows(conf, show_name):
     '''
     This method tries to find a show in the shows database using a wildcard search
     '''
@@ -56,11 +56,7 @@ def find_show(conf, show_name):
         print_formatted(u'No shows found with that name, try again!')
         return None
 
-    if len(shows) > 2:
-        print_formatted( u'''\
-                Found multiple shows with the same name, picking first
-                ({0})'''.format(shows[0][0]))
-    return Show(shows[0])
+    return map(Show, shows)
 
 def add_show(conf, sid, showname, season, ep, status):
     '''

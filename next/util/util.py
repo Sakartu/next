@@ -32,7 +32,7 @@ def normalize(wordlist):
     return [unicodedata.normalize('NFKD', x).encode('ascii', 'ignore') for x in
             wordlist]
 
-def shows_match(one, two):
+def shows_match(one, two, fuzzy=False):
     '''
     This method returns True if the names of the two shows provided as
     parameters look very much alike
@@ -41,13 +41,17 @@ def shows_match(one, two):
     contain only of strange characters aren't counted
     '''
     if type(one) != type("") and type(one) != type(u""): # assume type Show
-        one = one.name
+        one = one.name.lower()
     if type(two) != type("") and type(two) != type(u""): # assume type Show
-        two = two.name
-    ones = map(lambda x : x.lower(), one.split())
-    twos = map(lambda x : x.lower(), two.split())
+        two = two.name.lower()
+    one = one.lower()
+    two = two.lower()
+    ones = one.split()
+    twos = two.split()
     for word in [x for x in ones if re.compile('^\w*$', re.U).match(x)]:
-        if word not in twos:
+        if not fuzzy and word not in twos: # use list of words
+            return False
+        elif fuzzy and word not in two: # use whole string
             return False
     return True
 
@@ -87,3 +91,16 @@ def get_new_sub_name(sub, vid):
     vidname, _ = os.path.splitext(vid)
     subname, subext = os.path.splitext(sub)
     return (sub, vidname + subext)
+
+def filter_shows(showlist, name):
+    '''
+    This method filters a given list of shows to provide the show which looks most
+    like the given name.
+    '''
+    matching = [x for x in showlist if shows_match(name, x, False)]
+    if not matching: # loosen matching rules a bit if no results are found
+        matching = [x for x in showlist if shows_match(name, x, True)]
+     
+    return matching[0] if matching else None
+
+

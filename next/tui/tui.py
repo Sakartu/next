@@ -46,18 +46,12 @@ class TUI(cmd.Cmd, object):
         '''
         A TUI function that plays a new episode from the user-specified show
         '''
-        try:
-            all_shows = self.get_all_shows()
-        except NoShowsException:
-            print u'There are no shows to play!'
-            return
         if line:
-            candidates = filter(lambda s : set(line.split()) <= set(s.name.lower().split()), all_shows)
-            if not candidates:
+            candidates = db.find_shows(self.conf, line)
+            show = util.filter_shows(candidates, line)
+            if not show:
                 print u'No show found for "{0}"'.format(line)
                 return
-            # just assume the first show
-            show = candidates[0]
         else:
             show = self.get_show(u'Which show would you like to play the next ep from?', 
                     u'There are no shows to play!')
@@ -78,7 +72,9 @@ class TUI(cmd.Cmd, object):
         except NoShowsException:
             print u'There are no shows to play!'
             return
-        s = db.find_show(self.conf, random.choice(all_shows).name)
+        choice = random.choice(all_shows)
+        shows = db.find_shows(self.conf, choice.name)
+        s = util.filter_shows(shows, choice.name)
         player.play_next(self.conf, s)
 
     def help_random(self):

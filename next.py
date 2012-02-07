@@ -16,6 +16,7 @@ from next.db import db
 from next.show import player
 from next.tui.exceptions import UserCancelled
 from next.tui.tui import TUI
+from next.util import util
 import os
 import codecs
 import sqlite3
@@ -68,9 +69,10 @@ def main():
     # 2. there are no arguments provided. provide the user with a query what he wants
     if args:
         # 1. user provided a showname, find it in the db, then play it.
-        s = db.find_show(conf, u' '.join(args))
-        if s:
-            player.play_show(conf, s)
+        shows = db.find_shows(conf, u' '.join(args))
+        match = util.filter_shows(shows, u' '.join(args))
+        if match:
+            player.play_show(conf, match)
         else:
             print u'Show "{0}" could not be found!'.format(u' '.join(args))
     else:
