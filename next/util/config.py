@@ -14,8 +14,7 @@ def parse_opts():
     t = TUI()
 
     parser = OptionParser(usage=constants.USAGE)
-    parser.add_option(u'-c', u'--conf', nargs=1, dest=u'new_path', 
-            help=u'NEW_PATH specifies a different configuration file')
+    parser.add_option(u'-c', u'--conf', nargs=1, dest=u'new_path', help=u'NEW_PATH specifies a different configuration file')
     parser.add_option(u'-r', u'--random', action="store_const", dest="func", const=t.do_random, help=u'Start an ep for a random show')
     parser.add_option(u'-l', u'--list', action="store_const", dest="func", const=t.do_list, help=u'List all your shows with detailed information')
     parser.add_option(u'-n', u'--new', action="store_const", dest="func", const=t.do_new, help=u'List shows for which there are new eps on your system')
