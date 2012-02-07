@@ -9,6 +9,7 @@ import sys
 import cmd
 import random
 import sqlite3
+from datetime import datetime
 
 class TUI(cmd.Cmd, object):
     def __init__(self, conf={}, stdin=sys.stdin, stdout=sys.stdout):
@@ -161,8 +162,12 @@ class TUI(cmd.Cmd, object):
             print u'This season has no eps!'
             return
         print u'What ep are you at in season {0}?'.format(season)
+		
+		# get the current day 
+        today = datetime.today().date()
         for (i, ep) in enumerate(eps):
-            print u'{id:3d}. s{S:>02d}e{E:>02d} - {title}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title)
+            print u'{id:3d}. s{S:>02d}e{E:>02d} - {title} {unaired}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title, 
+                unaired=u'*' if datetime.strptime(ep.airdate, '%Y-%m-%d').date() > today else '')
         ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
 
         # and finally put everything in the database
@@ -347,8 +352,12 @@ class TUI(cmd.Cmd, object):
             print u'This season has no eps!'
             return
         print u'What ep are you at in season {0}?'.format(season)
+		
+		# get the current day 
+        today = datetime.today().date()
         for (i, ep) in enumerate(eps):
-            print u'{id:3d}. s{S:>02d}e{E:>02d} - {title}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title)
+            print u'{id:3d}. s{S:>02d}e{E:>02d} - {title} {unaired}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title, 
+                unaired=u'*' if datetime.strptime(ep.airdate, '%Y-%m-%d').date() > today else '')
         ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
 
         # and finally put everything in the database
