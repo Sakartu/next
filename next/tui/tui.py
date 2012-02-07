@@ -259,7 +259,7 @@ class TUI(cmd.Cmd, object):
         if not shows:
             print u'No new eps are available for your shows!'
             return
-        print "New eps are on your computer for these shows:"
+        print "New eps are on your computer for these shows (* = has subs):"
         self.print_shows_detailed(shows, display_subs=True)
 
     def help_new(self):
@@ -352,13 +352,13 @@ class TUI(cmd.Cmd, object):
         if not eps:
             print u'This season has no eps!'
             return
-        print u'What ep are you at in season {0}?'.format(season)
+        print u'What ep are you at in season {0} (* = unaired)?'.format(season)
 		
 		# get the current day 
         today = datetime.today().date()
         for (i, ep) in enumerate(eps):
-            print u'{id:3d}. s{S:>02d}e{E:>02d} - {title} {unaired}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title, 
-                unaired=u'*' if datetime.strptime(ep.airdate, '%Y-%m-%d').date() > today else '')
+            print u'{id:3d}. {unaired}s{S:>02d}e{E:>02d} - {title}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title, 
+                unaired=u'*' if datetime.strptime(ep.airdate, '%Y-%m-%d').date() > today else ' ')
         ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
         return ep
 
