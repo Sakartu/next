@@ -143,34 +143,16 @@ class TUI(cmd.Cmd, object):
         A TUI function used to change the season and episode of a show where the
         user is
         '''
-
         show = self.get_show(u'Which show would you like to change?', 
                 u'There are no shows to change!')
         if not show:
             return
-        # then the season in the show
-        seasons = db.find_seasons(self.conf, show.sid)
-        if not seasons:
-            print u'There are no seasons for this show!'
-            return
-        print u'What season are you at for {0} ({1}-{2})?'.format(show.name, min(seasons), max(seasons))
-        season = int(self.get_input(u'Season: ', range(1, len(seasons) + 1)))
 
-        # then the ep in the season
-        eps = db.find_all_eps(self.conf, show.sid, season)
-        if not eps:
-            print u'This season has no eps!'
-            return
-        print u'What ep are you at in season {0}?'.format(season)
-		
-		# get the current day 
-        today = datetime.today().date()
-        for (i, ep) in enumerate(eps):
-            print u'{id:3d}. s{S:>02d}e{E:>02d} - {title} {unaired}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title, 
-                unaired=u'*' if datetime.strptime(ep.airdate, '%Y-%m-%d').date() > today else '')
-        ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
+        season = self.get_show_season(show.name, show.sid)
+        ep = self.get_show_ep(show.sid, season)
 
         # and finally put everything in the database
+
         db.change_show(self.conf, show.sid, season, ep)
         print u'Successfully changed details for {0}!'.format(show.name)
 
@@ -332,20 +314,39 @@ class TUI(cmd.Cmd, object):
         A helper function that is used (amongst others) by the add_show function to
         query the user as to what season and episode the user is
         '''
-        # found out which season and ep the user is
-        showname = show[0]
+        name = show[0]
         sid = show[1]
         status = show[2]
         
-        seasons = db.find_seasons(self.conf, sid)
+        # found out which season and ep the user is
+        season = self.get_show_season(name, sid)
+        ep = self.get_show_ep(sid, season)
 
+        # and finally put everything in the database
+        try:
+            db.add_show(self.conf, sid, name, season, ep, status)
+            print u'Successfully added {0} to the database!'.format(name)
+        except sqlite3.IntegrityError:
+            print u'Show already exists, use change command to change season and ep!'
+
+    def get_show_season(self, name, sid):
+        '''
+        Convenience function to ask the user which season he is given the name
+        and sid
+        '''
         # then the season in the show
+        seasons = db.find_seasons(self.conf, sid)
         if not seasons:
             print u'There are no seasons for this show!'
             return
-        print u'What season are you at for {0} ({1}-{2})?'.format(showname, min(seasons), max(seasons))
-        season = int(self.get_input(u'Season: ', range(1, len(seasons) + 1)))
+        print u'What season are you at for {0} ({1}-{2})?'.format(name, min(seasons), max(seasons))
+        return int(self.get_input(u'Season: ', range(1, len(seasons) + 1)))
 
+    def get_show_ep(self, sid, season):
+        '''
+        Convenience function to ask the user which ep he is given the sid and
+        season
+        '''
         # then the ep in the season
         eps = db.find_all_eps(self.conf, sid, season)
         if not eps:
@@ -359,13 +360,8 @@ class TUI(cmd.Cmd, object):
             print u'{id:3d}. s{S:>02d}e{E:>02d} - {title} {unaired}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title, 
                 unaired=u'*' if datetime.strptime(ep.airdate, '%Y-%m-%d').date() > today else '')
         ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
+        return ep
 
-        # and finally put everything in the database
-        try:
-            db.add_show(self.conf, sid, showname, season, ep, status)
-            print u'Successfully added {0} to the database!'.format(showname)
-        except sqlite3.IntegrityError:
-            print u'Show already exists, use change command to change season and ep!'
 
     def get_all_shows(self):
         '''
