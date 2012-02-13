@@ -127,7 +127,7 @@ class TUI(cmd.Cmd, object):
         show = self.ask_show(line, u'Which show would you like to delete?')
         
         print u'Are you ABSOLUTELY sure you want to delete the show?'
-        answer = self.get_input(u'Add [no]? ')
+        answer = self.get_input(u'Delete [no]? ')
         if 'y' in answer.lower():
             try:
                 db.delete_show(self.conf, show.sid)
@@ -193,7 +193,7 @@ class TUI(cmd.Cmd, object):
             return
 
         db.change_show(self.conf, show.sid, next_ep.season, next_ep.epnum)
-        print u'Successfully changed details for {0}!'.format(show.name)
+        print u'Successfully furthered {0}!'.format(show.name)
 
     def help_further_show(self):
         print u'Set a show to the next episode without playing the ep'
@@ -373,6 +373,8 @@ class TUI(cmd.Cmd, object):
         for (i, ep) in enumerate(eps):
             print u'{id:3d}. {unaired}s{S:>02d}e{E:>02d} - {title}'.format(id=i + 1, S=ep.season, E=ep.epnum, title=ep.title, 
                 unaired=u'*' if datetime.strptime(ep.airdate, '%Y-%m-%d').date() > today else ' ')
+
+        # and ask the ep
         ep = int(self.get_input(u'Episode: ', range(1, len(eps) + 1)))
         return ep
 
