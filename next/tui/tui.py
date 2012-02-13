@@ -81,7 +81,7 @@ class TUI(cmd.Cmd, object):
         a corresponding name will be searched
         '''
 
-        if ConfKeys.FUNC_ARGS in self.conf:
+        if ConfKeys.FUNC_ARGS in self.conf and self.conf[ConfKeys.FUNC_ARGS]:
             wanted = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
 
         # query the user for the show they want to add
@@ -405,7 +405,7 @@ class TUI(cmd.Cmd, object):
             while not show:
                 candidates = db.find_shows(self.conf, line)
                 show = util.filter_shows(candidates, line)
-        elif ConfKeys.FUNC_ARGS in self.conf:
+        elif ConfKeys.FUNC_ARGS in self.conf and self.conf[ConfKeys.FUNC_ARGS]:
             while not show:
                 name = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
                 shows = db.find_shows(self.conf, name)
