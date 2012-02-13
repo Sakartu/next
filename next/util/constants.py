@@ -36,6 +36,7 @@ class ConfKeys:
     POSTPROCESSING = u'post_hook'
     LENGTH_DETECTION = u'length_detecion'
     FUNC_ARGS = u'func_args'
+    ASK_ANOTHER = u'ask_another'
 
 class TVRage:
     '''

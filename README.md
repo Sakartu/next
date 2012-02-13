@@ -70,6 +70,7 @@ show_path | This is your series directory, something like ~/downloads/series/ | 
 unstructured_mode | Set this option to True if you have all your eps (from every show) in a single download dir | yes | False
 post_hook | A comma-separated list of scripts to call after an ep is watched. See the config file for possible parameters. | yes | /bin/rm {path}
 length_detection | The number of minutes you have to watch an ep before next will ask you to update the database. | yes | 0
+ask_another | Set this option to false if you don't want next to ask to play another ep | yes | True
 
 There is a documented example configuration file in the repository in the config/
 dir.

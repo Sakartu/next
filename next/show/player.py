@@ -18,8 +18,10 @@ def play_show(conf, show):
         if not show or not fs.build_ep_path(conf, show):
             break
 
-        print u"Shall I play another ep?"
-        answer = raw_input(u'Another [yes]? ')
+        answer = 'no'
+        if conf.get(ConfKeys.ASK_ANOTHER, True):
+            print u"Shall I play another ep?"
+            answer = raw_input(u'Another [yes]? ')
         if u'y' not in answer.lower() and answer.strip() != '':
             another = False
 
