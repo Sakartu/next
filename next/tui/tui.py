@@ -83,6 +83,8 @@ class TUI(cmd.Cmd, object):
 
         if ConfKeys.FUNC_ARGS in self.conf and self.conf[ConfKeys.FUNC_ARGS]:
             wanted = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
+        elif line:
+            wanted = line
 
         # query the user for the show they want to add
         found_show = None
