@@ -81,6 +81,7 @@ class TUI(cmd.Cmd, object):
         a corresponding name will be searched
         '''
 
+        wanted = ''
         if ConfKeys.FUNC_ARGS in self.conf and self.conf[ConfKeys.FUNC_ARGS]:
             wanted = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
         elif line:
