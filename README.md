@@ -33,7 +33,8 @@ Other methods can be found on pypi:
 For the configuration and database files we use the XDG Base Directory 
 Specification (see http://bit.ly/tulYTA). This needs the package 
 python-xdgapp to be installed, you can probably find this in your distro's 
-repository somewhere, or use pip to install it:
+repository somewhere. pip may also have python-xdgapp although this was not the
+case when I checked it last time. You can try using:
 
     user@box$ sudo pip install python-xdgapp
 
