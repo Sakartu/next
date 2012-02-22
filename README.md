@@ -30,13 +30,17 @@ Other methods can be found on pypi:
 
     http://pypi.python.org/pypi/python-tvrage/0.1.4
 
-For the configuration and database files we use the XDG Base Directory 
+For the configuration and database files next can use the XDG Base Directory 
 Specification (see http://bit.ly/tulYTA). This needs the package 
 python-xdgapp to be installed, you can probably find this in your distro's 
 repository somewhere. pip may also have python-xdgapp although this was not the
 case when I checked it last time. You can try using:
 
     user@box$ sudo pip install python-xdgapp
+
+If you run next under Windows installing python-xdgapp is quite useless, next
+will default to ~/.next/next.conf for the configuration file and to the show dir
+specified in the configuration file for the database.
 
 
 Installation
@@ -58,15 +62,20 @@ installation that's required :)
 Configuration
 -------------
 
-Out of the box next will look in ~/.config/next/ to find it's configuration file.
-You can put it elsewhere, if you want to, just use the -c flag to specify
-another location. In the configuration file there are a few options that 
+Out of the box next will use the XDG Base Directory specification (see
+http://bit.ly/tulYTA) to find it's configuration file and database. If the XDG 
+Base Directory isn't available next will default to ~/.next/next.conf for the
+configuration file. If no alternate path is specified in the configuration file
+next will default to the specified show_path.
+
+If you want you can put the configuration elsewhere, just use the -c flag to
+specify another location. In the configuration file there are a few options that
 we'll discuss below:
 
 Option | Explanation | Optional? | Default
 -------|-------------|-----------|--------
 player_cmd | This is the command line that next will use to start an episode | no | totem
-database_path | If you want your database to reside somewhere other than in show_path, you can specify it here | yes | ~/downloads/series
+database_path | If you want your database to reside somewhere other than the default, you can specify it here | yes | ~/downloads/series
 show_path | This is your series directory, something like ~/downloads/series/ | no | ~/downloads/series/
 unstructured_mode | Set this option to True if you have all your eps (from every show) in a single download dir | yes | False
 post_hook | A comma-separated list of scripts to call after an ep is watched. See the config file for possible parameters. | yes | /bin/rm {path}
@@ -74,7 +83,8 @@ length_detection | The number of minutes you have to watch an ep before next wil
 ask_another | Set this option to false if you don't want next to ask to play another ep | yes | True
 
 There is a documented example configuration file in the repository in the config/
-dir.
+dir. A default configuration file will also be generated if no file can be
+found.
 
 TUI manual
 ----------
