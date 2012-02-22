@@ -92,4 +92,13 @@ player_cmd=totem
 # 
 # The example below will delete the watched ep after a succesful watch.
 #post_hook=/bin/rm {path}
+
+# Number of minutes an ep should be playing before next asks all the post-watch
+# questions (database update, etc). If set to 0 or commented out, next will
+# always ask the post-watch questions.
+length_detecion=0
+
+# Determines whether next will ask 'Shall I play another ep?' (provided there is
+# another ep available)
+ask_another=True
 '''
