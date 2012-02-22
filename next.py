@@ -5,9 +5,8 @@ import sys
 
 try:
     import tvrage
-    import xdg
 except ImportError:
-    print "next needs the tvrage module and the xdg module to work. See the README for more information!"
+    print u'next needs the tvrage module to work. See the README for more information!'
     sys.exit(-1)
 
 from next.util import config
