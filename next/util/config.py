@@ -1,19 +1,85 @@
 from optparse import OptionParser
-from next.util import constants
+from next.util.constants import USAGE, EXAMPLE_CONF, ConfKeys
 from next.tui.tui import TUI
-from xdg import BaseDirectory
 import ConfigParser
 import os
 import sys
+
+try:
+    from xdg import BaseDirectory
+    have_xdg = True
+except ImportError:
+    have_xdg = False
 
 def parse_opts():
     '''
     This method parses the commandline options to next, if any, and it parses
     the configuration file
     '''
+    t, parser = build_parser()
+
+
+    (options, args) = parser.parse_args()
+
+    # Load a default config
+    config = ConfigParser.SafeConfigParser()
+    config.add_section(u'general')
+    
+    # Load the config override
+    path = None
+    if options.new_path:
+        path = options.new_path
+    elif have_xdg:
+        path = BaseDirectory.load_first_config('next', 'next.conf')
+        if not path:
+            path = os.path.join(BaseDirectory.save_config_path('next'), 'next.conf')
+    else:
+        path = os.path.expanduser(u'~/.next/next.conf')
+
+    # Generate a default configuration if required
+    if not path or not os.path.exists(path):
+        try:
+            print u'No configfile found in "{0}", generating default configfile. Please modify, then retart next!'.format(path)
+            gen_example(path)
+        except:
+            print 'Couldn\'t generate default configfile, path "{0}" is inaccessible!'.format(path)
+        sys.exit(-1)
+
+    if path:
+        config.read(path)
+
+    # Set the database path
+    if not config.has_option(u'general', ConfKeys.DB_PATH):
+        # No override
+        if have_xdg:
+            db_path = BaseDirectory.save_data_path('next')
+        else:
+            db_path = config.get(u'general', ConfKeys.SHOW_PATH)
+        config.set(u'general', ConfKeys.DB_PATH, db_path)
+
+    result = dict(config.items(u'general'))
+
+    for (k, v) in result.items(): # make sure bools are parsed correct
+        if 'false' == v.lower() or 'no' == v.lower() or '0' == v:
+            result[k] = False
+        if 'true' == v.lower() or 'yes' == v.lower() or '1' == v:
+            result[k] = True
+
+    # put the remaining args in the conf
+    result['func_args'] = args
+
+    t.conf = result
+
+    return options, result, args
+
+def build_parser():
+    '''
+    Convenience method that builds an OptionParser based on a TUI object
+    and returns both the TUI object and the OptionParser, in that order
+    '''
     t = TUI()
 
-    parser = OptionParser(usage=constants.USAGE)
+    parser = OptionParser(usage=USAGE)
 
     # -c, --conf
     parser.add_option(u'-c',
@@ -114,51 +180,12 @@ def parse_opts():
 	dest="func",
 	const=t.do_scan,
 	help=u'Scan your series path for shows')
-
-    (options, args) = parser.parse_args()
-
-    # Load a default config
-    config = ConfigParser.SafeConfigParser()
-    config.add_section(u'general')
-    config.set(u'general', constants.ConfKeys.PLAYER_CMD, u'mplayer')
-    config.set(u'general', constants.ConfKeys.SHOW_PATH, u'~/downloads/series')
-
-    db_path = BaseDirectory.save_data_path('next')
-    config.set(u'general', constants.ConfKeys.DB_PATH, db_path)
-
-    # Load the config override
-    if options.new_path:
-        path = options.new_path
-        if not (os.path.exists(path) and os.access(path, os.F_OK) and
-                os.access(path, os.W_OK)):
-            print u'No configfile found in "{0}", generating default configfile. Please modify, then start next again!'.format(path)
-            gen_example(path)
-            sys.exit(-1)
-    else:
-        path = BaseDirectory.load_first_config('next', 'next.conf')
-
-    if path:
-        config.read(path)
-
-    result = dict(config.items(u'general'))
-
-    for (k, v) in result.items(): # make sure bools are parsed correct
-        if 'false' == v.lower() or 'no' == v.lower() or '0' == v:
-            result[k] = False
-        if 'true' == v.lower() or 'yes' == v.lower() or '1' == v:
-            result[k] = True
-
-    # put the remaining args in the conf
-    result['func_args'] = args
-
-    t.conf = result
-
-    return options, result, args
+     
+    return t, parser
 
 def gen_example(path):
-    try:
-        with open(path, 'w+') as conf:
-            conf.write(constants.EXAMPLE_CONF)
-    except:
-        print 'Couldn\'t generate default configfile, path "{0}" is inaccessible!'.format(path)
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))
+    with open(path, 'w+') as conf:
+        conf.write(EXAMPLE_CONF)
 
