@@ -3,3 +3,4 @@ tags
 next.egg-info
 build
 dist
+tools/script_generator/scripts/
