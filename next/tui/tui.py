@@ -129,7 +129,8 @@ class TUI(cmd.Cmd, object):
         '''
         show = self.ask_show(line, u'Which show would you like to delete?')
         
-        print u'Are you ABSOLUTELY sure you want to delete the show?'
+        print u'Are you ABSOLUTELY sure you want to delete {show}?'.format(
+                show=show)
         answer = self.get_input(u'Delete [no]? ')
         if 'y' in answer.lower():
             try:
