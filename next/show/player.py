@@ -4,6 +4,7 @@ from next.db import db
 import next.util.util as util
 import next.util.fs as fs
 import subprocess
+import threading
 import datetime
 import shlex
 import time
@@ -37,7 +38,7 @@ def play_next(conf, show):
         return
     command = cmd_line.split(' ') + [ep_path]
     before = datetime.datetime.now()
-    if not play(command, show):
+    if not play(command, show, conf):
         return
     after = datetime.datetime.now()
 
@@ -84,22 +85,28 @@ def play_next(conf, show):
     print u'Database unmodified.'
     return
 
-def play(command, show):
+def play(command, show, conf):
     '''
     A helper method that executes the given command
     '''
     # play the show
     print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season, E=show.ep, name=show.name)
+    t = threading.Thread(target=subprocess.call, args=[command])
     try:
-        print " ".join(command)
-        subprocess.call(command)
+        # Start the ep
+        t.start() 
+        # and at the same time try to update the database
+        admin.update_eps(conf, output=False)
+        t.join()
         return True
     except KeyboardInterrupt:
+        t.cancel()
         sys.stdout.flush()
         time.sleep(1) # give the movie player some time to clean up
         return True
     except OSError:
         # maybe the player isn't installed or something?
+        t.cancel()
         print u'An error occurred while starting the player, check your config!'
         return False
 

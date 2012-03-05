@@ -2,7 +2,6 @@ from next.db import db
 from next.tvr import parser
 import next.util.util as util
 import os
-import re
 
 def find_unlisted(conf):
     '''
@@ -33,31 +32,35 @@ def find_next_ep(conf, show):
         ep = db.find_ep(conf, show.sid, next_season, next_ep)
     return ep
 
-def update_eps(conf):
+def update_eps(conf, output=True):
     '''
     This method updates the eplist for a given show using the TVRage database
     '''
     # first we check tvr to see if there are any updates for our shows
-    print "Updating TVRage episode database",
+    if output:
+        print "Updating TVRage episode database",
     all_shows = db.all_shows(conf)
     try:
         for show in all_shows:
-            print '.',
+            if output:
+                print '.',
             status = parser.get_status(show.sid)
             all_eps = parser.get_all_eps(show.sid)
             db.change_status(conf, show.sid, status)
             db.store_tvr_eps(conf, all_eps)
     except: # probably no internet connection
-        print "\nCould not connect to TVRage, aborting update!"
+        print "\nCould not connect to TVRage, will abort database update"
         return
 
     try:
         process_maybe_finished(conf, all_shows)
     except:
-        print u'maybe_finished processing failed, database may be in an inconsistant state!'
+        if output:
+            print u'maybe_finished processing failed, database may be in an inconsistant state!'
         raise Exception
 
-    print "done."
+    if output:
+        print "done."
 
 def process_maybe_finished(conf, all_shows):
     '''
