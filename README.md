@@ -14,7 +14,7 @@ TL;DR
 -----
 git clone from github; run once ("next" if next.py is in your PATH); change
 configuration found in ~/.config/next/next.conf; add some shows using "next -a";
-watch eps using "next <partial show name>"; make sure the database is updated
+watch eps using "next \<partial show name\>"; make sure the database is updated
 regularly either by watching with internet turned on or by running "next -u"
 when you're online.
 
