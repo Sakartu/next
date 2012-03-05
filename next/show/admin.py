@@ -38,7 +38,7 @@ def update_eps(conf, output=True):
     '''
     # first we check tvr to see if there are any updates for our shows
     if output:
-        print "Updating TVRage episode database",
+        print "Updating TVRage episode cache",
     all_shows = db.all_shows(conf)
     try:
         for show in all_shows:
@@ -49,14 +49,13 @@ def update_eps(conf, output=True):
             db.change_status(conf, show.sid, status)
             db.store_tvr_eps(conf, all_eps)
     except: # probably no internet connection
-        print "\nCould not connect to TVRage, will abort database update"
+        print "\nCould not connect to TVRage, will not update tvrage episode cache"
         return
 
     try:
         process_maybe_finished(conf, all_shows)
     except:
-        if output:
-            print u'maybe_finished processing failed, database may be in an inconsistant state!'
+        print u'maybe_finished processing failed for tvrage episode cache update, database may be in an inconsistant state!'
         raise Exception
 
     if output:
