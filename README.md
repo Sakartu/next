@@ -10,6 +10,14 @@ and which season and ep you're currently at. It allows you to play an ep
 of a show of your choice, or just starts up a random ep. next features a
 fully functional TUI to manage your local database.
 
+TL;DR
+-----
+git clone from github; run once ("next" if next.py is in your PATH); change
+configuration found in ~/.config/next/next.conf; add some shows using "next -a";
+watch eps using "next <partial show name>"; make sure the database is updated
+regularly either by watching with internet turned on or by running "next -u"
+when you're online.
+
 Requirements
 ------------
 
