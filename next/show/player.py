@@ -93,13 +93,25 @@ def play(command, show, conf):
     '''
     # play the show
     print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season, E=show.ep, name=show.name)
-    t = threading.Thread(target=subprocess.call, args=[command])
+    
+    # This Timer will fire an episode cache update if the user is watching for at
+    # least 5 minutes, otherwise nothing will happen
+    t = threading.Timer(60*5, admin.update_eps, args=(conf, False,))
+
+    def start_and_stop():
+        subprocess.call(command)
+        t.cancel()
+
+    # This separate thread will start playing the ep and cancel the above Timer
+    # to make sure the user doesn't have to wait for the database update
+    play_thread = threading.Thread(target=start_and_stop)
+
     try:
         # Start the ep
-        t.start() 
+        play_thread.start() 
         # and at the same time try to update the database
-        admin.update_eps(conf, output=False)
-        t.join()
+        t.start()
+        play_thread.join()
         return True
     except KeyboardInterrupt:
         sys.stdout.flush()

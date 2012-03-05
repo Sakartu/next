@@ -10,7 +10,7 @@ def initialize(path):
     This method initializes the next database at the given path. It also sets up
     the tables and returns the created db connection.
     '''
-    conn = sqlite3.connect(os.path.expanduser(path))
+    conn = sqlite3.connect(os.path.expanduser(path), check_same_thread=False)
     with conn:
         c = conn.cursor()
         # test to see if the shows table exists
