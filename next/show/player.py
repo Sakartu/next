@@ -102,13 +102,11 @@ def play(command, show, conf):
         t.join()
         return True
     except KeyboardInterrupt:
-        t.cancel()
         sys.stdout.flush()
         time.sleep(1) # give the movie player some time to clean up
         return True
     except OSError:
         # maybe the player isn't installed or something?
-        t.cancel()
         print u'An error occurred while starting the player, check your config!'
         return False
 

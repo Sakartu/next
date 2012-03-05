@@ -48,8 +48,9 @@ def update_eps(conf, output=True):
             all_eps = parser.get_all_eps(show.sid)
             db.change_status(conf, show.sid, status)
             db.store_tvr_eps(conf, all_eps)
-    except: # probably no internet connection
-        print "\nCould not connect to TVRage, will not update tvrage episode cache"
+    except Exception, e: # probably no internet connection
+        print "\nCould not connect to TVRage, will not update tvrage episode cache:"
+        print e
         return
 
     try:
