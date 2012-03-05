@@ -44,7 +44,9 @@ def play_next(conf, show):
 
     # update the db
     length_detection = conf.get(ConfKeys.LENGTH_DETECTION, 0)
-    if (after - before).total_seconds() <= length_detection * 60:
+    # can't use total_seconds() due to 2.6 compatibility :(
+    delta = (after - before)
+    if (delta.seconds + delta.days * 24 * 3600) <= length_detection * 60:
         next_ep = admin.find_next_ep(conf, show)
         if next_ep:
             return show
