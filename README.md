@@ -128,10 +128,12 @@ a more complete guide.
 
 The first thing you need to do is add a show to the database. Adding a show looks 
 up the show by name in the (remote) TVRage database and adds all the
-information it can find to the local database. To make sure you always have the
-latest ep information available you should update the database regularly, see the
-"-u" (CLI) or "update" (TUI) commands. Playing a show has already been covered in
-the bash completion part above.
+information it can find to the local database. The internal episode cache gets
+updated as you watch but you can update the cache manually (if, for instance,
+you almost always watch in an offline setting) using the -u flag. Make sure the
+cache gets updated regularly, otherwise next won't know what to do with new eps
+as they come out! Playing a show has already been covered in the bash completion
+part above.
 
 next will look for eps for your shows in the given location in the configuration 
 file. If, for some reason, you have the eps for a specific show in another location
