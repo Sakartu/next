@@ -97,6 +97,9 @@ def filter_shows(showlist, name):
     This method filters a given list of shows to provide the show which looks most
     like the given name.
     '''
+    if not showlist or not name:
+        return None
+
     matching = [x for x in showlist if shows_match(name, x, False)]
     if not matching: # loosen matching rules a bit if no results are found
         matching = [x for x in showlist if shows_match(name, x, True)]
