@@ -50,6 +50,8 @@ class TUI(cmd.Cmd, object):
         keywords are provided, a show with a corresponding name will be searched
         '''
         show = self.ask_show(line, u'Which show would you like to play the next ep from?')
+        if not show:
+            return
 
         player.play_show(self.conf, show)
 
@@ -129,6 +131,8 @@ class TUI(cmd.Cmd, object):
         provided, a show with a corresponding name will be searched
         '''
         show = self.ask_show(line, u'Which show would you like to delete?')
+        if not show:
+            return
         
         print u'Are you ABSOLUTELY sure you want to delete {show}?'.format(
                 show=show)
@@ -153,6 +157,8 @@ class TUI(cmd.Cmd, object):
         provided, a show with a corresponding name will be searched
         '''
         show = self.ask_show(line, u'Which show would you like to add a location for?')
+        if not show:
+            return
             
         print u'What location do you want to add?'
         location = self.get_input(u'Location: ')
@@ -175,6 +181,8 @@ class TUI(cmd.Cmd, object):
         be searched
         '''
         show = self.ask_show(line, u'Which show would you like to change?')
+        if not show:
+            return
 
         season = self.ask_show_season(show.name, show.sid)
         ep = self.ask_show_ep(show.sid, season)
@@ -194,6 +202,8 @@ class TUI(cmd.Cmd, object):
         will be searched
         '''
         show = self.ask_show(line, u'Which show would you like to further?')
+        if not show:
+            return
 
         next_ep = admin.find_next_ep(self.conf, show)
         if not next_ep:
@@ -312,6 +322,8 @@ class TUI(cmd.Cmd, object):
         '''
         show = self.ask_show(line, 
                     u'For which show do you want to fix the subtitles?')
+        if not show:
+            return
 
         fs.fix_subs(self.conf, show)
 
@@ -338,6 +350,9 @@ class TUI(cmd.Cmd, object):
         A helper function that is used (amongst others) by the add_show function to
         query the user as to what season and episode the user is
         '''
+        if not show:
+            return
+
         name = show[0]
         sid = show[1]
         status = show[2]
