@@ -1,8 +1,6 @@
 from next.db import db
 import constants
-import codecs
 import util
-import sys
 import os
 import re
 
