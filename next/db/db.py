@@ -3,7 +3,6 @@ import sqlite3
 from next.tvr.tvrshow import Show
 from next.tvr.tvrep import Episode
 from next.util.constants import ConfKeys
-from next.util.util import print_formatted
 
 def initialize(path):
     '''
@@ -51,10 +50,6 @@ def find_shows(conf, show_name):
         c.execute(u'''SELECT * FROM shows 
                 WHERE name like ?''', ("%" + show_name + "%",))
         shows = c.fetchall()
-
-    if not shows:
-        print_formatted(u'No shows found with that name, try again!')
-        return None
 
     return map(Show, shows)
 
