@@ -5,6 +5,7 @@ from next.util.constants import ConfKeys
 import next.util.util as util
 import next.util.fs as fs
 from next.tui.exceptions import UserCancelled, NoShowsException
+import os
 import sys
 import cmd
 import random
@@ -155,7 +156,12 @@ class TUI(cmd.Cmd, object):
             
         print u'What location do you want to add?'
         location = self.get_input(u'Location: ')
-        db.add_location(self.conf, show.sid, location)
+        answer = 'yes'
+        if not os.access(location, os.R_OK):
+            answer = self.get_input(u'No read access to location, are you sure [no]? ')
+        if 'y' in answer.lower():
+            db.add_location(self.conf, show.sid, location)
+            print u'Location added.'
 
     def help_add_show_location(self):
         util.print_formatted(u'''\
