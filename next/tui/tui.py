@@ -406,14 +406,18 @@ class TUI(cmd.Cmd, object):
         '''
         show = None
         if line:
-            while not show:
-                candidates = db.find_shows(self.conf, line)
-                show = util.filter_shows(candidates, line)
+            candidates = db.find_shows(self.conf, line)
+            show = util.filter_shows(candidates, line)
+            if not show:
+                util.print_formatted(u'Show could not be found!')
+                return 
         elif ConfKeys.FUNC_ARGS in self.conf and self.conf[ConfKeys.FUNC_ARGS]:
-            while not show:
-                name = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
-                shows = db.find_shows(self.conf, name)
-                show = util.filter_shows(shows, name)
+            name = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
+            shows = db.find_shows(self.conf, name)
+            show = util.filter_shows(shows, name)
+            if not show:
+                util.print_formatted(u'Show could not be found!')
+                return 
         else:
             try:
                 all_shows = self.get_all_shows()
