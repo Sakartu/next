@@ -2,7 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
+# check version
+if sys.version_info < (2, 6):
+    print u'next needs python version >= 2.6!'
+    sys.exit(-1)
 
+# check imports
 try:
     import tvrage
 except ImportError:
