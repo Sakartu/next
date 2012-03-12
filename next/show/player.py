@@ -6,6 +6,7 @@ import next.util.fs as fs
 import subprocess
 import threading
 import datetime
+import Queue
 import shlex
 import time
 import sys
@@ -96,31 +97,40 @@ def play(command, show, conf):
     
     # This Timer will fire an episode cache update if the user is watching for at
     # least 5 minutes, otherwise nothing will happen
-    t = threading.Timer(60*5, admin.update_eps, args=(conf, False,))
+    update_timer = threading.Timer(60*5, admin.update_eps, args=(conf, False,))
+    
+    class PlayThread(threading.Thread):
+        def __init__(self, result):
+            threading.Thread.__init__(self)
+            self.result = result
 
-    def start_and_stop():
-        try:
-            subprocess.call(command)
-        finally:
-            t.cancel()
+        def run(self):
+            try:
+                subprocess.call(command)
+                self.result.put(True)
+            except KeyboardInterrupt:
+                # user killed the player himself
+                self.result.put(True)
+            except:
+                # player probably doesn't exist or isn't properly configged
+                print u'An error occurred while starting the player, check your config!'
+                self.result.put(False)
+            finally:
+                update_timer.cancel()
 
     # This separate thread will start playing the ep and cancel the above Timer
     # to make sure the user doesn't have to wait for the database update
-    play_thread = threading.Thread(target=start_and_stop)
+    result = Queue.Queue()
+    play_thread = PlayThread(result)
 
     try:
         # Start the ep
         play_thread.start() 
         # and at the same time try to update the database
-        t.start()
+        update_timer.start()
         play_thread.join()
-        return True
+        return result.get(block=False)
     except KeyboardInterrupt:
         sys.stdout.flush()
         time.sleep(1) # give the movie player some time to clean up
         return True
-    except OSError:
-        # maybe the player isn't installed or something?
-        print u'An error occurred while starting the player, check your config!'
-        return False
-
