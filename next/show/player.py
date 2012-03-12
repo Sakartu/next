@@ -99,8 +99,10 @@ def play(command, show, conf):
     t = threading.Timer(60*5, admin.update_eps, args=(conf, False,))
 
     def start_and_stop():
-        subprocess.call(command)
-        t.cancel()
+        try:
+            subprocess.call(command)
+        finally:
+            t.cancel()
 
     # This separate thread will start playing the ep and cancel the above Timer
     # to make sure the user doesn't have to wait for the database update
