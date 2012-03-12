@@ -132,6 +132,7 @@ def build_parser():
     parser.add_option(u'-d',
 	u'--del',
 	u'--rm',
+	u'--remove',
 	action="store_const",
 	dest="func",
 	const=t.do_del_show,
