@@ -73,6 +73,18 @@ to run next directly from the checkout you can do so; just run next.py in the
 next/ directory. You can put next.py in your PATH using your bash profile or by
 creating a symlink in /usr/local/bin to next.py.
 
+Updating
+--------
+
+If you installed next using the setuptools method (see Installation) you can
+update by pulling the latest version from github, then reinstalling using
+setuptools:
+
+    user@box$ cd src/next; git pull
+    user@box$ sudo python setup.py install
+
+If you installed manually, pulling the latest version from github is enough to
+update.
 
 Configuration
 -------------
