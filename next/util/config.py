@@ -1,6 +1,6 @@
 from optparse import OptionParser
-from next.util.constants import USAGE, EXAMPLE_CONF, ConfKeys
-from next.tui.tui import TUI
+from constants import USAGE, EXAMPLE_CONF, ConfKeys
+from tui.tui import TUI
 import ConfigParser
 import os
 import sys

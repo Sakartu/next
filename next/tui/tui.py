@@ -1,10 +1,10 @@
-from next.show import player, admin
-from next.db import db
-from next.tvr import parser
-from next.util.constants import ConfKeys
-import next.util.util as util
-import next.util.fs as fs
-from next.tui.exceptions import UserCancelled, NoShowsException
+from show import player, admin
+from db import db
+from tvr import parser
+from util.constants import ConfKeys
+import util.util as util
+import util.fs as fs
+from exceptions import UserCancelled, NoShowsException
 import os
 import sys
 import cmd

@@ -1,4 +1,4 @@
-import next.util.constants as constants
+import constants
 import unicodedata
 import textwrap
 import os

@@ -1,4 +1,4 @@
-from next.db import db
+from db import db
 import constants
 import util
 import os

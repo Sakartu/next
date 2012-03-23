@@ -1,6 +1,6 @@
-from next.db import db
-from next.tvr import parser
-import next.util.util as util
+from db import db
+from tvr import parser
+import util.util as util
 import os
 
 def find_unlisted(conf):
