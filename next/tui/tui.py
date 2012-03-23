@@ -207,7 +207,7 @@ class TUI(cmd.Cmd, object):
 
         next_ep = admin.find_next_ep(self.conf, show)
         if not next_ep:
-            print u'No information about new eps yet, try updating later!'
+            print u'Show has been furthered, but there is no information about new eps yet. Try updating later to fix this!'
             db.mark_maybe_finished(self.conf, show.sid)
             show.maybe_finished = True
             return
@@ -512,9 +512,10 @@ class TUI(cmd.Cmd, object):
                     newline += '*'
                 else:
                     newline += ' '
-            print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}    {status}'.format(
+            mf_char = '?' if show.maybe_finished else ' '
+            print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}{maybe_finished}    {status}'.format(
                 id=i + 1, name=show.name, length=max_len, 
-                new=newline, S=show.season, E=show.ep, 
+                new=newline, S=show.season, E=show.ep, maybe_finished=mf_char,
                 status=show.status if display_status else "")
 
     def print_shows_simple(self):
