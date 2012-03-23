@@ -62,7 +62,7 @@ Just checkout the source somewhere (we'll use ~/src/ as an example) and
 put next.py in your path:
 
     user@box$ git clone git://github.com/Sakartu/next.git src/next
-    user@box$ sudo ln -s ~/src/next/next.py /usr/bin/next
+    user@box$ sudo ln -s ~/src/next/next/next.py /usr/bin/next
 
 After this next will be at your disposal from your terminal. That's all the
 installation that's required :)
@@ -133,7 +133,8 @@ that have the letters "wh" in them, in that order, typing
 
     user@box$ next wh
     
-is enough to start the next "White Collar" ep.
+is enough to start the next "White Collar" ep; the completion is only a nice
+addition, not a requirement.
 
 Usage
 -----
@@ -147,8 +148,16 @@ information it can find to the local database. The internal episode cache gets
 updated as you watch but you can update the cache manually (if, for instance,
 you almost always watch in an offline setting) using the -u flag. Make sure the
 cache gets updated regularly, otherwise next won't know what to do with new eps
-as they come out! Playing a show has already been covered in the bash completion
-part above.
+as they come out! Updating the database can be done manually (by running next
+with the -u flag) or automatically if you play shows while an internet 
+connection is available. Playing a show has already been covered in the bash
+completion part above; you just start next with some hints as to which show you
+mean as parameters:
+
+    user@box$ next white
+
+will start the next ep of White Collar for you (provided you added it to the
+database)
 
 next will look for eps for your shows in the given location in the configuration 
 file. If, for some reason, you have the eps for a specific show in another location
