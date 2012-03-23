@@ -67,6 +67,13 @@ put next.py in your path:
 After this next will be at your disposal from your terminal. That's all the
 installation that's required :)
 
+Updating
+--------
+
+To update next you can simply pull the latest version from github using:
+
+    user@box$ cd src/next; git pull
+
 Configuration
 -------------
 
