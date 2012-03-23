@@ -12,11 +12,11 @@ fully functional TUI to manage your local database.
 
 TL;DR
 -----
-git clone from github; run once ("next" if next.py is in your PATH); change
-configuration found in ~/.config/next/next.conf; add some shows using "next -a";
-watch eps using "next \<partial show name\>"; make sure the database is updated
-regularly either by watching with internet turned on or by running "next -u"
-when you're online.
+git clone from github; install using setuptools; run once (just type "next"); 
+change configuration found in ~/.config/next/next.conf; add some shows using
+"next -a"; watch eps using "next \<partial show name\>"; make sure the database
+is updated regularly either by watching with internet turned on or by running
+"next -u" when you're online.
 
 Requirements
 ------------
@@ -27,6 +27,12 @@ To be able to play video from the command line a command line video player
 is required. I myself use mplayer but since you specify your own 
 command line to start video's with (see Configuration), you can use
 whatever you want!
+
+next now features setuptools capabilities, meaning that all dependencies are
+installed automatically when installing next. This does mean, however, that you
+need the python-setuptools package installed, you can probably find it in your
+distro's repository. If you want to install next manually for whatever reason,
+here is how you get the dependencies:
 
 Because next uses the TVRage database to retrieve show information you need to
 install the tvrage python module. The easiest way to install this module is
@@ -54,18 +60,18 @@ specified in the configuration file for the database.
 Installation
 ------------
 
-First of all, make sure you've read the Requirements section above to make sure
-you have all the right libraries.
-
-Since next is just a small python script, installing it is really easy.
-Just checkout the source somewhere (we'll use ~/src/ as an example) and
-put next.py in your path:
+The easiest way to install next is by using the provided installer. If you have
+the python-setuptools package installed you can just checkout the source and
+install it as follows:
 
     user@box$ git clone git://github.com/Sakartu/next.git src/next
-    user@box$ sudo ln -s ~/src/next/next.py /usr/bin/next
+    user@box$ sudo python src/next/setup.py install
 
-After this next will be at your disposal from your terminal. That's all the
-installation that's required :)
+After this next will be at your disposal from your terminal by running "next".
+
+If you want to install next manually you can run the next.py file to start next.
+Put the next.py file in your path (using your bash profile or using a symlink)
+if you want to run next anywhere on your system.
 
 Configuration
 -------------
