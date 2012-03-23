@@ -14,13 +14,13 @@ except ImportError:
     print u'next needs the tvrage module to work. See the README for more information!'
     sys.exit(-1)
 
-from next.util import config
-from next.util.constants import ConfKeys
-from next.db import db
-from next.show import player
-from next.tui.exceptions import UserCancelled
-from next.tui.tui import TUI
-from next.util import util
+from util import config
+from util.constants import ConfKeys
+from db import db
+from show import player
+from tui.exceptions import UserCancelled
+from tui.tui import TUI
+from util import util
 import os
 import codecs
 import sqlite3
