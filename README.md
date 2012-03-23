@@ -28,11 +28,11 @@ is required. I myself use mplayer but since you specify your own
 command line to start video's with (see Configuration), you can use
 whatever you want!
 
-next now features setuptools capabilities, meaning that all dependencies are
-installed automatically when installing next. This does mean, however, that you
-need the python-setuptools package installed, you can probably find it in your
-distro's repository. If you want to install next manually for whatever reason,
-here is how you get the dependencies:
+next now features setuptools capabilities, meaning that all further dependencies
+are installed automatically when installing next. This does mean, however, that
+you need the python-setuptools package installed, you can probably find it in
+your distro's repository. If you want to install next manually (for instance
+because you want to help develop next), here is how you get the dependencies: 
 
 Because next uses the TVRage database to retrieve show information you need to
 install the tvrage python module. The easiest way to install this module is
@@ -68,10 +68,11 @@ install it as follows:
     user@box$ sudo python src/next/setup.py install
 
 After this next will be at your disposal from your terminal by running "next".
+If you want to help next development or there is some other reason why you want
+to run next directly from the checkout you can do so; just run next.py in the
+next/ directory. You can put next.py in your PATH using your bash profile or by
+creating a symlink in /usr/local/bin to next.py.
 
-If you want to install next manually you can run the next.py file to start next.
-Put the next.py file in your path (using your bash profile or using a symlink)
-if you want to run next anywhere on your system.
 
 Configuration
 -------------
