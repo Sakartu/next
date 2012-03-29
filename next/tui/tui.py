@@ -449,15 +449,15 @@ class TUI(cmd.Cmd, object):
             util.print_formatted(header)
             self.print_shows_detailed(all_shows)
             number = int(self.get_input(u'Show number: ', range(1, len(all_shows) + 1)))
-            show = all_shows[number - 1]
+            show = sorted(all_shows, key=str)[number - 1]
         return show
 
     def read_show(self, shows):
         print u'Which show would you like to add?'
-        for (i, show) in enumerate(shows):
+        for (i, show) in enumerate(sorted(shows, key=str)):
             print u'{0:3d}. {1}'.format(i + 1, show[0])
         number = int(self.get_input(u'Show number: ', range(1, len(shows) + 1)))
-        return shows[number - 1]
+        return sorted(shows, key=str)[number - 1]
 
     def get_input(self, term=u'next$ ', possibles=None):
         '''
@@ -504,7 +504,7 @@ class TUI(cmd.Cmd, object):
         print u'{id:3s}  {name:{length}s}   Next ep   {status}'.format(id=u'', 
             name=u'Show Name', length=max_len, status='Status' if 
             display_status else '')
-        for (i, show) in enumerate(shows):
+        for (i, show) in enumerate(sorted(shows, key=str)):
             newline = '  '
             if show.name in new_shows and not show.maybe_finished:
                 newline = '*' if display_new else ' '
