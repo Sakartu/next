@@ -520,7 +520,7 @@ class TUI(cmd.Cmd, object):
 
     def print_shows_simple(self):
         try:
-            print '\n'.join(map(str, self.get_all_shows()))
+            print '\n'.join(map(str, sorted(self.get_all_shows(), key=str)))
         except NoShowsException:
             print u'There are no shows!'
             return
