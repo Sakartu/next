@@ -501,7 +501,7 @@ class TUI(cmd.Cmd, object):
                     new_shows[show.name] = subp
 
         max_len = max(map(len, map(lambda x : x.name, shows))) + 3
-        print u'{id:3s}  {name:{length}s}   Next ep   {status}'.format(id=u'', 
+        print u'{id:3s}  {name:{length}s}   Next ep    {status}'.format(id=u'', 
             name=u'Show Name', length=max_len, status='Status' if 
             display_status else '')
         for (i, show) in enumerate(sorted(shows, key=str)):
