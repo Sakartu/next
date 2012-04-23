@@ -1,7 +1,6 @@
 from util.constants import ConfKeys
 from show import admin
 from db import db
-import util.util as util
 import util.fs as fs
 import subprocess
 import threading
