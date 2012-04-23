@@ -1,5 +1,5 @@
 # exts shouldn't have dots!
-VIDEO_EXTS = [u'mkv', u'avi', u'mpg', u'mpeg'] 
+VIDEO_EXTS = [u'mkv', u'avi', u'mpg', u'mpeg', u'mp4', u'mov'] 
 SUB_EXTS = [u'srt', u'sub', u'idx', u'ssa', u'ass']
 
 SHOW_REGEXES = [
