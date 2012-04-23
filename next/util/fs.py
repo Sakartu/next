@@ -1,6 +1,7 @@
 from db import db
 import constants
 import util
+import glob
 import os
 import re
 
@@ -95,19 +96,19 @@ def build_ep_path(conf, show):
 
         if not unstructured:
             rexes = [re.compile("^" + x.format(show="", season=show.season,
-                ep=show.ep) + ext + "$", re.I | re.U) for ext in
-                constants.VIDEO_EXTS for x in constants.SHOW_REGEXES]
+                ep=show.ep) + "$", re.I | re.U) for x in constants.SHOW_REGEXES]
         else:
             show_words = util.get_words(show.name)
             rexes = [re.compile(x.format(show="".join([word + "[\W_]" for word in
-                show_words]), season=show.season, ep=show.ep) + ext, re.I | re.U)
-                for ext in constants.VIDEO_EXTS for x in constants.SHOW_REGEXES]
-        for ep in os.listdir(path):
-            for rex in rexes:
-                m = rex.match(ep)
-                if m:
-                    path = os.path.join(path, ep)
-                    return path
+                show_words]), season=show.season, ep=show.ep), re.I | re.U)
+                for x in constants.SHOW_REGEXES]
+
+        for e in constants.VIDEO_EXTS:
+            for ep in glob.glob(path + os.sep + '*.' + e):
+                for rex in rexes:
+                    m = rex.match(os.path.split(ep)[1])
+                    if m:
+                        return ep
 
     return None # if no ep could be found in any of the bases
 
