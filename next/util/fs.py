@@ -94,13 +94,14 @@ def build_ep_path(conf, show):
                 continue
 
         if not unstructured:
-            rexes = [re.compile("^" + x.format(show="", season=show.season, ep=show.ep) + ext + "$", re.I | re.U) for
-                    x in constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
+            rexes = [re.compile("^" + x.format(show="", season=show.season,
+                ep=show.ep) + ext + "$", re.I | re.U) for ext in
+                constants.VIDEO_EXTS for x in constants.SHOW_REGEXES]
         else:
             show_words = util.get_words(show.name)
             rexes = [re.compile(x.format(show="".join([word + "[\W_]" for word in
-                show_words]), season=show.season, ep=show.ep) + ext, re.I | re.U) for x in
-                constants.SHOW_REGEXES for ext in constants.VIDEO_EXTS] 
+                show_words]), season=show.season, ep=show.ep) + ext, re.I | re.U)
+                for ext in constants.VIDEO_EXTS for x in constants.SHOW_REGEXES]
         for ep in os.listdir(path):
             for rex in rexes:
                 m = rex.match(ep)
