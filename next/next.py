@@ -36,18 +36,8 @@ def main():
     # and redirect the current stdout
     sys.stdout = out
 
-    try:  # the database_path is usually the show_path, but can be defined in conf
-        if ConfKeys.DB_PATH in conf:
-            if not conf[ConfKeys.DB_PATH].endswith('.db'):  # possibly a dir?
-                database_path = os.path.join(conf[ConfKeys.DB_PATH], u'next.db')
-            else:
-                database_path = conf[ConfKeys.DB_PATH]
-        else:
-            database_path = os.path.join(conf[ConfKeys.SHOW_PATH], u'next.db')
-        database_path = os.path.expanduser(os.path.expandvars(database_path))
-    except KeyError:
-        print(u'No show_path or database_path defined in configuration, aborting!')
-        sys.exit(-1)
+    database_path = conf[ConfKeys.DB_PATH]
+    database_path = os.path.expanduser(os.path.expandvars(database_path))
 
     # initialize the sqlite database
     try:

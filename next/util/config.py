@@ -57,6 +57,12 @@ def parse_opts():
             db_path = config.get(u'general', ConfKeys.SHOW_PATH)
         config.set(u'general', ConfKeys.DB_PATH, db_path)
 
+    # Check if DB_PATH is a dir or a file
+    database_path = config.get(u'general', ConfKeys.DB_PATH)
+    if not database_path.endswith('.db'):
+        config.set(u'general', ConfKeys.DB_PATH,
+        os.path.join(database_path, u'next.db'))
+
     result = dict(config.items(u'general'))
 
     for (k, v) in result.items():  # make sure bools are parsed correct
