@@ -11,7 +11,8 @@ if sys.version_info < (2, 6):
 try:
     import tvrage
 except ImportError:
-    print u'next needs the tvrage module to work. See the README for more information!'
+    print u'next needs the tvrage module to work. See the README for more '
+    'information!'
     sys.exit(-1)
 
 from util import config
@@ -41,14 +42,17 @@ def main():
 
     # initialize the sqlite database
     try:
-        if os.path.exists(database_path) or os.access(os.path.dirname(database_path), os.W_OK | os.R_OK):
+        if os.path.exists(database_path) or os.access(
+                os.path.dirname(database_path), os.W_OK | os.R_OK):
             conf[ConfKeys.DB_CONN] = db.initialize(database_path)
         else:
-            print(u'Could not access shows database, path "{0}" does not exist or we don\'t have write access!'.format(database_path))
+            print(u'Could not access shows database, path "{0}" does not exist'
+                    ' or we don\'t have write access!'.format(database_path))
             sys.exit(-1)
 
     except sqlite3.OperationalError:
-        print(u'Could not access shows database, are the permissions correct for "{0}"?'.format(database_path))
+        print(u'Could not access shows database, are the permissions correct '
+        'for "{0}"?'.format(database_path))
         sys.exit(-1)
 
     # first check for commandline options
@@ -62,9 +66,10 @@ def main():
         sys.exit(0)
 
     # couple of usecases:
-    # 1. there is an argument provided. this is probably a show that the user wants
-    #    us to start, so let's start it.
-    # 2. there are no arguments provided. provide the user with a query what he wants
+    # 1. there is an argument provided. this is probably a show that the user
+    # wants us to start, so let's start it.
+    # 2. there are no arguments provided. provide the user with a query what he
+    # wants
     if args:
         # 1. user provided a showname, find it in the db, then play it.
         shows = db.find_shows(conf, u' '.join(args))
