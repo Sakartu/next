@@ -114,9 +114,9 @@ class TUI(cmd.Cmd, object):
             wanted = ''
 
         print u'Getting all show eps from TVRage... ',
-        episodes = parser.get_all_eps(found_show[1]) # find eps by sid
+        episodes = parser.get_all_eps(found_show[1])  # find eps by sid
         print u'done.'
-        
+
         print u'Storing eps in db... ',
         db.store_tvr_eps(self.conf, episodes)
         print u'done.'
@@ -125,7 +125,7 @@ class TUI(cmd.Cmd, object):
 
     def help_add_show(self):
         print u'Add a show to the local database'
-    
+
     def do_del_show(self, line=None):
         '''
         A TUI function used to delete a show from the database. If keywords are
@@ -134,7 +134,7 @@ class TUI(cmd.Cmd, object):
         show = self.ask_show(line, u'Which show would you like to delete?')
         if not show:
             return
-        
+
         print u'Are you ABSOLUTELY sure you want to delete {show}?'.format(
                 show=show)
         answer = self.get_input(u'Delete [no]? ')
@@ -160,7 +160,7 @@ class TUI(cmd.Cmd, object):
         show = self.ask_show(line, u'Which show would you like to add a location for?')
         if not show:
             return
-            
+
         print u'What location do you want to add?'
         location = self.get_input(u'Location: ')
         answer = 'yes'
@@ -246,9 +246,9 @@ class TUI(cmd.Cmd, object):
                     found_show = self.read_show(shows)
 
                     print u'Getting all show eps from TVRage... ',
-                    episodes = parser.get_all_eps(found_show[1]) # find eps by sid
+                    episodes = parser.get_all_eps(found_show[1])  # find eps by sid
                     print u'done.'
-                    
+
                     print u'Storing eps in db... ',
                     db.store_tvr_eps(self.conf, episodes)
                     print u'done.'
@@ -321,7 +321,7 @@ class TUI(cmd.Cmd, object):
         A function that fixes the names of subtitle files for a given show. If
         keywords are provided, a show with a corresponding name will be searched
         '''
-        show = self.ask_show(line, 
+        show = self.ask_show(line,
                     u'For which show do you want to fix the subtitles?')
         if not show:
             return
@@ -332,6 +332,17 @@ class TUI(cmd.Cmd, object):
         util.print_formatted(u'''\
         Recursively check subtitle names and rename to name of
         corresponding ep file if necessary''')
+
+    def do_clean_db(self, line=None):
+        '''
+        A function that clears the tvrage cache of all the shows that are no
+        longer in your database
+        '''
+        admin.clean_db(self.conf)
+
+    def help_clean_db(self):
+        util.print_formatted(u'''\
+        Clear the tvrage cache of shows that are no longer in your database''')
 
     def do_quit(self, line=None):
         '''
@@ -357,7 +368,7 @@ class TUI(cmd.Cmd, object):
         name = show[0]
         sid = show[1]
         status = show[2]
-        
+        #
         # found out which season and ep the user is
         season = self.ask_show_season(name, sid)
         ep = self.ask_show_ep(sid, season)
@@ -437,14 +448,14 @@ class TUI(cmd.Cmd, object):
             show = util.filter_shows(candidates, line)
             if not show:
                 util.print_formatted(u'Show could not be found!')
-                return 
+                return
         elif ConfKeys.FUNC_ARGS in self.conf and self.conf[ConfKeys.FUNC_ARGS]:
             name = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
             shows = db.find_shows(self.conf, name)
             show = util.filter_shows(shows, name)
             if not show:
                 util.print_formatted(u'Show could not be found!')
-                return 
+                return
         else:
             try:
                 all_shows = self.get_all_shows()
@@ -467,9 +478,9 @@ class TUI(cmd.Cmd, object):
 
     def get_input(self, term=u'next$ ', possibles=None):
         '''
-        A helper function that queries the user for input. Can be given a terminal
-        line to show (term) and a list of possible answers the user can give. If
-        possibles is None, we assume a plaintext answer.
+        A helper function that queries the user for input. Can be given
+        a terminal line to show (term) and a list of possible answers the user
+        can give. If possibles is None, we assume a plaintext answer.
         '''
         if possibles != None and type(possibles) != type([]):
             possibles = None
@@ -495,7 +506,8 @@ class TUI(cmd.Cmd, object):
 
     def print_shows_detailed(self, shows, display_new=False, display_subs=False, display_status=False):
         '''
-        A helper function that prints a list of shows, each with the reached season and ep.
+        A helper function that prints a list of shows, each with the reached 
+        season and ep.
         '''
         new_shows = {}
         if display_new or display_subs:
@@ -506,9 +518,9 @@ class TUI(cmd.Cmd, object):
                 if p:
                     new_shows[show.name] = subp
 
-        max_len = max(map(len, map(lambda x : x.name, shows))) + 3
-        print u'{id:3s}  {name:{length}s}   Next ep    {status}'.format(id=u'', 
-            name=u'Show Name', length=max_len, status='Status' if 
+        max_len = max(map(len, map(lambda x: x.name, shows))) + 3
+        print u'{id:3s}  {name:{length}s}   Next ep    {status}'.format(id=u'',
+            name=u'Show Name', length=max_len, status='Status' if
             display_status else '')
         for (i, show) in enumerate(sorted(shows, key=str)):
             newline = '  '
@@ -520,7 +532,7 @@ class TUI(cmd.Cmd, object):
                     newline += ' '
             mf_char = '?' if show.maybe_finished else ' '
             print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}{maybe_finished}    {status}'.format(
-                id=i + 1, name=show.name, length=max_len, 
+                id=i + 1, name=show.name, length=max_len,
                 new=newline, S=show.season, E=show.ep, maybe_finished=mf_char,
                 status=show.status if display_status else "")
 
@@ -530,5 +542,3 @@ class TUI(cmd.Cmd, object):
         except NoShowsException:
             print u'There are no shows!'
             return
-
-
