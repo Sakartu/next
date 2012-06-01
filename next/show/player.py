@@ -87,17 +87,18 @@ def play_next(conf, show):
     print u'Database unmodified.'
     return
 
+
 def play(command, show, conf):
     '''
     A helper method that executes the given command
     '''
     # play the show
     print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season, E=show.ep, name=show.name)
-    
+
     # This Timer will fire an episode cache update if the user is watching for at
     # least 5 minutes, otherwise nothing will happen
-    update_timer = threading.Timer(60*5, admin.update_eps, args=(conf, False,))
-    
+    update_timer = threading.Timer(60 * 5, admin.update_eps, args=(conf, False,))
+
     class PlayThread(threading.Thread):
         def __init__(self, result):
             threading.Thread.__init__(self)
@@ -124,12 +125,12 @@ def play(command, show, conf):
 
     try:
         # Start the ep
-        play_thread.start() 
+        play_thread.start()
         # and at the same time try to update the database
         update_timer.start()
         play_thread.join()
         return result.get(block=False)
     except KeyboardInterrupt:
         sys.stdout.flush()
-        time.sleep(1) # give the movie player some time to clean up
+        time.sleep(1)  # give the movie player some time to clean up
         return True

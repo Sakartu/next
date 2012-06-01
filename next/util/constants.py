@@ -1,11 +1,14 @@
 # exts shouldn't have dots!
-VIDEO_EXTS = [u'mkv', u'avi', u'mpg', u'mpeg', u'mp4', u'mov'] 
+VIDEO_EXTS = [u'mkv', u'avi', u'mpg', u'mpeg', u'mp4', u'mov']
 SUB_EXTS = [u'srt', u'sub', u'idx', u'ssa', u'ass']
 
 SHOW_REGEXES = [
-    r'(?P<show>{show}).*S0*(?P<season>{season})E0*(?P<ep>{ep})\D.*',  # accounts for most S12E12 type of shows
-    r'(?P<show>{show}).*0*(?P<season>{season})x0*(?P<ep>{ep})\D.*'    # accounts for most 12x12 type of shows
-    ] 
+    # accounts for most S12E12 type of shows
+    r'(?P<show>{show}).*S0*(?P<season>{season})E0*(?P<ep>{ep})\D.*',
+
+    # accounts for most 12x12 type of shows
+    r'(?P<show>{show}).*0*(?P<season>{season})x0*(?P<ep>{ep})\D.*',
+    ]
 
 
 USAGE = u"""Usage: next ([options] | [show])
@@ -21,7 +24,6 @@ next can be called either with an option or with words identifying a certain
 show. Only one option can be used at a time, the last option counts, previous
 options will be ignored
 """
-
 
 
 class ConfKeys:
