@@ -3,6 +3,7 @@ from tvr import parser
 import util.util as util
 import os
 
+
 def find_unlisted(conf):
     '''
     This method searches in your shows folder for shows that aren't in the
@@ -19,6 +20,7 @@ def find_unlisted(conf):
     has_match = lambda s: any(x for x in listed if util.shows_match(s, x))
     return [ s for s in all_shows if not has_match(s) ]
 
+
 def find_next_ep(conf, show):
     '''
     This method tries to determine which ep is next for the given show.
@@ -31,6 +33,7 @@ def find_next_ep(conf, show):
         next_ep = 1
         ep = db.find_ep(conf, show.sid, next_season, next_ep)
     return ep
+
 
 def update_eps(conf, output=True):
     '''
@@ -62,6 +65,7 @@ def update_eps(conf, output=True):
     if output:
         print "done."
 
+
 def process_maybe_finished(conf, all_shows):
     '''
     This method walks over all the shows that are marked maybe_finished, to find
@@ -77,4 +81,14 @@ def process_maybe_finished(conf, all_shows):
                 db.mark_not_maybe_finished(conf, show.sid)
 
 
-
+def clean_db(conf):
+    '''
+    This method cleans the database of shows that have leftover information in
+    the tvrage cache, but are no longer present in the rest of the database
+    '''
+    show_ids = db.find_show_ids(conf)
+    tvr_ids = db.find_tvr_ids(conf)
+    to_clean = [i for i in tvr_ids if i not in show_ids]
+    db.clear_cache(conf, ((x,) for x in to_clean))
+    print u'Cleared out shows with ids {0}'.format(
+            ' and '.join(map(str, to_clean)))
