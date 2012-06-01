@@ -28,7 +28,7 @@ import sqlite3
 
 def main():
     (options, conf, args) = config.parse_opts()
-    # create an unbuffered, unicode supporting output file descriptor
+    # create an unbuffered, unicode supporting output file descriptor 
     # (see http://wiki.python.org/moin/PrintFails)
     out = codecs.getwriter('utf8')(os.fdopen(sys.stdout.fileno(), 'w', 0))
     # save old stdout fd to restore later if necessary

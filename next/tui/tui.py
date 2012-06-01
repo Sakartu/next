@@ -214,7 +214,7 @@ class TUI(cmd.Cmd, object):
             return
 
         db.change_show(self.conf, show.sid, next_ep.season, next_ep.epnum)
-        print u'Successfully furthered {0}!'.format(show.name)
+        print u'Successfully furthered {0} to S{season:02d}E{ep:02d}!'.format(show.name, season=next_ep.season, ep=next_ep.epnum)
 
     def help_further_show(self):
         print u'Set a show to the next episode without playing the ep'
