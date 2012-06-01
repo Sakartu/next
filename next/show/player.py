@@ -11,6 +11,7 @@ import time
 import sys
 import os
 
+
 def play_show(conf, show):
     another = True
     while another:
@@ -26,6 +27,7 @@ def play_show(conf, show):
         if u'y' not in answer.lower() and answer.strip() != '':
             another = False
 
+
 def play_next(conf, show):
     '''
     This method plays the next episode for the given show.
@@ -34,7 +36,9 @@ def play_next(conf, show):
     ep_path = fs.build_ep_path(conf, show)
     show.path = ep_path
     if not ep_path:
-        print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available or marked maybe_finished?'.format(S=show.season, E=show.ep, name=show.name)
+        print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available '
+        'or marked maybe_finished?'.format(S=show.season, E=show.ep,
+                name=show.name)
         return
     command = cmd_line.split(' ') + [ep_path]
     before = datetime.datetime.now()
@@ -76,8 +80,9 @@ def play_next(conf, show):
                         # fill all the parameters with info from show
                         to_call = [x.format(**show.__dict__) for x in to_call]
                     except KeyError, e:
-                        print u'You used a post-processing parameter that doesn\'t exist: '\
-                                + str(e).strip() + u', skipping hook \"' + str(script) + '\"'
+                        print u'You used a post-processing parameter that '
+                        'doesn\'t exist: {0}, skipping hook "{1}"'.format(
+                                str(e).strip(), str(script))
                         continue
                     subprocess.call(to_call)
 
@@ -93,11 +98,13 @@ def play(command, show, conf):
     A helper method that executes the given command
     '''
     # play the show
-    print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season, E=show.ep, name=show.name)
+    print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season,
+            E=show.ep, name=show.name)
 
-    # This Timer will fire an episode cache update if the user is watching for at
-    # least 5 minutes, otherwise nothing will happen
-    update_timer = threading.Timer(60 * 5, admin.update_eps, args=(conf, False,))
+    # This Timer will fire an episode cache update if the user is watching for
+    # at least 5 minutes, otherwise nothing will happen
+    update_timer = threading.Timer(60 * 5, admin.update_eps, args=(conf,
+        False,))
 
     class PlayThread(threading.Thread):
         def __init__(self, result):
@@ -113,7 +120,8 @@ def play(command, show, conf):
                 self.result.put(True)
             except:
                 # player probably doesn't exist or isn't properly configged
-                print u'An error occurred while starting the player, check your config!'
+                print u'An error occurred while starting the player, check '
+                'your config!'
                 self.result.put(False)
             finally:
                 update_timer.cancel()

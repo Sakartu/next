@@ -40,6 +40,7 @@ class ConfKeys:
     FUNC_ARGS = u'func_args'
     ASK_ANOTHER = u'ask_another'
 
+
 class TVRage:
     '''
     This enumeration class contains constants for all the xpath-like paths for
@@ -73,14 +74,14 @@ show_path=~/downloads/series/
 player_cmd=totem
 
 # set this command to True if you have an unstructured series folder
-# this is useful for people who just put all their new eps in 
+# this is useful for people who just put all their new eps in
 # ~/downloads/ or something.
 #unstructured_mode=False
 
 # a comma-separated list of scripts to call after an ep is watched and the
 # database is updated. The script will be called always when the database is
 # updated. The arguments for the script can be the following:
-# 'status'          The status of the show (Returning, Cancelled, etc) 
+# 'status'          The status of the show (Returning, Cancelled, etc)
 # 'name'            The name of the show
 # 'season'          The season of the watched ep
 # 'ep'              The episode number of the watched ep
@@ -91,7 +92,7 @@ player_cmd=totem
 # post_hook=~/bin/test.py {path} {season} {ep}
 # multiple scripts can be called by separating them with comma's:
 # post_hook=~/bin/test.py {path},~/bin/test2.py {season} {ep}
-# 
+#
 # The example below will delete the watched ep after a succesful watch.
 #post_hook=/bin/rm {path}
 
@@ -100,7 +101,7 @@ player_cmd=totem
 # always ask the post-watch questions.
 length_detecion=0
 
-# Determines whether next will ask 'Shall I play another ep?' (provided there is
-# another ep available)
+# Determines whether next will ask 'Shall I play another ep?' (provided there
+# is another ep available)
 ask_another=True
 '''
