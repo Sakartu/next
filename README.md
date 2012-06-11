@@ -12,11 +12,11 @@ fully functional TUI to manage your local database.
 
 TL;DR
 -----
-git clone from github; run once ("next" if next.py is in your PATH); change
-configuration found in ~/.config/next/next.conf; add some shows using "next -a";
-watch eps using "next \<partial show name\>"; make sure the database is updated
-regularly either by watching with internet turned on or by running "next -u"
-when you're online.
+git clone from github; install dependencies (python-tvrage, python-xdgapp <optional>, pyreadline <optional>); run once ("next" if next.py is in your
+PATH); change configuration found in ~/.config/next/next.conf; add some shows
+using "next -a"; watch eps using "next \<partial show name\>"; make sure the
+database is updated regularly either by watching with internet turned on or by
+running "next -u" when you're online.
 
 Requirements
 ------------
@@ -50,6 +50,9 @@ If you run next under Windows installing python-xdgapp is quite useless, next
 will default to ~/.next/next.conf for the configuration file and to the show dir
 specified in the configuration file for the database.
 
+To have tab-completion support in the TUI in Windows, the pyreadline library is needed. It can be installed using:
+
+    user@box$ sudo pip install pyreadline
 
 Installation
 ------------

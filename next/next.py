@@ -14,6 +14,11 @@ except ImportError:
     print u'next needs the tvrage module to work. See the README for more information!'
     sys.exit(-1)
 
+try:
+    import pyreadline as readline
+except ImportError:
+    pass  # No readline support under Windows, oh well.
+
 from util import config
 from util.constants import ConfKeys
 from db import db
