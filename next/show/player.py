@@ -1,6 +1,5 @@
 from util.constants import ConfKeys
 from show import admin
-from util import updater
 from db import db
 import util.fs as fs
 import subprocess
