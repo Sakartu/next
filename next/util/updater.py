@@ -21,9 +21,9 @@ class UpdateManager(object):
             print err
 
     def check_for_new_version(self):
-        output, _ = self.run_git('rev-parse HEAD')
-        if not output:
-            self.msg(u'No update available!')
+        output, error = self.run_git('rev-parse HEAD')
+        if error or not output:
+            self.msg(u'Something went wrong with a git call!')
             return False
 
         current_hash = output.strip()
