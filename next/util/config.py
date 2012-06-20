@@ -167,6 +167,13 @@ def build_parser():
     const=t.print_shows_simple,
     help=u'Print a plain list of your shows')
 
+    # --update_next
+    parser.add_option(u'--update_next',
+    action="store_const",
+    dest="func",
+    const=t.do_update_next,
+    help=u'Update next to the latest version')
+
     # --add_location
     parser.add_option(u'--add_location',
     action="store_const",
