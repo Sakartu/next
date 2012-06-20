@@ -152,7 +152,7 @@ def build_parser():
 
     # -f, --fix_subs
     parser.add_option(u'-f',
-    u'--fix_subs',
+    u'--fix-subs',
     action="store_const",
     dest="func",
     const=t.do_fix_subs,
@@ -168,14 +168,14 @@ def build_parser():
     help=u'Print a plain list of your shows')
 
     # --update_next
-    parser.add_option(u'--update_next',
+    parser.add_option(u'--update-next',
     action="store_const",
     dest="func",
     const=t.do_update_next,
     help=u'Update next to the latest version')
 
     # --add_location
-    parser.add_option(u'--add_location',
+    parser.add_option(u'--add-location',
     action="store_const",
     dest="func",
     const=t.do_add_show_location,
@@ -209,7 +209,7 @@ def build_parser():
     help=u'Scan your series path for shows')
 
     # --scan
-    parser.add_option(u'--clean_db',
+    parser.add_option(u'--clean-db',
     action="store_const",
     dest="func",
     const=t.do_clean_db,
