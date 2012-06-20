@@ -17,6 +17,7 @@ except ImportError:
 
 from util import config
 from util.constants import ConfKeys
+from util.updater import UpdateManager
 from db import db
 from show import player
 from tui.exceptions import UserCancelled
@@ -29,6 +30,10 @@ import sqlite3
 
 def main():
     (options, conf, args) = config.parse_opts()
+    # save the basepath for later reference
+    conf[ConfKeys.BASE_DIR] = os.path.dirname(os.path.realpath(__file__))
+    # and create an update manager
+    conf[ConfKeys.UPDATE_MANAGER] = UpdateManager(conf, [])
     # create an unbuffered, unicode supporting output file descriptor
     # (see http://wiki.python.org/moin/PrintFails)
     out = codecs.getwriter('utf8')(os.fdopen(sys.stdout.fileno(), 'w', 0))

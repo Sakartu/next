@@ -1,5 +1,6 @@
 from util.constants import ConfKeys
 from show import admin
+from util import updater
 from db import db
 import util.fs as fs
 import subprocess
@@ -103,42 +104,64 @@ def play(command, show, conf):
 
     # This Timer will fire an episode cache update if the user is watching for
     # at least 5 minutes, otherwise nothing will happen
+    update_messages = []
     update_timer = threading.Timer(60 * 5, admin.update_eps, args=(conf,
-        False,))
+        update_messages))
 
-    class PlayThread(threading.Thread):
-        def __init__(self, result):
-            threading.Thread.__init__(self)
-            self.result = result
+    # This timer will check to see if a new version of next is available
+    new_version_timer = None
+    if ConfKeys.AUTO_UPDATE in conf and conf[ConfKeys.AUTO_UPDATE]:
+        new_version_timer = threading.Timer(2,
+                conf[ConfKeys.UPDATE_MANAGER].check_for_new_version)
 
-        def run(self):
-            try:
-                subprocess.call(command)
-                self.result.put(True)
-            except KeyboardInterrupt:
-                # user killed the player himself
-                self.result.put(True)
-            except:
-                # player probably doesn't exist or isn't properly configged
-                print u'An error occurred while starting the player, check '
-                'your config!'
-                self.result.put(False)
-            finally:
-                update_timer.cancel()
-
+    result = Queue.Queue()
     # This separate thread will start playing the ep and cancel the above Timer
     # to make sure the user doesn't have to wait for the database update
-    result = Queue.Queue()
-    play_thread = PlayThread(result)
+    play_thread = PlayThread(result, command, update_timer, new_version_timer)
 
     try:
         # Start the ep
         play_thread.start()
         # and at the same time try to update the database
         update_timer.start()
+        # and if it exists, also start the update checker
+        if new_version_timer:
+            new_version_timer.start()
         play_thread.join()
+
+        for m in update_messages:
+            print m
+        for m in conf[ConfKeys.UPDATE_MANAGER].messages:
+            print m
+        conf[ConfKeys.UPDATE_MANAGER].messages = []
+
         return result.get(block=False)
     except KeyboardInterrupt:
         sys.stdout.flush()
         time.sleep(1)  # give the movie player some time to clean up
         return True
+
+
+class PlayThread(threading.Thread):
+    def __init__(self, result, command, update_timer, new_version_timer):
+        threading.Thread.__init__(self)
+        self.result = result
+        self.command = command
+        self.update_timer = update_timer
+        self.new_version_timer = new_version_timer
+
+    def run(self):
+        try:
+            subprocess.call(self.command)
+            self.result.put(True)
+        except KeyboardInterrupt:
+            # user killed the player himself
+            self.result.put(True)
+        except:
+            # player probably doesn't exist or isn't properly configged
+            print u'An error occurred while starting the player, check '
+            'your config!'
+            self.result.put(False)
+        finally:
+            self.update_timer.cancel()
+            self.new_version_timer.cancel()

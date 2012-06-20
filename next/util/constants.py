@@ -17,7 +17,7 @@ This program helps you in maintaining your episodes. It will remember which eps
 you've already seen and start a new named (or a new random) ep for you. The
 configuration file for next can be found in ~/.config/next/. next uses the
 TVRage database to search for information about shows but it can also be used
-offline.  Make sure you update your database regularly, or next will not be
+offline. Make sure you update your database regularly, or next will not be
 aware of new episodes!
 
 next can be called either with an option or with words identifying a certain
@@ -32,6 +32,7 @@ class ConfKeys:
     '''
     DB_PATH = u'database_path'
     DB_CONN = u'db_conn'
+    BASE_DIR = u'base_dir'
     SHOW_PATH = u'show_path'
     PLAYER_CMD = u'player_cmd'
     UNSTRUCTURED = u'unstructured_mode'
@@ -39,6 +40,8 @@ class ConfKeys:
     LENGTH_DETECTION = u'length_detecion'
     FUNC_ARGS = u'func_args'
     ASK_ANOTHER = u'ask_another'
+    AUTO_UPDATE = u'auto_update'
+    UPDATE_MANAGER = u'update_manager'
 
 
 class TVRage:
@@ -59,6 +62,11 @@ class TVRage:
     EPLIST_EPNUM = u'seasonnum'
     EPLIST_AIRDATE = u'airdate'
     EPLIST_TITLE = u'title'
+
+
+class GitHub:
+    GITHUB_USER = u'Sakartu'
+    GITHUB_REPO = u'next'
 
 
 EXAMPLE_CONF = '''[general]

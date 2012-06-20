@@ -36,37 +36,41 @@ def find_next_ep(conf, show):
     return ep
 
 
-def update_eps(conf, output=True):
+def update_eps(conf, messages=None):
     '''
     This method updates the eplist for a given show using the TVRage database
     '''
+    # Below method is necessary since update_eps may be called in parallel with
+    # the ep player, and if so messages should be printed after the output of
+    # the player
+    def msg(m):
+        if messages:
+            messages.append(str(msg))
+        else:
+            print str(m)
+
     # first we check tvr to see if there are any updates for our shows
-    if output:
-        print "Updating TVRage episode cache",
+    msg("Updating TVRage episode cache...")
     all_shows = db.all_shows(conf)
     try:
         for show in all_shows:
-            if output:
-                print '.',
             status = parser.get_status(show.sid)
             all_eps = parser.get_all_eps(show.sid)
             db.change_status(conf, show.sid, status)
             db.store_tvr_eps(conf, all_eps)
     except Exception, e:  # probably no internet connection
-        print '\nCould not connect to TVRage, will not update tvrage episode'
-        ' cache:'
-        print e
+        msg('\nCould not connect to TVRage, will not update tvrage episode'
+        ' cache:')
+        msg(e)
         return
 
     try:
         process_maybe_finished(conf, all_shows)
     except:
-        print u'maybe_finished processing failed for tvrage episode cache '
-        'update, database may be in an inconsistant state!'
+        msg(u'maybe_finished processing failed for tvrage episode cache '
+        'update, database may be in an inconsistant state!')
         raise Exception
-
-    if output:
-        print "done."
+    msg("Done!")
 
 
 def process_maybe_finished(conf, all_shows):
