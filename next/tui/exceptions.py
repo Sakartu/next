@@ -4,11 +4,13 @@ class TUIException(Exception):
     '''
     pass
 
+
 class UserCancelled(TUIException):
     '''
     This class is raised when the user presses ^D in the TUI
     '''
     pass
+
 
 class NoShowsException(TUIException):
     '''

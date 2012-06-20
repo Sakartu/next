@@ -32,17 +32,20 @@ def parse_opts():
     elif have_xdg:
         path = BaseDirectory.load_first_config('next', 'next.conf')
         if not path:
-            path = os.path.join(BaseDirectory.save_config_path('next'), 'next.conf')
+            path = os.path.join(BaseDirectory.save_config_path('next'),
+                    'next.conf')
     else:
         path = os.path.expanduser(u'~/.next/next.conf')
 
     # Generate a default configuration if required
     if not path or not os.path.exists(path):
         try:
-            print u'No configfile found in "{0}", generating default configfile. Please modify, then retart next!'.format(path)
+            print((u'No configfile found in "{0}", generating default '
+            'configfile. Please modify, then retart next!').format(path))
             gen_example(path)
         except:
-            print 'Couldn\'t generate default configfile, path "{0}" is inaccessible!'.format(path)
+            print(('Couldn\'t generate default configfile, path "{0}" is '
+            'inaccessible!').format(path))
         sys.exit(-1)
 
     if path:
@@ -56,6 +59,12 @@ def parse_opts():
         else:
             db_path = config.get(u'general', ConfKeys.SHOW_PATH)
         config.set(u'general', ConfKeys.DB_PATH, db_path)
+
+    # Check if DB_PATH is a dir or a file
+    database_path = config.get(u'general', ConfKeys.DB_PATH)
+    if not database_path.endswith('.db'):
+        config.set(u'general', ConfKeys.DB_PATH,
+        os.path.join(database_path, u'next.db'))
 
     result = dict(config.items(u'general'))
 
@@ -127,7 +136,8 @@ def build_parser():
     action="store_const",
     dest="func",
     const=t.do_add_show,
-    help=u'Add a show to the database. If arguments are provided they will be used for a search, otherwise the user will be prompted.')
+    help=u'Add a show to the database. If arguments are provided they will be '
+    'used for a search, otherwise the user will be prompted.')
 
     # -d, --del, --rm
     parser.add_option(u'-d',
@@ -137,15 +147,17 @@ def build_parser():
     action="store_const",
     dest="func",
     const=t.do_del_show,
-    help=u'Remove a show from the database. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+    help=u'Remove a show from the database. If arguments are provided they '
+    'will be used as a show name, otherwise the user will be prompted.')
 
     # -f, --fix_subs
     parser.add_option(u'-f',
-    u'--fix_subs',
+    u'--fix-subs',
     action="store_const",
     dest="func",
     const=t.do_fix_subs,
-    help=u'Fix the subtitles for a given show. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+    help=u'Fix the subtitles for a given show. If arguments are provided they '
+    'will be used as a show name, otherwise the user will be prompted.')
 
     # -s, --shows
     parser.add_option(u'-s',
@@ -155,26 +167,39 @@ def build_parser():
     const=t.print_shows_simple,
     help=u'Print a plain list of your shows')
 
+    # --update_next
+    parser.add_option(u'--update-next',
+    action="store_const",
+    dest="func",
+    const=t.do_update_next,
+    help=u'Update next to the latest version')
+
     # --add_location
-    parser.add_option(u'--add_location',
+    parser.add_option(u'--add-location',
     action="store_const",
     dest="func",
     const=t.do_add_show_location,
-    help=u'Add a location for a show to the database. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+    help=u'Add a location for a show to the database. If arguments are '
+    'provided they will be used as a show name, otherwise the user will be '
+    'prompted.')
 
     # --change
     parser.add_option(u'--change',
     action="store_const",
     dest="func",
     const=t.do_change_show,
-    help=u'Change the current season and ep for a show. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+    help=u'Change the current season and ep for a show. If arguments are '
+    'provided they will be used as a show name, otherwise the user will be '
+    'prompted.')
 
     # --further
     parser.add_option(u'--further',
     action="store_const",
     dest="func",
     const=t.do_further_show,
-    help=u'Further the current season and ep for a show. If arguments are provided they will be used as a show name, otherwise the user will be prompted.')
+    help=u'Further the current season and ep for a show. If arguments are '
+    'provided they will be used as a show name, otherwise the user will be '
+    'prompted.')
 
     # --scan
     parser.add_option(u'--scan',
@@ -184,7 +209,7 @@ def build_parser():
     help=u'Scan your series path for shows')
 
     # --scan
-    parser.add_option(u'--clean_db',
+    parser.add_option(u'--clean-db',
     action="store_const",
     dest="func",
     const=t.do_clean_db,
