@@ -46,7 +46,7 @@ def update_eps(conf, messages=None):
     # the player
     def msg(m):
         if messages:
-            messages.push(str(msg))
+            messages.push(str(m))
         else:
             print str(m)
 
