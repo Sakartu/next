@@ -11,7 +11,14 @@ class UpdateManager(object):
         self.messages = messages
 
     def update(self):
-        self.run_git(u'pull origin autoupdate')
+        print u'Updating...'
+        branch = self.find_branch(self.conf)
+        output, err = self.run_git(u'pull origin ' + branch)
+        if err == None:
+            print 'Done!'
+        else:
+            print u'Something went wrong:'
+            print err
 
     def check_for_new_version(self):
         output, _ = self.run_git('rev-parse HEAD')
@@ -30,7 +37,6 @@ class UpdateManager(object):
             try:
                 if not re.match(r'[a-z0-9]*', commit['sha']):
                     break
-
                 if commit['sha'] == current_hash:
                     break
 
@@ -41,8 +47,10 @@ class UpdateManager(object):
         if num_behind:
             self.msg((u'There is a newer version of next available, you are '
             '{0} commit(s) behind!').format(num_behind))
+            return True
         else:
             self.msg(u'No update available!')
+            return False
 
     def find_branch(self, conf):
         '''
