@@ -162,5 +162,6 @@ class PlayThread(threading.Thread):
             'your config!'
             self.result.put(False)
         finally:
+            if self.new_version_timer:
+                self.new_version_timer.cancel()
             self.update_timer.cancel()
-            self.new_version_timer.cancel()
