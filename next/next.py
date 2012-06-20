@@ -27,7 +27,7 @@ from db import db
 from show import player
 from tui.exceptions import UserCancelled
 from tui.tui import TUI
-from util import util
+from util import util, message_queue
 import os
 import codecs
 import sqlite3
@@ -38,7 +38,8 @@ def main():
     # save the basepath for later reference
     conf[ConfKeys.BASE_DIR] = os.path.dirname(os.path.realpath(__file__))
     # and create an update manager
-    conf[ConfKeys.UPDATE_MANAGER] = UpdateManager(conf, [])
+    conf[ConfKeys.UPDATE_MANAGER] = UpdateManager(conf,
+            message_queue.MessageQueue())
     # create an unbuffered, unicode supporting output file descriptor
     # (see http://wiki.python.org/moin/PrintFails)
     out = codecs.getwriter('utf8')(os.fdopen(sys.stdout.fileno(), 'w', 0))

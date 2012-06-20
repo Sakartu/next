@@ -1,6 +1,6 @@
 from db import db
 from tvr import parser
-from urllib2 import URLError, HTTPError
+from urllib2 import URLError
 import util.util as util
 import os
 
@@ -46,7 +46,7 @@ def update_eps(conf, messages=None):
     # the player
     def msg(m):
         if messages:
-            messages.append(str(msg))
+            messages.push(str(msg))
         else:
             print str(m)
 
@@ -55,7 +55,7 @@ def update_eps(conf, messages=None):
     all_shows = db.all_shows(conf)
     try:
         for show in all_shows:
-            if output:
+            if messages:
                 print '.',
 
             all_eps = []

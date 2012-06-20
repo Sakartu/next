@@ -2,6 +2,7 @@ from show import player, admin
 from db import db
 from tvr import parser
 from util.constants import ConfKeys
+from util.updater import UpdateError
 import util.util as util
 import util.fs as fs
 from exceptions import UserCancelled, NoShowsException
@@ -337,17 +338,20 @@ class TUI(cmd.Cmd, object):
         '''
         updater = self.conf[ConfKeys.UPDATE_MANAGER]
         print u'Checking for new version...'
-        if updater.check_for_new_version():
+        try:
+            if updater.check_for_new_version():
+                for m in updater.messages:
+                    print m
+                print u'Do you want to update next to the latest version?'
+                answer = self.get_input(u'Update [yes]? ')
+                if u'y' in answer.lower() or answer == '':
+                    updater.update()
+            else:
+                print u'You already have the latest version!'
+        except UpdateError:
+            print u'Something went wrong:'
             for m in updater.messages:
                 print m
-            print u'Do you want to update next to the latest version?'
-            answer = self.get_input(u'Update [yes]? ')
-            if u'y' in answer.lower() or answer == '':
-                updater.update()
-        else:
-            for m in updater.messages:
-                print m
-            print u'You already have the latest version!'
 
     def help_update_next(self, line=None):
         print u'Update next to the latest version'

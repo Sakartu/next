@@ -1,4 +1,5 @@
 from util.constants import ConfKeys
+from util.message_queue import MessageQueue
 from show import admin
 from db import db
 import util.fs as fs
@@ -103,7 +104,7 @@ def play(command, show, conf):
 
     # This Timer will fire an episode cache update if the user is watching for
     # at least 5 minutes, otherwise nothing will happen
-    update_messages = []
+    update_messages = MessageQueue()
     update_timer = threading.Timer(60 * 5, admin.update_eps, args=(conf,
         update_messages))
 

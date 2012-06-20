@@ -23,13 +23,13 @@ class UpdateManager(object):
     def check_for_new_version(self):
         output, error = self.run_git('rev-parse HEAD')
         if error or not output:
-            self.msg(u'Something went wrong with a git call!')
-            return False
+            raise UpdateError
 
         current_hash = output.strip()
 
         if not re.match(r'[a-z0-9]*', current_hash):
             self.msg(u'Faulty local git output, ignoring')
+            raise UpdateError
             return
 
         branch = self.find_branch(self.conf)
@@ -82,7 +82,8 @@ class UpdateManager(object):
             output, err = p.communicate()
         except OSError:
             self.msg(u'Something went wrong while running git!')
-        if(p.returncode != 0 or 'not found' in output or
+
+        if (p.returncode != 0 or 'not found' in output or
         'not recognized as an internal or external command' in output):
             self.msg(u'Git could not be found on your system!')
             output = None
@@ -93,4 +94,8 @@ class UpdateManager(object):
         return (output, err)
 
     def msg(self, m):
-        self.messages.append(m)
+        self.messages.push(m)
+
+
+class UpdateError(Exception):
+    pass
