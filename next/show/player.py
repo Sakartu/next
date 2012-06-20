@@ -36,9 +36,9 @@ def play_next(conf, show):
     ep_path = fs.build_ep_path(conf, show)
     show.path = ep_path
     if not ep_path:
-        print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available '
-        'or marked maybe_finished?'.format(S=show.season, E=show.ep,
-                name=show.name)
+        print((u'Could not find s{S:02d}e{E:02d} for {name}, ep not available '
+        'or marked maybe_finished?').format(S=show.season, E=show.ep,
+                name=show.name))
         return
     command = cmd_line.split(' ') + [ep_path]
     before = datetime.datetime.now()
@@ -80,9 +80,9 @@ def play_next(conf, show):
                         # fill all the parameters with info from show
                         to_call = [x.format(**show.__dict__) for x in to_call]
                     except KeyError, e:
-                        print u'You used a post-processing parameter that '
-                        'doesn\'t exist: {0}, skipping hook "{1}"'.format(
-                                str(e).strip(), str(script))
+                        print((u'You used a post-processing parameter that '
+                        'doesn\'t exist: {0}, skipping hook "{1}"').format(
+                                str(e).strip(), str(script)))
                         continue
                     subprocess.call(to_call)
 

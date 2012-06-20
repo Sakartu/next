@@ -431,8 +431,8 @@ class TUI(cmd.Cmd, object):
                         '%Y-%m-%d').date() > today else ' '
             except:
                 unaired = ' '
-            print u'{id:3d}. {unaired}s{S:>02d}e{E:>02d} - {title}'.format(\
-                    id=i + 1, S=ep.season, E=ep.epnum, title=ep.title, \
+            print u'{id:3d}. {unaired}s{S:>02d}e{E:>02d} - {title}'.format(
+                    id=i + 1, S=ep.season, E=ep.epnum, title=ep.title,
                     unaired=unaired)
 
         # and ask the ep
@@ -553,11 +553,11 @@ class TUI(cmd.Cmd, object):
                 else:
                     newline += ' '
             mf_char = '?' if show.maybe_finished else ' '
-            print u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}'
-            '{maybe_finished}    {status}'.format(
+            print((u'{id:3d}. {name:{length}s} {new}s{S:>02d}e{E:>02d}'
+            '{maybe_finished}    {status}').format(
                 id=i + 1, name=show.name, length=max_len,
                 new=newline, S=show.season, E=show.ep, maybe_finished=mf_char,
-                status=show.status if display_status else "")
+                status=show.status if display_status else ""))
 
     def print_shows_simple(self):
         try:

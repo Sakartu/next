@@ -40,12 +40,12 @@ def parse_opts():
     # Generate a default configuration if required
     if not path or not os.path.exists(path):
         try:
-            print u'No configfile found in "{0}", generating default '
-            'configfile. Please modify, then retart next!'.format(path)
+            print((u'No configfile found in "{0}", generating default '
+            'configfile. Please modify, then retart next!').format(path))
             gen_example(path)
         except:
-            print 'Couldn\'t generate default configfile, path "{0}" is '
-            'inaccessible!'.format(path)
+            print(('Couldn\'t generate default configfile, path "{0}" is '
+            'inaccessible!').format(path))
         sys.exit(-1)
 
     if path:

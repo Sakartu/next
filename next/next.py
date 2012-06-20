@@ -46,13 +46,13 @@ def main():
                 os.path.dirname(database_path), os.W_OK | os.R_OK):
             conf[ConfKeys.DB_CONN] = db.initialize(database_path)
         else:
-            print(u'Could not access shows database, path "{0}" does not exist'
-                    ' or we don\'t have write access!'.format(database_path))
+            print((u'Could not access shows database, path "{0}" does not exist'
+                    'or we don\'t have write access!').format(database_path))
             sys.exit(-1)
 
     except sqlite3.OperationalError:
-        print(u'Could not access shows database, are the permissions correct '
-        'for "{0}"?'.format(database_path))
+        print((u'Could not access shows database, are the permissions correct '
+        'for "{0}"?').format(database_path))
         sys.exit(-1)
 
     # first check for commandline options
