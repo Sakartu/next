@@ -345,6 +345,8 @@ class TUI(cmd.Cmd, object):
             if u'y' in answer.lower() or answer == '':
                 updater.update()
         else:
+            for m in updater.messages:
+                print m
             print u'You already have the latest version!'
 
     def help_update_next(self, line=None):
