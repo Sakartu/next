@@ -110,7 +110,7 @@ def play(command, show, conf):
 
     # This timer will check to see if a new version of next is available
     new_version_timer = None
-    if ConfKeys.AUTO_UPDATE in conf and conf[ConfKeys.AUTO_UPDATE]:
+    if ConfKeys.CHECK_NEW_VERSION in conf and conf[ConfKeys.CHECK_NEW_VERSION]:
         new_version_timer = threading.Timer(2,
                 conf[ConfKeys.UPDATE_MANAGER].check_for_new_version)
 

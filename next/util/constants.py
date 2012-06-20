@@ -40,7 +40,7 @@ class ConfKeys:
     LENGTH_DETECTION = u'length_detecion'
     FUNC_ARGS = u'func_args'
     ASK_ANOTHER = u'ask_another'
-    AUTO_UPDATE = u'auto_update'
+    CHECK_NEW_VERSION = u'check_new_version'
     UPDATE_MANAGER = u'update_manager'
 
 
