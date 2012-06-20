@@ -15,6 +15,11 @@ except ImportError:
     'information!'
     sys.exit(-1)
 
+try:
+    import pyreadline as readline
+except ImportError:
+    pass  # No readline support under Windows, oh well.
+
 from util import config
 from util.constants import ConfKeys
 from util.updater import UpdateManager
