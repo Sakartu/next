@@ -14,7 +14,6 @@ class UpdateManager(object):
         self.run_git(u'pull origin autoupdate')
 
     def check_for_new_version(self):
-        self.msg(u'Checking for new version...')
         output, _ = self.run_git('rev-parse HEAD')
         current_hash = output.strip()
 
@@ -28,14 +27,20 @@ class UpdateManager(object):
         gh = GitHubAPI()
         for commit in gh.commits(GitHub.GITHUB_USER,
                 GitHub.GITHUB_REPO, branch):
-            if commit == current_hash:
-                break
+            try:
+                if not re.match(r'[a-z0-9]*', commit['sha']):
+                    break
 
-            num_behind += 1
+                if commit['sha'] == current_hash:
+                    break
+
+                num_behind += 1
+            except:
+                break
 
         if num_behind:
             self.msg((u'There is a newer version of next available, you are '
-            '{0} commits behind!').format(num_behind))
+            '{0} commit(s) behind!').format(num_behind))
         else:
             self.msg(u'No update available!')
 
