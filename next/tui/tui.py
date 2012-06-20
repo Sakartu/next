@@ -331,6 +331,25 @@ class TUI(cmd.Cmd, object):
     def help_update(self, line=None):
         print u'Update the internal TVRage database'
 
+    def do_update_next(self, line=None):
+        '''
+        A function that updates next to the latest version
+        '''
+        updater = self.conf[ConfKeys.UPDATE_MANAGER]
+        print u'Checking for new version...'
+        if updater.check_for_new_version():
+            for m in updater.messages:
+                print m
+            print u'Do you want to update next to the latest version?'
+            answer = self.get_input(u'Update [yes]? ')
+            if u'y' in answer.lower() or answer == '':
+                updater.update()
+        else:
+            print u'You already have the latest version!'
+
+    def help_update_next(self, line=None):
+        print u'Update next to the latest version'
+
     def do_fix_subs(self, line=None):
         '''
         A function that fixes the names of subtitle files for a given show. If
