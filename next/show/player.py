@@ -58,9 +58,9 @@ def play_next(conf, show):
         else:
             return None
 
-    print u'Should I update the database for you?'
+    print u'Should I update the show database for you?'
     try:
-        answer = raw_input(u'Update [yes]? ')
+        answer = raw_input(u'Update show database[yes]? ')
         if u'y' in answer.lower() or answer.strip() == '':
             next_ep = admin.find_next_ep(conf, show)
             if next_ep:
