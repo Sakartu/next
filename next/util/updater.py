@@ -22,6 +22,10 @@ class UpdateManager(object):
 
     def check_for_new_version(self):
         output, _ = self.run_git('rev-parse HEAD')
+        if not output:
+            self.msg(u'No update available!')
+            return False
+
         current_hash = output.strip()
 
         if not re.match(r'[a-z0-9]*', current_hash):
