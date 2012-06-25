@@ -233,7 +233,7 @@ class TUI(cmd.Cmd, object):
         for path in unlisted:
             print u'Would you like to add {0}?'.format(path)
             answer = self.get_input(u'Add [yes]? ')
-            if u'y' in answer.lower() or answer == '':
+            if u'y' in answer.lower() or answer.strip() == '':
                 print u'Searching for show in TVRage database... ',
 
                 shows = parser.fuzzy_search(" ".join(util.get_words(path)))
