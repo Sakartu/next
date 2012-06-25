@@ -20,7 +20,9 @@ class Episode(object):
         return Episode(row[0], row[1], row[2], row[3], row[4], row[5])
 
     def __str__(self):
-        return '{n} (sid {id}) - s{s:02d}e{e:02d} - {t}'.format(n=self.showname, id=self.sid,  s=self.season, e=self.epnum, t=self.title)
+        return '{n} (sid {id}) - s{s:02d}e{e:02d} - {t}'.format(
+                n=self.showname, id=self.sid,  s=self.season, e=self.epnum,
+                t=self.title)
 
     def __repr__(self):
         return str(self)

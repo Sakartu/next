@@ -1,7 +1,7 @@
 from util.constants import ConfKeys
+from util.message_queue import MessageQueue
 from show import admin
 from db import db
-import util.util as util
 import util.fs as fs
 import subprocess
 import threading
@@ -11,6 +11,7 @@ import shlex
 import time
 import sys
 import os
+
 
 def play_show(conf, show):
     another = True
@@ -27,6 +28,7 @@ def play_show(conf, show):
         if u'y' not in answer.lower() and answer.strip() != '':
             another = False
 
+
 def play_next(conf, show):
     '''
     This method plays the next episode for the given show.
@@ -35,7 +37,9 @@ def play_next(conf, show):
     ep_path = fs.build_ep_path(conf, show)
     show.path = ep_path
     if not ep_path:
-        print u'Could not find s{S:02d}e{E:02d} for {name}, ep not available or marked maybe_finished?'.format(S=show.season, E=show.ep, name=show.name)
+        print((u'Could not find s{S:02d}e{E:02d} for {name}, ep not available '
+        'or marked maybe_finished?').format(S=show.season, E=show.ep,
+                name=show.name))
         return
     command = cmd_line.split(' ') + [ep_path]
     before = datetime.datetime.now()
@@ -54,9 +58,9 @@ def play_next(conf, show):
         else:
             return None
 
-    print u'Should I update the database for you?'
+    print u'Should I update the show database for you?'
     try:
-        answer = raw_input(u'Update [yes]? ')
+        answer = raw_input(u'Update show database[yes]? ')
         if u'y' in answer.lower() or answer.strip() == '':
             next_ep = admin.find_next_ep(conf, show)
             if next_ep:
@@ -77,8 +81,9 @@ def play_next(conf, show):
                         # fill all the parameters with info from show
                         to_call = [x.format(**show.__dict__) for x in to_call]
                     except KeyError, e:
-                        print u'You used a post-processing parameter that doesn\'t exist: '\
-                                + str(e).strip() + u', skipping hook \"' + str(script) + '\"'
+                        print((u'You used a post-processing parameter that '
+                        'doesn\'t exist: {0}, skipping hook "{1}"').format(
+                                str(e).strip(), str(script)))
                         continue
                     subprocess.call(to_call)
 
@@ -88,49 +93,76 @@ def play_next(conf, show):
     print u'Database unmodified.'
     return
 
+
 def play(command, show, conf):
     '''
     A helper method that executes the given command
     '''
     # play the show
-    print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season, E=show.ep, name=show.name)
-    
-    # This Timer will fire an episode cache update if the user is watching for at
-    # least 5 minutes, otherwise nothing will happen
-    update_timer = threading.Timer(60*5, admin.update_eps, args=(conf, False,))
-    
-    class PlayThread(threading.Thread):
-        def __init__(self, result):
-            threading.Thread.__init__(self)
-            self.result = result
+    print u'Starting S{S:02}E{E:02} of {name}!'.format(S=show.season,
+            E=show.ep, name=show.name)
 
-        def run(self):
-            try:
-                subprocess.call(command)
-                self.result.put(True)
-            except KeyboardInterrupt:
-                # user killed the player himself
-                self.result.put(True)
-            except:
-                # player probably doesn't exist or isn't properly configged
-                print u'An error occurred while starting the player, check your config!'
-                self.result.put(False)
-            finally:
-                update_timer.cancel()
+    # This Timer will fire an episode cache update if the user is watching for
+    # at least 5 minutes, otherwise nothing will happen
+    update_messages = MessageQueue()
+    update_timer = threading.Timer(60 * 5, admin.update_eps, args=(conf,
+        update_messages))
 
+    # This timer will check to see if a new version of next is available
+    new_version_timer = None
+    if ConfKeys.CHECK_NEW_VERSION in conf and conf[ConfKeys.CHECK_NEW_VERSION]:
+        new_version_timer = threading.Timer(2,
+                conf[ConfKeys.UPDATE_MANAGER].check_for_new_version)
+
+    result = Queue.Queue()
     # This separate thread will start playing the ep and cancel the above Timer
     # to make sure the user doesn't have to wait for the database update
-    result = Queue.Queue()
-    play_thread = PlayThread(result)
+    play_thread = PlayThread(result, command, update_timer, new_version_timer)
 
     try:
         # Start the ep
-        play_thread.start() 
+        play_thread.start()
         # and at the same time try to update the database
         update_timer.start()
+        # and if it exists, also start the update checker
+        if new_version_timer:
+            new_version_timer.start()
         play_thread.join()
+
+        for m in update_messages:
+            print m
+        for m in conf[ConfKeys.UPDATE_MANAGER].messages:
+            print m
+        conf[ConfKeys.UPDATE_MANAGER].messages = []
+
         return result.get(block=False)
     except KeyboardInterrupt:
         sys.stdout.flush()
-        time.sleep(1) # give the movie player some time to clean up
+        time.sleep(1)  # give the movie player some time to clean up
         return True
+
+
+class PlayThread(threading.Thread):
+    def __init__(self, result, command, update_timer, new_version_timer):
+        threading.Thread.__init__(self)
+        self.result = result
+        self.command = command
+        self.update_timer = update_timer
+        self.new_version_timer = new_version_timer
+
+    def run(self):
+        try:
+            subprocess.call(self.command)
+            self.result.put(True)
+        except KeyboardInterrupt:
+            # user killed the player himself
+            self.result.put(True)
+        except:
+            # player probably doesn't exist or isn't properly configged
+            print u'An error occurred while starting the player, check '
+            'your config!'
+            self.result.put(False)
+        finally:
+            if self.new_version_timer:
+                self.new_version_timer.cancel()
+            self.update_timer.cancel()

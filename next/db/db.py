@@ -4,10 +4,11 @@ from tvr.tvrshow import Show
 from tvr.tvrep import Episode
 from util.constants import ConfKeys
 
+
 def initialize(path):
     '''
-    This method initializes the next database at the given path. It also sets up
-    the tables and returns the created db connection.
+    This method initializes the next database at the given path. It also sets
+    up the tables and returns the created db connection.
     '''
     conn = sqlite3.connect(os.path.expanduser(path), check_same_thread=False)
     with conn:
@@ -18,7 +19,8 @@ def initialize(path):
                 AND name="shows"''').fetchall()
         if not test:
             c.execute(u'''CREATE TABLE shows(sid integer, name text, season
-                    integer, ep integer, maybe_finished integer, status text)''')
+                    integer, ep integer, maybe_finished integer, status
+                    text)''')
             c.execute(u'''CREATE UNIQUE INDEX unique_shows ON shows(sid)''')
 
         # test to see if the tvr_shows table exists
@@ -28,30 +30,34 @@ def initialize(path):
         if not test:
             c.execute(u'''CREATE TABLE tvr_shows(sid integer, showname text,
                     season integer, ep integer, title text, airdate text)''')
-            c.execute(u'''CREATE UNIQUE INDEX unique_tvr_shows ON tvr_shows(sid,
-                    season, ep)''')
+            c.execute(u'''CREATE UNIQUE INDEX unique_tvr_shows ON
+            tvr_shows(sid, season, ep)''')
 
         # test to see if the locations table exists
         test = c.execute(u'''SELECT name FROM sqlite_master
                 WHERE type="table"
                 AND name="locations"''').fetchall()
         if not test:
-            c.execute(u'''CREATE TABLE locations(sid integer, location text)''')
-            c.execute(u'''CREATE UNIQUE INDEX unique_locations ON locations(sid,
-                    location)''')
+            c.execute(u'''CREATE TABLE locations(sid integer,
+                    location text)''')
+            c.execute(u'''CREATE UNIQUE INDEX unique_locations ON
+                    locations(sid, location)''')
     return conn
+
 
 def find_shows(conf, show_name):
     '''
-    This method tries to find a show in the shows database using a wildcard search
+    This method tries to find a show in the shows database using a wildcard
+    search
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''SELECT * FROM shows 
-                WHERE name like ?''', ("%" + show_name + "%",))
+        c.execute(u'''SELECT * FROM shows WHERE name like ?''', ("%"
+        + show_name + "%",))
         shows = c.fetchall()
 
     return map(Show, shows)
+
 
 def add_show(conf, sid, showname, season, ep, status):
     '''
@@ -63,6 +69,7 @@ def add_show(conf, sid, showname, season, ep, status):
         c.execute(u'''INSERT INTO shows VALUES (?, ?, ?, ?, 0, ?)''', (sid,
         showname, season, ep, status))
 
+
 def delete_show(conf, sid):
     '''
     This method deletes a show with a given sid from the database
@@ -73,24 +80,28 @@ def delete_show(conf, sid):
         c.execute(u'''DELETE FROM locations WHERE sid = ?''', (sid, ))
         c.execute(u'''DELETE FROM tvr_shows WHERE sid = ?''', (sid, ))
 
+
 def change_show(conf, sid, season, ep):
     '''
     This method changes the season and ep of a given show in the database
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''UPDATE shows SET season=?, ep=?, maybe_finished=0 where sid = ?''',
-                (season, ep, sid))
+        c.execute(u'''UPDATE shows SET season=?, ep=?, maybe_finished=0 where
+                sid = ?''', (season, ep, sid))
+
 
 def all_shows(conf):
     '''
-    This method returns a list of Show objects for all the shows in the database
+    This method returns a list of Show objects for all the shows in the
+    database
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM shows''')
         shows = c.fetchall()
         return map(Show, shows)
+
 
 def change_status(conf, sid, status):
     '''
@@ -100,6 +111,7 @@ def change_status(conf, sid, status):
         c = conn.cursor()
         c.execute(u'''UPDATE shows SET status=? where sid = ?''',
                 (status, sid))
+
 
 def store_tvr_eps(conf, eps):
     '''
@@ -111,9 +123,11 @@ def store_tvr_eps(conf, eps):
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         for ep in eps:
-            c.execute(u'''INSERT OR REPLACE INTO tvr_shows VALUES (?, ?, ?, ?, ?, ?)''',
+            c.execute(u'''INSERT OR REPLACE INTO tvr_shows VALUES (?, ?, ?, ?,
+                    ?, ?)''',
                     (ep.sid, ep.showname, ep.season, ep.epnum, ep.title,
                         ep.airdate))
+
 
 def find_seasons(conf, sid):
     '''
@@ -122,18 +136,20 @@ def find_seasons(conf, sid):
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT season FROM tvr_shows WHERE sid = ?''', (sid,))
-        return list(set(map(lambda x : x[0], c.fetchall())))
+        return list(set(map(lambda x: x[0], c.fetchall())))
+
 
 def find_all_eps(conf, sid, season):
     '''
-    This method returns all the eps, wrapped in Episode objects for a given show
-    and season
+    This method returns all the eps, wrapped in Episode objects for a given
+    show and season
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM tvr_shows WHERE sid = ? AND season = ?''',
                 (sid, season,))
         return map(Episode.from_db_row, c.fetchall())
+
 
 def find_ep(conf, sid, season, ep):
     '''
@@ -149,14 +165,16 @@ def find_ep(conf, sid, season, ep):
         except:
             return None
 
+
 def add_location(conf, sid, location):
     '''
     This method adds the given location to the show in the locations database
     '''
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
-        c.execute(u'''INSERT OR IGNORE INTO locations VALUES (?, ?, ?, ?)''', (sid,
-            location,))
+        c.execute(u'''INSERT OR IGNORE INTO locations VALUES (?, ?, ?, ?)''',
+                (sid, location,))
+
 
 def find_all_locations(conf, sid):
     '''
@@ -165,7 +183,8 @@ def find_all_locations(conf, sid):
     with conf[ConfKeys.DB_CONN] as conn:
         c = conn.cursor()
         c.execute(u'''SELECT location FROM locations WHERE sid = ?''', (sid,))
-        return map(lambda x : x[0], c.fetchall())
+        return map(lambda x: x[0], c.fetchall())
+
 
 def mark_maybe_finished(conf, sid):
     '''
@@ -176,6 +195,7 @@ def mark_maybe_finished(conf, sid):
         c.execute(u'''UPDATE shows SET maybe_finished = 1 WHERE sid = ?''',
                 (sid,))
 
+
 def mark_not_maybe_finished(conf, sid):
     '''
     This method unmarks the show as maybe_finished
@@ -184,3 +204,32 @@ def mark_not_maybe_finished(conf, sid):
         c = conn.cursor()
         c.execute(u'''UPDATE shows SET maybe_finished = 0 WHERE sid =
         ?''', (sid,))
+
+
+def find_show_ids(conf):
+    '''
+    This method retrieves all show ids
+    '''
+    with conf[ConfKeys.DB_CONN] as conn:
+        c = conn.cursor()
+        c.execute(u'''SELECT DISTINCT sid FROM shows''')
+        return list(map(lambda x: x[0], c.fetchall()))
+
+
+def find_tvr_ids(conf):
+    '''
+    This method retrieves all show ids
+    '''
+    with conf[ConfKeys.DB_CONN] as conn:
+        c = conn.cursor()
+        c.execute(u'''SELECT DISTINCT sid FROM tvr_shows''')
+        return list(map(lambda x: x[0], c.fetchall()))
+
+
+def clear_cache(conf, ids):
+    '''
+    This method clears the tvrage cache of all shows with an id that is in ids
+    '''
+    with conf[ConfKeys.DB_CONN] as conn:
+        c = conn.cursor()
+        c.executemany(u'''DELETE FROM tvr_shows WHERE sid = ?''', ids)
