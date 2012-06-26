@@ -1,5 +1,6 @@
 from util.constants import ConfKeys
 from util.message_queue import MessageQueue
+from util.updater import UpdateError
 from show import admin
 from db import db
 import util.fs as fs
@@ -111,8 +112,7 @@ def play(command, show, conf):
     # This timer will check to see if a new version of next is available
     new_version_timer = None
     if ConfKeys.CHECK_NEW_VERSION in conf and conf[ConfKeys.CHECK_NEW_VERSION]:
-        new_version_timer = threading.Timer(2,
-                conf[ConfKeys.UPDATE_MANAGER].check_for_new_version)
+        new_version_timer = NewVersionCheckTimer(60 * 10, conf[ConfKeys.UPDATE_MANAGER])
 
     result = Queue.Queue()
     # This separate thread will start playing the ep and cancel the above Timer
@@ -166,3 +166,22 @@ class PlayThread(threading.Thread):
             if self.new_version_timer:
                 self.new_version_timer.cancel()
             self.update_timer.cancel()
+
+class NewVersionCheckTimer(threading.Thread):
+    def __init__(self, interval, updater):
+        threading.Thread.__init__(self)
+        self.event = threading.Event()
+        self.interval = interval
+        self.updater = updater
+
+    def run(self):
+        self.event.wait(self.interval)
+        try:
+            self.updater.check_for_new_version()
+        except UpdateError:
+            print u'Couldn\'t check for new next version:'
+            for m in self.updater.messages:
+                print m
+
+    def cancel(self):
+        self.event.set()

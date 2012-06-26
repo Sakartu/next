@@ -19,6 +19,10 @@ class MessageQueue(object):
         except:
             raise StopIteration  # end of iteration
 
+    def clear(self):
+        self.in_stack = []
+        self.out_stack = []
+
     def __iter__(self):
         return self
 
