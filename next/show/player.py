@@ -133,7 +133,7 @@ def play(command, show, conf):
             print m
         for m in conf[ConfKeys.UPDATE_MANAGER].messages:
             print m
-        conf[ConfKeys.UPDATE_MANAGER].messages = []
+        conf[ConfKeys.UPDATE_MANAGER].messages = MessageQueue()
 
         return result.get(block=False)
     except KeyboardInterrupt:
