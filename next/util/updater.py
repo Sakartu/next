@@ -13,7 +13,7 @@ class UpdateManager(object):
     def update(self):
         print u'Updating...'
         branch = self.find_branch(self.conf)
-        output, err = self.run_git(['pull', 'origin', 'branch'])
+        output, err = self.run_git(['pull', 'origin', branch])
         if err == None:
             print 'Done!'
         else:
@@ -78,8 +78,7 @@ class UpdateManager(object):
         cmd = [u'git'] + args
         try:
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT, shell=True,
-                cwd=self.conf[ConfKeys.BASE_DIR])
+                stderr=subprocess.STDOUT, cwd=self.conf[ConfKeys.BASE_DIR])
             output, err = p.communicate()
         except OSError:
             self.msg(u'Something went wrong while running git!')
@@ -100,6 +99,7 @@ class UpdateManager(object):
     def err(self, m):
         self.messages.clear()
         self.messages.push(m)
+
 
 class UpdateError(Exception):
     pass
