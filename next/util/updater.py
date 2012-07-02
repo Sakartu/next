@@ -54,7 +54,7 @@ class UpdateManager(object):
             '{0} commit(s) behind!').format(num_behind))
             return True
         else:
-            self.msg(u'No update available!')
+            self.msg(u'No update for next available!')
             return False
 
     def find_branch(self, conf):
