@@ -179,7 +179,7 @@ class NewVersionCheckTimer(threading.Thread):
     def run(self):
         self.event.wait(self.interval)
         try:
-            self.updater.messages.append(u'Checking for new next version...')
+            self.updater.messages.push(u'Checking for new next version...')
             if self.updater.check_for_new_version():
                 self.updater.messages.append(u'You can update next using the '
                 'TUI or with --update-next')
