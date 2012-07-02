@@ -9,6 +9,7 @@ class UpdateManager(object):
     def __init__(self, conf, messages):
         self.conf = conf
         self.messages = messages
+        self.print_output = False
 
     def update(self):
         print u'Updating...'
@@ -21,7 +22,6 @@ class UpdateManager(object):
             print err
 
     def check_for_new_version(self):
-        self.msg(u'Checking for new next version...')
         output, error = self.run_git(['rev-parse', 'HEAD'])
         if error or not output:
             raise UpdateError
@@ -85,7 +85,8 @@ class UpdateManager(object):
 
         if (p.returncode != 0 or 'not found' in output or
         'not recognized as an internal or external command' in output):
-            self.err(u'Git could not be found on your system!')
+            self.err(u'Git could not be found on your system or something '
+            'went horribly wrong!')
             output = None
         elif 'fatal:' in output or err:
             self.err(u'Git returned bad info, have you installed next using '
@@ -94,11 +95,17 @@ class UpdateManager(object):
         return (output, err)
 
     def msg(self, m):
-        self.messages.push(m)
+        if self.print_output:
+            print m
+        else:
+            self.messages.push(m)
 
     def err(self, m):
         self.messages.clear()
-        self.messages.push(m)
+        if self.print_output:
+            print m
+        else:
+            self.messages.push(m)
 
 
 class UpdateError(Exception):
