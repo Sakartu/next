@@ -112,7 +112,8 @@ def play(command, show, conf):
     # This timer will check to see if a new version of next is available
     new_version_timer = None
     if ConfKeys.CHECK_NEW_VERSION in conf and conf[ConfKeys.CHECK_NEW_VERSION]:
-        new_version_timer = NewVersionCheckTimer(60 * 10, conf[ConfKeys.UPDATE_MANAGER])
+        new_version_timer = NewVersionCheckTimer(60 * 10,
+                conf[ConfKeys.UPDATE_MANAGER])
 
     result = Queue.Queue()
     # This separate thread will start playing the ep and cancel the above Timer
@@ -166,6 +167,7 @@ class PlayThread(threading.Thread):
             if self.new_version_timer:
                 self.new_version_timer.cancel()
             self.update_timer.cancel()
+
 
 class NewVersionCheckTimer(threading.Thread):
     def __init__(self, interval, updater):
