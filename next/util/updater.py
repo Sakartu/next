@@ -13,7 +13,7 @@ class UpdateManager(object):
     def update(self):
         print u'Updating...'
         branch = self.find_branch(self.conf)
-        output, err = self.run_git(u'pull origin ' + branch)
+        output, err = self.run_git(['pull', 'origin', 'branch'])
         if err == None:
             print 'Done!'
         else:
@@ -22,7 +22,7 @@ class UpdateManager(object):
 
     def check_for_new_version(self):
         self.msg(u'Checking for new next version...')
-        output, error = self.run_git('rev-parse HEAD')
+        output, error = self.run_git(['rev-parse', 'HEAD'])
         if error or not output:
             raise UpdateError
 
@@ -64,7 +64,7 @@ class UpdateManager(object):
         '''
         result = u'master'
         try:
-            output, err = self.run_git('symbolic-ref -q HEAD')
+            output, err = self.run_git(['symbolic-ref', '-q', 'HEAD'])
             result = output.strip().replace('refs/heads/', '', 1)
         except:
             pass
@@ -75,7 +75,7 @@ class UpdateManager(object):
         Helper method to run git with a given set of arguments
         Heavily based on the _run_git method of SickBeard
         '''
-        cmd = [u'git ' + args]
+        cmd = [u'git'] + args
         try:
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, shell=True,
