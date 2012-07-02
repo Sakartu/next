@@ -75,7 +75,11 @@ class UpdateManager(object):
         Helper method to run git with a given set of arguments
         Heavily based on the _run_git method of SickBeard
         '''
-        cmd = [u'git'] + args
+        if ConfKeys.GIT_PATH in self.conf and self.conf[ConfKeys.GIT_PATH]:
+            cmd = [self.conf[ConfKeys.GIT_PATH]] + args
+        else:
+            cmd = ['git'] + args
+
         try:
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, cwd=self.conf[ConfKeys.BASE_DIR])
@@ -83,7 +87,7 @@ class UpdateManager(object):
         except OSError:
             self.msg(u'Something went wrong while running git!')
 
-        if (p.returncode != 0 or 'not found' in output or
+        if ((p and p.returncode != 0) or 'not found' in output or
         'not recognized as an internal or external command' in output):
             self.err(u'Git could not be found on your system or something '
             'went horribly wrong!')
