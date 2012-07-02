@@ -179,6 +179,7 @@ class NewVersionCheckTimer(threading.Thread):
     def run(self):
         self.event.wait(self.interval)
         try:
+            self.updater.messages.append(u'Checking for new next version...')
             self.updater.check_for_new_version()
         except UpdateError:
             print u'Couldn\'t check for new next version:'
