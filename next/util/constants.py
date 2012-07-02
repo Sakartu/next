@@ -41,6 +41,7 @@ class ConfKeys:
     FUNC_ARGS = u'func_args'
     ASK_ANOTHER = u'ask_another'
     CHECK_NEW_VERSION = u'check_new_version'
+    GIT_PATH = u'git_path'
     UPDATE_MANAGER = u'update_manager'
 
 
