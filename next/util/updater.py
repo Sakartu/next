@@ -87,7 +87,7 @@ class UpdateManager(object):
         except OSError:
             self.msg(u'Something went wrong while running git!')
 
-        if (p.returncode != 0 or 'not found' in output or
+        if ((p and p.returncode != 0) or 'not found' in output or
         'not recognized as an internal or external command' in output):
             self.err(u'Git could not be found on your system!')
             output = None
