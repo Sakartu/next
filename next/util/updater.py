@@ -13,7 +13,7 @@ class UpdateManager(object):
 
     def update(self):
         print u'Updating...'
-        branch = self.find_branch(self.conf)
+        branch = self.find_branch()
         output, err = self.run_git(['pull', 'origin', branch])
         if err == None:
             print 'Done!'
@@ -22,27 +22,29 @@ class UpdateManager(object):
             print err
 
     def check_for_new_version(self):
-        output, error = self.run_git(['rev-parse', 'HEAD'])
+        branch = self.find_branch()
+        default_remote = self.find_remote()
+
+        output, error = self.run_git(['merge-base', 'HEAD',
+            default_remote])
         if error or not output:
             raise UpdateError
 
-        current_hash = output.strip()
+        last_common_hash = output.strip()
 
-        if not re.match(r'[a-z0-9]*', current_hash):
+        if not re.match(r'[a-z0-9]*', last_common_hash):
             self.err(u'Faulty local git output, ignoring')
             raise UpdateError
             return
 
-        branch = self.find_branch(self.conf)
-
         num_behind = 0
         gh = GitHubAPI()
-        for commit in gh.commits(GitHub.GITHUB_USER,
-                GitHub.GITHUB_REPO, branch):
+        gh_commits = gh.commits(GitHub.GITHUB_USER, GitHub.GITHUB_REPO, branch)
+        for commit in gh_commits:
             try:
                 if not re.match(r'[a-z0-9]*', commit['sha']):
                     break
-                if commit['sha'] == current_hash:
+                if commit['sha'] == last_common_hash:
                     break
 
                 num_behind += 1
@@ -57,7 +59,21 @@ class UpdateManager(object):
             self.msg(u'No update for next available!')
             return False
 
-    def find_branch(self, conf):
+    def find_remote(self):
+        '''
+        A method to find the default remote that would be addressed when
+        running "git pull"
+        '''
+        result = u'origin'
+        try:
+            output, err = self.run_git(['rev-parse', '--symbolic-full-name',
+                '@{u}'])
+            result = output.strip().replace('refs/remotes/', '', 1)
+        except:
+            pass
+        return result
+
+    def find_branch(self):
         '''
         A method to find the branch that the user checked out for next (master
         or develop)
