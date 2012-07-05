@@ -22,7 +22,7 @@ running "next -u" when you're online.
 Requirements
 ------------
 
-next itself uses basic python and should work in python 2.6 and above. 
+next itself uses basic python and should work in python 2.7 and above. 
 
 To be able to play video from the command line a command line video player
 is required. I myself use mplayer but since you specify your own 
