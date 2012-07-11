@@ -181,7 +181,7 @@ class NewVersionCheckTimer(threading.Thread):
         try:
             self.updater.messages.push(u'Checking for new next version...')
             if self.updater.check_for_new_version():
-                self.updater.messages.append(u'You can update next using the '
+                self.updater.messages.push(u'You can update next using the '
                 'TUI or with --update-next')
         except UpdateError:
             print u'Couldn\'t check for new next version:'
