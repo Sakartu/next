@@ -39,7 +39,13 @@ class UpdateManager(object):
 
         num_behind = 0
         gh = GitHubAPI()
-        gh_commits = gh.commits(GitHub.GITHUB_USER, GitHub.GITHUB_REPO, branch)
+        try:
+            gh_commits = gh.commits(GitHub.GITHUB_USER, GitHub.GITHUB_REPO,
+                    branch)
+        except IOError:
+            self.err(u'Could not connect to Github, are you connected to the '
+            'internet?')
+            raise UpdateError
         for commit in gh_commits:
             try:
                 if not re.match(r'[a-z0-9]*', commit['sha']):
