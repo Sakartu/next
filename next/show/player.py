@@ -153,7 +153,10 @@ class PlayThread(threading.Thread):
 
     def run(self):
         try:
-            subprocess.call(self.command)
+            p = subprocess.Popen(self.command, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
+            _, stderr = p.communicate()
+            print stderr
             self.result.put(True)
         except KeyboardInterrupt:
             # user killed the player himself
