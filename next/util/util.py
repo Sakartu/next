@@ -23,7 +23,8 @@ def get_words(text):
     # split on spaces
     words = text.split()
     # filter for only normal words (handy in case of "Doctor Who (2005)"
-    filtered = filter(lambda x: re.compile(r'^\w*$', re.U).match(x), words)
+    filtered = map(lambda x: re.compile(r'\w*', re.U).search(x).group(0),
+            words)
     return filtered
 
 
