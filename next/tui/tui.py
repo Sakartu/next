@@ -91,7 +91,7 @@ class TUI(cmd.Cmd, object):
         '''
 
         wanted = ''
-        if ConfKeys.FUNC_ARGS in self.conf and self.conf[ConfKeys.FUNC_ARGS]:
+        if self.conf.get(ConfKeys.FUNC_ARGS, None):
             wanted = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
         elif line:
             wanted = line
@@ -236,8 +236,7 @@ class TUI(cmd.Cmd, object):
         aren't in the database yet, then ask the user show by show if he wants
         to add it
         '''
-        if (ConfKeys.UNSTRUCTURED in self.conf and
-                self.conf[ConfKeys.UNSTRUCTURED]):
+        if self.conf.get(ConfKeys.UNSTRUCTURED, None):
             print "Cannot scan disk in unstructured mode!"
             return
         unlisted = admin.find_unlisted(self.conf)
@@ -520,7 +519,7 @@ class TUI(cmd.Cmd, object):
             if not show:
                 util.print_formatted(u'Show could not be found!')
                 return
-        elif ConfKeys.FUNC_ARGS in self.conf and self.conf[ConfKeys.FUNC_ARGS]:
+        elif self.conf.get(ConfKeys.FUNC_ARGS, None):
             name = u' '.join(self.conf[ConfKeys.FUNC_ARGS])
             shows = db.find_shows(self.conf, name)
             show = util.filter_shows(shows, name)
