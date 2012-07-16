@@ -114,6 +114,15 @@ def build_parser():
     const=t.do_list,
     help=u'List all your shows with detailed information')
 
+    # -i, --info, --show_info
+    parser.add_option(u'-i',
+    u'--info',
+    action="store_const",
+    dest="func",
+    const=t.do_info,
+    help=u'List some info for a show, including all eps and whether they have'
+    ' a file present')
+
     # -n, --new
     parser.add_option(u'-n',
     u'--new',

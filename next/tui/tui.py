@@ -294,6 +294,34 @@ class TUI(cmd.Cmd, object):
         there\'s a new ep available on the drive. A double * in front of an ep
         means there\'s a new ep available and it also has subtitles.''')
 
+    def do_info(self, line=None):
+        '''
+        A TUI function that shows more info about a show
+        '''
+        show = self.ask_show(line, u'Which show would you like to print info '
+        'for?')
+        if not show:
+            return
+        seasons = db.find_seasons(self.conf, show.sid)
+        eps = []
+        for s in seasons:
+            eps.extend(db.find_all_eps(self.conf, show.sid, s))
+        print 'Name:', show.name
+        print 'Status:', show.status
+        print 'Known episodes (* indicates file present):'
+        for ep in eps:
+            if fs.build_ep_path(self.conf, show, ep.season, ep.epnum):
+                has_file = '*'
+            else:
+                has_file = ' '
+            print '   ', has_file, str(ep)
+
+    def help_info(self):
+        util.print_formatted(u'''\
+        Prints some info about a show such as where you're at, which eps are in
+        the ep cache and for which ep there are subs available
+        ''')
+
     def do_new(self, line=None):
         '''
         A TUI function that lists all the shows for which new eps are available
