@@ -67,13 +67,18 @@ def fix_subs(conf, show):
             print e
 
 
-def build_ep_path(conf, show):
+def build_ep_path(conf, show, season=None, ep=None):
     '''
     This is a helper function for the play_next method. It tries to build
     a path to the next episode. It checks all the locations in the database, as
     well as the default show location. It will return None if no path could be
     built, in case the show isn't available on the disk yet.
     '''
+    if not season:
+        season = show.season
+    if not ep:
+        ep = show.ep
+
     # we can never find eps for shows that are maybe_finished
     if show.maybe_finished:
         return None
@@ -92,30 +97,30 @@ def build_ep_path(conf, show):
         # mode
         if not unstructured:
             # see which seasons there are and pick the right one
-            for season in os.listdir(base):
-                if (str(show.season) in season and
-                os.path.isdir(os.path.join(path, season))):
-                    path = os.path.join(path, season)
+            for season_dir in os.listdir(base):
+                if (str(season) in season_dir and
+                os.path.isdir(os.path.join(path, season_dir))):
+                    path = os.path.join(path, season_dir)
 
             if path == base:  # no season found
                 continue
 
         if not unstructured:
-            rexes = [re.compile("^" + x.format(show="", season=show.season,
-                ep=show.ep) + "$", re.I | re.U) for x in
+            rexes = [re.compile("^" + x.format(show="", season=season,
+                ep=ep) + "$", re.I | re.U) for x in
                 constants.SHOW_REGEXES]
         else:
             show_words = util.get_words(show.name)
             rexes = [re.compile(x.format(show="".join([word + "[\W_]" for word
-                in show_words]), season=show.season, ep=show.ep), re.I | re.U)
+                in show_words]), season=season, ep=ep), re.I | re.U)
                 for x in constants.SHOW_REGEXES]
 
-        for e in constants.VIDEO_EXTS:
-            for ep in glob.glob(path + os.sep + '*.' + e):
+        for ext in constants.VIDEO_EXTS:
+            for ep_file in glob.glob(path + os.sep + '*.' + ext):
                 for rex in rexes:
-                    m = rex.match(os.path.split(ep)[1])
+                    m = rex.match(os.path.split(ep_file)[1])
                     if m:
-                        return ep
+                        return ep_file
 
     return None  # if no ep could be found in any of the bases
 
