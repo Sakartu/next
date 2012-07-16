@@ -93,13 +93,15 @@ we'll discuss below:
 
 Option | Explanation | Optional? | Default
 -------|-------------|-----------|--------
-player_cmd | This is the command line that next will use to start an episode | no | totem
-database_path | If you want your database to reside somewhere other than the default, you can specify it here | yes | ~/downloads/series
 show_path | This is your series directory, something like ~/downloads/series/ | no | ~/downloads/series/
+database_path | If you want your database to reside somewhere other than the default, you can specify it here | yes | ~/downloads/series
+player_cmd | This is the command line that next will use to start an episode | no | totem
 unstructured_mode | Set this option to True if you have all your eps (from every show) in a single download dir | yes | False
 post_hook | A comma-separated list of scripts to call after an ep is watched. See the config file for possible parameters. | yes | /bin/rm {path}
 length_detection | The number of minutes you have to watch an ep before next will ask you to update the database. | yes | 0
 ask_another | Set this option to false if you don't want next to ask to play another ep | yes | True
+check_new_version | Set this option to false if you don't want next to check for a new version while playing an episode | yes | False
+git_path | If you want to use a custom git installation (or if git isn't in your PATH), put the path to git here | yes | <empty>
 
 There is a documented example configuration file in the repository in the config/
 dir. A default configuration file will also be generated if no file can be
