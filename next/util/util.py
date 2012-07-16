@@ -75,7 +75,7 @@ def get_ep_details(filename, show='.*', season='\d{1,2}', ep='\d{1,2}',
     for rex in rexes:  # try to find season and ep number
         m = rex.match(filename)
         if m:
-            show, s, e = (m.group('show'), int(m.group('season')), 
+            show, s, e = (m.group('show'), int(m.group('season')),
                     int(m.group('ep')))
             return show, s, e
     return None, None, None

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 from templates import LINUX, WINDOWS
 import subprocess
-import stat
 import sys
 import os
+
 
 def main():
     args = sys.argv[1:]
@@ -28,11 +28,13 @@ def main():
             p = gen_windows(defining_name)
         set_perms(p)
 
+
 def gen_linux(name):
     path = os.path.join('./scripts/', name + '.sh')
     with open(path, 'w+') as f:
         f.write(LINUX.format(name=name))
     return path
+
 
 def gen_windows(name):
     path = os.path.join('./scripts/', name + '.bat')
@@ -40,8 +42,9 @@ def gen_windows(name):
         f.write(WINDOWS.format(name=name))
     return path
 
+
 def set_perms(path):
-    os.chmod(path, 0744) #stat.S_IRWXU | (stat.S_IRWXG ^ stat.S_) | stat.S_IRWXO)
+    os.chmod(path, 0744)
 
 if __name__ == '__main__':
     main()
