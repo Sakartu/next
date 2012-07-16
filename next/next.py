@@ -9,14 +9,14 @@ if sys.version_info < (2, 6):
 
 # check imports
 try:
-    import tvrage
+    import tvrage  # flake8 ignore: # NOQA
 except ImportError:
     print u'next needs the tvrage module to work. See the README for more '
     'information!'
     sys.exit(-1)
 
 try:
-    import pyreadline as readline
+    import pyreadline as readline  # flake8 ignore: # NOQA
 except ImportError:
     pass  # No readline support under Windows, oh well.
 
