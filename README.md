@@ -99,8 +99,9 @@ player_cmd | This is the command line that next will use to start an episode | n
 unstructured_mode | Set this option to True if you have all your eps (from every show) in a single download dir | yes | False
 post_hook | A comma-separated list of scripts to call after an ep is watched. See the config file for possible parameters. | yes | /bin/rm {path}
 length_detection | The number of minutes you have to watch an ep before next will ask you to update the database. | yes | 0
-ask_another | Set this option to false if you don't want next to ask to play another ep | yes | True
-check_new_version | Set this option to false if you don't want next to check for a new version while playing an episode | yes | False
+ask_another | Set this option to False if you don't want next to ask to play another ep | yes | True
+check_new_version | Set this option to False if you don't want next to check for a new version while playing an episode | yes | True
+auto_update_next | Set this option to False if you don't want next to auto update to a new version if a new version is available. Can be used in combination with the above check_new_version | yew | True
 git_path | If you want to use a custom git installation (or if git isn't in your PATH), put the path to git here | yes | <empty>
 
 There is a documented example configuration file in the repository in the config/

@@ -12,14 +12,14 @@ class UpdateManager(object):
         self.print_output = False
 
     def update(self):
-        print u'Updating...'
+        self.msg(u'Updating...')
         branch = self.find_branch()
         output, err = self.run_git(['pull', 'origin', branch])
         if err == None:
-            print 'Done!'
+            self.msg('Done!')
         else:
-            print u'Something went wrong:'
-            print err
+            self.err(u'Something went wrong:')
+            self.err(err)
 
     def check_for_new_version(self):
         branch = self.find_branch()
@@ -97,7 +97,7 @@ class UpdateManager(object):
         Helper method to run git with a given set of arguments
         Heavily based on the _run_git method of SickBeard
         '''
-        if ConfKeys.GIT_PATH in self.conf and self.conf[ConfKeys.GIT_PATH]:
+        if self.conf.get(ConfKeys.GIT_PATH, None):
             cmd = [self.conf[ConfKeys.GIT_PATH]] + args
         else:
             cmd = ['git'] + args

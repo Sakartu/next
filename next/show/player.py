@@ -111,9 +111,9 @@ def play(command, show, conf):
 
     # This timer will check to see if a new version of next is available
     new_version_timer = None
-    if ConfKeys.CHECK_NEW_VERSION in conf and conf[ConfKeys.CHECK_NEW_VERSION]:
-        new_version_timer = NewVersionCheckTimer(60 * 10,
-                conf[ConfKeys.UPDATE_MANAGER])
+    if (conf.get(ConfKeys.CHECK_NEW_VERSION, None) or
+            conf.get(ConfKeys.AUTO_UPDATE_NEXT, None)):
+        new_version_timer = NewVersionCheckTimer(60 * 10, conf)
 
     result = Queue.Queue()
     # This separate thread will start playing the ep and cancel the above Timer
@@ -173,19 +173,23 @@ class PlayThread(threading.Thread):
 
 
 class NewVersionCheckTimer(threading.Thread):
-    def __init__(self, interval, updater):
+    def __init__(self, interval, conf):
         threading.Thread.__init__(self)
+        self.conf = conf
+        self.updater = self.conf[ConfKeys.UPDATE_MANAGER]
         self.event = threading.Event()
         self.interval = interval
-        self.updater = updater
 
     def run(self):
         self.event.wait(self.interval)
         try:
             self.updater.messages.push(u'Checking for new next version...')
             if self.updater.check_for_new_version():
-                self.updater.messages.push(u'You can update next using the '
-                'TUI or with --update-next')
+                if self.conf.get(ConfKeys.AUTO_UPDATE, None):
+                    self.updater.update()
+                else:
+                    self.updater.messages.push(u'You can update next using '
+                    'the TUI or with --update-next')
         except UpdateError:
             print u'Couldn\'t check for new next version:'
             for m in self.updater.messages:
