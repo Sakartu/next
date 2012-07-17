@@ -307,7 +307,8 @@ class TUI(cmd.Cmd, object):
             eps.extend(db.find_all_eps(self.conf, show.sid, s))
         print 'Name:', show.name
         print 'Status:', show.status
-        print 'Known episodes (* indicates file present):'
+        print 'Known episodes (* indicates file present, > indicates current '
+        'ep):'
         for ep in eps:
             if ep.season == show.season and ep.epnum == show.ep:
                 is_next = '>'
