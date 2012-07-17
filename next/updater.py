@@ -1,7 +1,6 @@
-from constants import ConfKeys
+from constants import ConfKeys, GitHub
 from gh_api import GitHubAPI
 import subprocess
-from constants import GitHub
 import re
 
 

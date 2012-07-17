@@ -1,7 +1,7 @@
-from db import db
-from tvr import parser
 from urllib2 import URLError
-import util.util as util
+import util
+import parser
+import db
 import os
 
 

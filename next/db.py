@@ -1,8 +1,8 @@
 import os
 import sqlite3
-from tvr.tvrshow import Show
-from tvr.tvrep import Episode
-from util.constants import ConfKeys
+from tvrshow import Show
+from tvrep import Episode
+from constants import ConfKeys
 
 
 def initialize(path):

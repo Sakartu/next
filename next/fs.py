@@ -1,4 +1,4 @@
-from db import db
+import db
 import constants
 import util
 import glob

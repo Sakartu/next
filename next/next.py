@@ -20,17 +20,18 @@ try:
 except ImportError:
     pass  # No readline support under Windows, oh well.
 
-from util import config
-from util.constants import ConfKeys
-from util.updater import UpdateManager
-from db import db
-from show import player
-from tui.exceptions import UserCancelled
-from tui.tui import TUI
-from util import util, message_queue
-import os
-import codecs
+from tui_exceptions import UserCancelled
+from updater import UpdateManager
+from constants import ConfKeys
+from tui import TUI
+import message_queue
 import sqlite3
+import codecs
+import config
+import player
+import util
+import db
+import os
 
 
 def main():

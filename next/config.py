@@ -1,6 +1,6 @@
 from optparse import OptionParser
 from constants import USAGE, ConfKeys
-from tui.tui import TUI
+from tui import TUI
 import ConfigParser
 import os
 import sys

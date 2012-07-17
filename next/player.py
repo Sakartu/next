@@ -1,17 +1,17 @@
-from util.constants import ConfKeys
-from util.message_queue import MessageQueue
-from util.updater import UpdateError
-from show import admin
-from db import db
-import util.fs as fs
+from constants import ConfKeys
+from message_queue import MessageQueue
+from updater import UpdateError
 import subprocess
 import threading
 import datetime
 import Queue
+import admin
 import shlex
 import time
 import sys
 import os
+import db
+import fs
 
 
 def play_show(conf, show):
