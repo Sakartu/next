@@ -1,5 +1,5 @@
 from optparse import OptionParser
-from constants import USAGE, EXAMPLE_CONF, ConfKeys
+from constants import USAGE, ConfKeys
 from tui.tui import TUI
 import ConfigParser
 import os
@@ -230,5 +230,9 @@ def build_parser():
 def gen_example(path):
     if not os.path.exists(os.path.dirname(path)):
         os.makedirs(os.path.dirname(path))
-    with open(path, 'w+') as conf:
-        conf.write(EXAMPLE_CONF)
+    filedir = os.path.dirname(os.path.abspath(__file__))
+    confpath = os.path.join(filedir, '../../config/next.conf')
+    if os.path.isfile(os.path.abspath(confpath)):
+        with open(confpath, 'r') as default:
+            with open(path, 'w+') as conf:
+                conf.write(default.read())
