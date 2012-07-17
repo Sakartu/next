@@ -31,6 +31,9 @@ class Episode(object):
         if type(self) != type(other):
             return 1
 
+        if self.showname != other.showname:
+            return 1
+
         if self.season == other.season:
             return self.epnum - other.epnum
         else:

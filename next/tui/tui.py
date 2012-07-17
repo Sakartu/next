@@ -309,11 +309,16 @@ class TUI(cmd.Cmd, object):
         print 'Status:', show.status
         print 'Known episodes (* indicates file present):'
         for ep in eps:
+            if ep.season == show.season and ep.epnum == show.ep:
+                is_next = '>'
+            else:
+                is_next = ' '
+
             if fs.build_ep_path(self.conf, show, ep.season, ep.epnum):
                 has_file = '*'
             else:
                 has_file = ' '
-            print '   ', has_file, str(ep)
+            print ' ', is_next, has_file, str(ep)
 
     def help_info(self):
         util.print_formatted(u'''\

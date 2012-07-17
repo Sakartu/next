@@ -185,7 +185,7 @@ class NewVersionCheckTimer(threading.Thread):
         try:
             self.updater.messages.push(u'Checking for new next version...')
             if self.updater.check_for_new_version():
-                if self.conf.get(ConfKeys.AUTO_UPDATE, None):
+                if self.conf.get(ConfKeys.AUTO_UPDATE_NEXT, None):
                     self.updater.update()
                 else:
                     self.updater.messages.push(u'You can update next using '
