@@ -1,6 +1,6 @@
 from urllib2 import URLError
 import util
-import parser
+import tvrparser
 import db
 import os
 
@@ -61,8 +61,8 @@ def update_eps(conf, messages=None):
             all_eps = []
             for i in range(4):  # try updating 4 times, tvrdb is a bit flakey
                 try:
-                    status = parser.get_status(show.sid)
-                    all_eps = parser.get_all_eps(show.sid)
+                    status = tvrparser.get_status(show.sid)
+                    all_eps = tvrparser.get_all_eps(show.sid)
                     break
                 except URLError:
                     continue
@@ -80,6 +80,7 @@ def update_eps(conf, messages=None):
     except Exception, e:  # probably no internet connection
         msg('\nCould not connect to TVRage, will not update tvrage episode'
         ' cache.')
+        print e
         if hasattr(e, 'code'):
             msg('Received status code:')
             msg(e.code)
