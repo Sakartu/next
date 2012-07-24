@@ -56,7 +56,7 @@ def update_eps(conf, messages=None):
     try:
         for show in all_shows:
             if not messages:
-                print '.'
+                print '.',
 
             all_eps = []
             for i in range(4):  # try updating 4 times, tvrdb is a bit flakey
