@@ -141,9 +141,8 @@ def get_show_bases(unstructured, conf, show):
         show_words = util.normalize(util.get_words(show.name))
         for name in os.listdir(shows_base):
             full = os.path.join(shows_base, name)
-            if os.path.isdir(full) and all([x in
-                util.normalize(util.get_words(name.lower())) for x in
-                show_words]):
+            if  all([x in util.normalize(util.get_words(name.lower())) for x in
+                show_words]) and os.path.isdir(full):
                 bases.append(full)
     else:
         # if we're in unstructured mode, we just set the base as the show dir
