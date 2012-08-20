@@ -42,7 +42,7 @@ def play_next(conf, show):
         'or marked maybe_finished?').format(S=show.season, E=show.ep,
                 name=show.name))
         return
-    command = cmd_line.split(' ') + [ep_path]
+    command = shlex.split(cmd_line) + [ep_path]
     before = datetime.datetime.now()
     if not play(command, show, conf):
         return
