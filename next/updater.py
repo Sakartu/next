@@ -2,6 +2,7 @@ from constants import ConfKeys, GitHub
 from gh_api import GitHubAPI
 import subprocess
 import re
+import os
 
 
 class UpdateManager(object):
@@ -11,14 +12,32 @@ class UpdateManager(object):
         self.print_output = False
 
     def update(self):
-        self.msg(u'Updating...')
-        branch = self.find_branch()
-        output, err = self.run_git(['pull', 'origin', branch])
-        if err == None:
-            self.msg('Done!')
-        else:
+        try:
+            self.msg(u'Cleaning install directory...')
+            rootdir = os.path.dirname(os.path.abspath(__file__))
+            for root, _, files in os.walk(rootdir):
+                for f in files:
+                    if f.endswith('.pyc'):
+                        os.remove(os.path.join(root, f))
+            self.msg(u'Done!')
+            self.msg(u'Updating...')
+            branch = self.find_branch()
+            output, err = self.run_git(['pull', 'origin', branch])
+            if err == None:
+                self.msg('Done!')
+            else:
+                self.err(u'Something went wrong:')
+                self.err(err)
+            self.msg(u'Updating remotes...')
+            output, err = self.run_git(['remote', 'update'])
+            if err == None:
+                self.msg('Done!')
+            else:
+                self.err(u'Something went wrong:')
+                self.err(err)
+        except Exception, e:
             self.err(u'Something went wrong:')
-            self.err(err)
+            self.err(str(e))
 
     def check_for_new_version(self):
         branch = self.find_branch()
