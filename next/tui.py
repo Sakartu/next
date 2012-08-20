@@ -22,10 +22,10 @@ class TUI(cmd.Cmd, object):
         self.conf = conf
         self.prompt = u'next$ '
         self.intro = u'Welcome to next!\n'
-        self.intro += u'This program helps you maintain your show watching '
-        'habits\n'
-        self.intro += u'by logging which ep you have reached for a show. '
-        'Please\n'
+        self.intro += (u'This program helps you maintain your show watching '
+        'habits\n')
+        self.intro += (u'by logging which ep you have reached for a show. '
+        'Please\n')
         self.intro += u'enter a command to continue!\n'
         self.doc_header = u'Commands (press help <command> to get help):'
 
@@ -101,8 +101,8 @@ class TUI(cmd.Cmd, object):
         found_show = None
         while not found_show:
             if not wanted:
-                print u'Please enter the name of the show you would like to '
-                'add.'
+                print(u'Please enter the name of the show you would like to '
+                'add.')
                 wanted = self.get_input(term=u'Showname: ')
             # find the show in tvrage
             print u'Searching for show in TVRage database... ',
@@ -218,8 +218,8 @@ class TUI(cmd.Cmd, object):
 
         next_ep = admin.find_next_ep(self.conf, show)
         if not next_ep:
-            print u'Show has been furthered, but there is no information about'
-            ' new eps yet. Try updating later to fix this!'
+            print(u'Show has been furthered, but there is no information about'
+            ' new eps yet. Try updating later to fix this!')
             db.mark_maybe_finished(self.conf, show.sid)
             show.maybe_finished = True
             return
@@ -253,8 +253,8 @@ class TUI(cmd.Cmd, object):
                 shows = parser.fuzzy_search(" ".join(util.get_words(path)))
                 print u'done.'
                 if not shows:
-                    print u'No shows could be found, please try other '
-                    'keywords!'
+                    print(u'No shows could be found, please try other '
+                    'keywords!')
                     return
                 else:
                     found_show = self.read_show(shows)
@@ -308,8 +308,8 @@ class TUI(cmd.Cmd, object):
             eps.extend(db.find_all_eps(self.conf, show.sid, s))
         print 'Name:', show.name
         print 'Status:', show.status
-        print 'Known episodes (* indicates file present, > indicates current '
-        'ep):'
+        print('Known episodes (* indicates file present, > indicates current '
+        'ep):')
         for ep in eps:
             if ep.season == show.season and ep.epnum == show.ep:
                 is_next = '>'
@@ -452,8 +452,8 @@ class TUI(cmd.Cmd, object):
             db.add_show(self.conf, sid, name, season, ep, status)
             print u'Successfully added {0} to the database!'.format(name)
         except sqlite3.IntegrityError:
-            print u'Show already exists, use change command to change season '
-            'and ep!'
+            print(u'Show already exists, use change command to change season '
+            'and ep!')
 
     def ask_show_season(self, name, sid):
         '''

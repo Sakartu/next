@@ -163,8 +163,8 @@ class PlayThread(threading.Thread):
             self.result.put(True)
         except:
             # player probably doesn't exist or isn't properly configged
-            print u'An error occurred while starting the player, check '
-            'your config!'
+            print (u'An error occurred while starting the player, check '
+            'your config!')
             self.result.put(False)
         finally:
             if self.new_version_timer:

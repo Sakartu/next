@@ -11,8 +11,8 @@ if sys.version_info < (2, 6):
 try:
     import tvrage  # flake8 ignore: # NOQA
 except ImportError:
-    print u'next needs the tvrage module to work. See the README for more '
-    'information!'
+    print(u'next needs the tvrage module to work. See the README for more '
+    'information!')
     sys.exit(-1)
 
 try:
