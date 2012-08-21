@@ -118,7 +118,8 @@ def play(command, show, conf):
     result = Queue.Queue()
     # This separate thread will start playing the ep and cancel the above Timer
     # to make sure the user doesn't have to wait for the database update
-    play_thread = PlayThread(result, command, update_timer, new_version_timer)
+    play_thread = PlayThread(result, command, update_timer, new_version_timer,
+            conf.get(ConfKeys.SUPPRESS_OUTPUT, True))
 
     try:
         # Start the ep
@@ -144,19 +145,22 @@ def play(command, show, conf):
 
 
 class PlayThread(threading.Thread):
-    def __init__(self, result, command, update_timer, new_version_timer):
+    def __init__(self, result, command, update_timer, new_version_timer,
+            suppress_output):
         threading.Thread.__init__(self)
         self.result = result
         self.command = command
         self.update_timer = update_timer
         self.new_version_timer = new_version_timer
+        self.suppress_output = suppress_output
 
     def run(self):
         try:
-            p = subprocess.Popen(self.command, stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE)
-            _, stderr = p.communicate()
-            print stderr
+            if self.suppress_output:
+                subprocess.Popen(self.command, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE).communicate()
+            else:
+                subprocess.call(self.command)
             self.result.put(True)
         except KeyboardInterrupt:
             # user killed the player himself

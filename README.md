@@ -96,6 +96,7 @@ Option | Explanation | Optional? | Default
 show_path | This is your series directory, something like ~/downloads/series/ | no | ~/downloads/series/
 database_path | If you want your database to reside somewhere other than the default, you can specify it here | yes | ~/downloads/series
 player_cmd | This is the command line that next will use to start an episode | no | totem
+suppress_player_output | Set this option to True if you want next to suppress all (commandline) output from the player| yes | True
 unstructured_mode | Set this option to True if you have all your eps (from every show) in a single download dir | yes | False
 post_hook | A comma-separated list of scripts to call after an ep is watched. See the config file for possible parameters. | yes | /bin/rm {path}
 length_detection | The number of minutes you have to watch an ep before next will ask you to update the database. | yes | 0

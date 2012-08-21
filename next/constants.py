@@ -44,6 +44,7 @@ class ConfKeys:
     AUTO_UPDATE_NEXT = u'auto_update_next'
     GIT_PATH = u'git_path'
     UPDATE_MANAGER = u'update_manager'
+    SUPPRESS_OUTPUT = u'suppress_player_output'
 
 
 class TVRage:
