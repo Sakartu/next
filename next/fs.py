@@ -59,7 +59,7 @@ def fix_subs(conf, show):
     for (path, cur, new) in to_rename:
         try:
             os.rename(os.path.join(path, cur), os.path.join(path, new))
-            print "Renamed {cur} to {new} in {path}".format(cur=cur, new=new,
+            print u"Renamed {cur} to {new} in {path}".format(cur=cur, new=new,
                     path=path)
         except OSError, e:
             print "Could not rename {cur} to {new} in {path}:".format(cur=cur,
