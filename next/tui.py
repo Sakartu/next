@@ -2,10 +2,10 @@ from tui_exceptions import UserCancelled, NoShowsException
 from updater import UpdateError
 from constants import ConfKeys
 from datetime import datetime
+import tvrparser
 import sqlite3
 import player
 import random
-import parser
 import admin
 import util
 import sys
@@ -107,10 +107,11 @@ class TUI(cmd.Cmd, object):
             # find the show in tvrage
             print u'Searching for show in TVRage database... ',
             try:
-                shows = parser.fuzzy_search(wanted)
-            except:
+                shows = tvrparser.fuzzy_search(wanted)
+            except Exception as e:
                 # possibly no internet or no conn to tvr
                 print u'\nCould not connect to tvr, try again later!'
+                print e
                 return
             print u'done.'
             if not shows:
@@ -121,7 +122,7 @@ class TUI(cmd.Cmd, object):
             wanted = ''
 
         print u'Getting all show eps from TVRage... ',
-        episodes = parser.get_all_eps(found_show[1])  # find eps by sid
+        episodes = tvrparser.get_all_eps(found_show[1])  # find eps by sid
         print u'done.'
 
         print u'Storing eps in db... ',
@@ -250,7 +251,7 @@ class TUI(cmd.Cmd, object):
             if u'y' in answer.lower() or answer.strip() == '':
                 print u'Searching for show in TVRage database... ',
 
-                shows = parser.fuzzy_search(" ".join(util.get_words(path)))
+                shows = tvrparser.fuzzy_search(" ".join(util.get_words(path)))
                 print u'done.'
                 if not shows:
                     print(u'No shows could be found, please try other '
@@ -261,7 +262,7 @@ class TUI(cmd.Cmd, object):
 
                     print u'Getting all show eps from TVRage... ',
                     # find eps by sid
-                    episodes = parser.get_all_eps(found_show[1])
+                    episodes = tvrparser.get_all_eps(found_show[1])
                     print u'done.'
 
                     print u'Storing eps in db... ',
