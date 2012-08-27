@@ -111,7 +111,6 @@ class TUI(cmd.Cmd, object):
             except Exception as e:
                 # possibly no internet or no conn to tvr
                 print u'\nCould not connect to tvr, try again later!'
-                print e
                 return
             print u'done.'
             if not shows:
