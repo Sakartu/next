@@ -119,5 +119,8 @@ def clean_db(conf):
     tvr_ids = db.find_tvr_ids(conf)
     to_clean = [i for i in tvr_ids if i not in show_ids]
     db.clear_cache(conf, ((x,) for x in to_clean))
-    print u'Cleared out shows with ids {0}'.format(
-            ' and '.join(map(str, to_clean)))
+    if to_clean:
+        print u'Cleared out shows with ids {0}'.format(
+                ' and '.join(map(str, to_clean)))
+    else:
+        print u'No cleaning needed!'
