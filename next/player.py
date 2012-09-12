@@ -4,6 +4,7 @@ from updater import UpdateError
 import subprocess
 import threading
 import datetime
+import locale
 import Queue
 import admin
 import shlex
@@ -149,7 +150,8 @@ class PlayThread(threading.Thread):
             suppress_output):
         threading.Thread.__init__(self)
         self.result = result
-        self.command = command
+        self.command = map(lambda x: x.encode(
+            locale.getpreferredencoding()), command)
         self.update_timer = update_timer
         self.new_version_timer = new_version_timer
         self.suppress_output = suppress_output
@@ -170,6 +172,7 @@ class PlayThread(threading.Thread):
             print (u'The following error occurred while starting the player, '
                     'check your config:')
             print e
+            print self.command
             self.result.put(False)
         finally:
             if self.new_version_timer:
