@@ -165,10 +165,11 @@ class PlayThread(threading.Thread):
         except KeyboardInterrupt:
             # user killed the player himself
             self.result.put(True)
-        except:
+        except Exception as e:
             # player probably doesn't exist or isn't properly configged
-            print (u'An error occurred while starting the player, check '
-            'your config!')
+            print (u'The following error occurred while starting the player, '
+                    'check your config:')
+            print e
             self.result.put(False)
         finally:
             if self.new_version_timer:
