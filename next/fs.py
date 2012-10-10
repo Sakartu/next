@@ -28,7 +28,8 @@ def fix_subs(conf, show):
     accompanying ep
     '''
     unstructured = conf.get(constants.ConfKeys.UNSTRUCTURED, False)
-    if constants.ConfKeys.SHOW_PATH not in conf:
+    if constants.ConfKeys.SHOW_PATH not in conf or \
+            not os.path.isdir(conf[constants.ConfKeys.SHOW_PATH]):
         return None
     bases = get_show_bases(unstructured, conf, show)
     to_rename = []
@@ -84,7 +85,8 @@ def build_ep_path(conf, show, season=None, ep=None):
         return None
 
     unstructured = conf.get(constants.ConfKeys.UNSTRUCTURED, False)
-    if constants.ConfKeys.SHOW_PATH not in conf:
+    if constants.ConfKeys.SHOW_PATH not in conf or \
+            not os.path.isdir(conf[constants.ConfKeys.SHOW_PATH]):
         return None
     bases = get_show_bases(unstructured, conf, show)
 
