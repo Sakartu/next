@@ -33,7 +33,7 @@ def parse_opts():
         path = BaseDirectory.load_first_config('next', 'next.conf')
         if not path:
             path = os.path.join(BaseDirectory.save_config_path('next'),
-                    'next.conf')
+                                'next.conf')
     else:
         path = os.path.expanduser(u'~/.next/next.conf')
 
@@ -41,11 +41,11 @@ def parse_opts():
     if not path or not os.path.exists(path):
         try:
             print((u'No configfile found in "{0}", generating default '
-            'configfile. Please modify, then retart next!').format(path))
+                  'configfile. Please modify, then retart next!').format(path))
             gen_example(path)
         except:
             print(('Couldn\'t generate default configfile, path "{0}" is '
-            'inaccessible!').format(path))
+                  'inaccessible!').format(path))
         sys.exit(-1)
 
     if path:
@@ -64,7 +64,7 @@ def parse_opts():
     database_path = config.get(u'general', ConfKeys.DB_PATH)
     if not database_path.endswith('.db'):
         config.set(u'general', ConfKeys.DB_PATH,
-        os.path.join(database_path, u'next.db'))
+                   os.path.join(database_path, u'next.db'))
 
     result = dict(config.items(u'general'))
 

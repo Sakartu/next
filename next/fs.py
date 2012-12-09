@@ -29,7 +29,7 @@ def fix_subs(conf, show):
     '''
     unstructured = conf.get(constants.ConfKeys.UNSTRUCTURED, False)
     if constants.ConfKeys.SHOW_PATH not in conf or \
-            not os.path.isdir(conf[constants.ConfKeys.SHOW_PATH]):
+            not filter(os.path.isdir, get_bases(conf)):
         return None
     bases = get_show_bases(unstructured, conf, show)
     to_rename = []
@@ -86,7 +86,7 @@ def build_ep_path(conf, show, season=None, ep=None):
 
     unstructured = conf.get(constants.ConfKeys.UNSTRUCTURED, False)
     if constants.ConfKeys.SHOW_PATH not in conf or \
-            not os.path.isdir(conf[constants.ConfKeys.SHOW_PATH]):
+            not filter(os.path.isdir, get_bases(conf)):
         return None
     bases = get_show_bases(unstructured, conf, show)
 
@@ -135,21 +135,28 @@ def get_show_bases(unstructured, conf, show):
     # we search for an ep in the default shows folder and in each folder named
     # in the locations db
 
-    shows_base = unicode(os.path.expandvars(os.path.expanduser(
-        conf[constants.ConfKeys.SHOW_PATH])))
+    shows_bases = [unicode(os.path.expandvars(os.path.expanduser(x)))
+                   for x in get_bases(conf)]
 
     if not unstructured:
         bases = []
         show_words = util.normalize(util.get_words(show.name))
-        for name in os.listdir(shows_base):
-            full = os.path.join(shows_base, name)
-            if  all([x in util.normalize(util.get_words(name.lower())) for x in
-                show_words]) and os.path.isdir(full):
-                bases.append(full)
+        for shows_base in shows_bases:
+            if not os.path.isdir(shows_base):
+                continue
+            for name in os.listdir(shows_base):
+                full = os.path.join(shows_base, name)
+                if  all([x in util.normalize(util.get_words(name.lower()))
+                        for x in show_words]) and os.path.isdir(full):
+                    bases.append(full)
     else:
         # if we're in unstructured mode, we just set the base as the show dir
-        bases = [conf[constants.ConfKeys.SHOW_PATH]]
+        bases = get_bases(conf)
     bases.extend(db.find_all_locations(conf, show.sid))
     bases = map(os.path.expanduser, bases)
     bases = map(os.path.expandvars, bases)
     return bases
+
+
+def get_bases(conf):
+    return conf[constants.ConfKeys.SHOW_PATH].split(',')
