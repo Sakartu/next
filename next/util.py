@@ -20,6 +20,7 @@ def get_words(text):
     # filter out dots, underscores and multiple spaces
     text = re.sub('\s+', ' ', text.lower(), re.U)
     text = re.sub('[\._]', ' ', text, re.U)
+    text = re.sub("'", ' ', text, re.U)
     # split on spaces
     words = text.split()
     # filter for only normal words (handy in case of "Doctor Who (2005)"
