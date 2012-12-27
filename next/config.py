@@ -12,14 +12,14 @@ except ImportError:
     have_xdg = False
 
 
-def parse_opts():
+def parse_opts(arguments=sys.argv[1:]):
     '''
     This method parses the commandline options to next, if any, and it parses
     the configuration file
     '''
     t, parser = build_parser()
 
-    (options, args) = parser.parse_args()
+    (options, args) = parser.parse_args(arguments)
 
     # Load a default config
     config = ConfigParser.SafeConfigParser()
