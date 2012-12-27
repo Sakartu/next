@@ -69,10 +69,10 @@ def sync(conf, show, copy_from, copy_to):
             copy_from = to_copy[season][epnum]
             print(u'Copying {0}... '.format(copy_from))
             shutil.copy2(copy_from, season_path)
-            try:
-                subfile = os.path.splitext(copy_from)[0] + '.srt'
+            subfile = fs.build_sub_path(copy_from)
+            if subfile:
                 shutil.copy2(subfile, season_path)
-            except IOError:
+            else:
                 print(u'Could not copy subtitle, maybe it doesn\'t exist?')
     print(u'Show done!')
 
