@@ -1,8 +1,30 @@
+import sys
 import os
 import sqlite3
 from tvrshow import Show
 from tvrep import Episode
 from constants import ConfKeys
+
+
+def connect(conf):
+    database_path = conf[ConfKeys.DB_PATH]
+    database_path = os.path.expanduser(os.path.expandvars(database_path))
+
+    # initialize the sqlite database
+    try:
+        if os.path.exists(database_path) or os.access(
+                os.path.dirname(database_path), os.W_OK | os.R_OK):
+            conf[ConfKeys.DB_CONN] = initialize(database_path)
+        else:
+            print((u'Could not access shows database, path "{0}" does not '
+                   'exist or we don\'t have write access!').format(
+                       database_path))
+            sys.exit(-1)
+
+    except sqlite3.OperationalError:
+        print((u'Could not access shows database, are the permissions correct '
+               'for "{0}"?').format(database_path))
+        sys.exit(-1)
 
 
 def initialize(path):
