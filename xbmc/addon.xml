@@ -10,7 +10,8 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <summary lang="en">next update functionality</summary>
+    <summary lang="en">next database updater</summary>
+	<description lang="en">Update Next is an addon that can help keep your next (http://github.com/Sakartu/next) database up to date</description>
   </extension>
 </addon>
 
