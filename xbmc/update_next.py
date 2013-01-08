@@ -6,18 +6,12 @@ import xbmcaddon
 import json
 from collections import defaultdict
 
-addon = xbmcaddon.Addon('service.update_next')
-sys.path.insert(0, os.path.expanduser(addon.getSetting('next_path')))
-
-import next.db
-import next.util
-import next.constants
-
 
 class NextUpdatePlayer(xbmc.Player):
     def init(self):
         xbmc.Player.__init__(self)
         self._last_played = None
+        self.addon = xbmcaddon.Addon('service.update_next')
 
     def onPlayBackEnded(self):
         self._update_next()
@@ -43,6 +37,15 @@ class NextUpdatePlayer(xbmc.Player):
                 self._last_played = episode
 
     def _update_next(self):
+        try:
+            sys.path.insert(0, os.path.expanduser(self.addon.getSetting('next_path')))
+
+            import next.db
+            import next.util
+            import next.constants
+        except ImportError:
+            xbmc.gui.Dialog().ok('next library error!', 'Could not locate next module, have you configured Update Next properly?')
+            return
         if not self._last_played:
             return
 
