@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="service.update_next"
+       name="Update Next"
+       version="0.1"
+       provider-name="Sakartu">
+  <requires>
+  </requires>
+  <extension point="xbmc.service"
+             library="update_next.py" start="[login|startup]">
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary lang="en">next update functionality</summary>
+  </extension>
+</addon>
+
