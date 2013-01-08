@@ -1,0 +1,3 @@
+<settings>
+	<setting id="next_path" type="text" label="30000" default="~/src/next/"/>
+</settings>
