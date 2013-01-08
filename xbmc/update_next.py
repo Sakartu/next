@@ -54,7 +54,7 @@ class NextUpdatePlayer(xbmc.Player):
 
         episode = self._last_played['episodedetails']
         self._log('Updating next for ' + episode['showtitle'])
-        conf = {next.constants.ConfKeys.DB_PATH: '/Users/peter/Dropbox/shared/next.db'}
+        conf = {next.constants.ConfKeys.DB_PATH: self.addon.getSetting('next_db_path')}
         next.db.connect(conf)
 
         # Find show

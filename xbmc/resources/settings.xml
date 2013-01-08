@@ -1,3 +1,4 @@
 <settings>
 	<setting id="next_path" type="text" label="30000" default="~/src/next/"/>
+	<setting id="next_db_path" type="text" label="30001" default="~/Dropbox/shared/next.db"/>
 </settings>

@@ -1,3 +1,4 @@
 <strings>
-	<string id="30000">Path to next</string>
+	<string id="30000">Path to next module</string>
+	<string id="30001">Path to next database</string>
 </strings>
