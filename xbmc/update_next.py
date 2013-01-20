@@ -19,7 +19,7 @@ class NextUpdatePlayer(xbmc.Player):
         self._update_next()
 
     def onPlayBackStarted(self):
-        if True or xbmc.Player().isPlayingVideo():
+        if xbmc.Player().isPlayingVideo():
             players = self._execute_json("Player.GetActivePlayers")
             for p in players:
                 if p['type'] == 'video':
@@ -46,6 +46,7 @@ class NextUpdatePlayer(xbmc.Player):
         except ImportError:
             xbmcgui.Dialog().ok('next library error!', 'Could not locate next module, have you configured Update Next properly?')
             return
+
         if not self._last_played:
             return
 
