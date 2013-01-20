@@ -80,6 +80,7 @@ class NextUpdatePlayer(xbmc.Player):
                 next.db.change_show(conf, show.sid, int(episode['season']), int(episode['episode']))
                 next.db.mark_maybe_finished(conf, show.sid)
 
+        self._last_played = None
         self._log('Done!')
 
     def _execute_json(self, method, **params):
