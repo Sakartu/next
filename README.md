@@ -12,7 +12,7 @@ fully functional TUI to manage your local database.
 
 TL;DR
 -----
-git clone from github; install dependencies (python-tvrage, python-xdgapp 
+git clone from github; install dependencies (python-tvrage, python-xdgapp
 \<optional\>, pyreadline \<optional\>); run once ("next" if next.py is in your
 PATH); change configuration found in ~/.config/next/next.conf; add some shows
 using "next -a"; watch eps using "next \<partial show name\>"; make sure the
@@ -22,10 +22,10 @@ running "next -u" when you're online.
 Requirements
 ------------
 
-next itself uses basic python and should work in python 2.7 and above. 
+next itself uses basic python and should work in python 2.7 and above.
 
 To be able to play video from the command line a command line video player
-is required. I myself use mplayer but since you specify your own 
+is required. I myself use mplayer but since you specify your own
 command line to start video's with (see Configuration), you can use
 whatever you want!
 
@@ -39,9 +39,9 @@ Other methods can be found on pypi:
 
     http://pypi.python.org/pypi/python-tvrage/0.1.4
 
-For the configuration and database files next can use the XDG Base Directory 
-Specification (see http://bit.ly/tulYTA). This needs the package 
-python-xdgapp to be installed, you can probably find this in your distro's 
+For the configuration and database files next can use the XDG Base Directory
+Specification (see http://bit.ly/tulYTA). This needs the package
+python-xdgapp to be installed, you can probably find this in your distro's
 repository somewhere. pip may also have python-xdgapp although this was not the
 case when I checked it last time. You can try using:
 
@@ -82,7 +82,7 @@ Configuration
 -------------
 
 Out of the box next will use the XDG Base Directory specification (see
-http://bit.ly/tulYTA) to find it's configuration file and database. If the XDG 
+http://bit.ly/tulYTA) to find it's configuration file and database. If the XDG
 Base Directory isn't available next will default to ~/.next/next.conf for the
 configuration file. If no alternate path is specified in the configuration file
 next will default to the specified show_path.
@@ -119,30 +119,45 @@ Completion
 ----------
 
 next also features bash commandline completion. This will complete the names of your
-shows when next is used directly from your terminal, without the TUI. For instance, 
+shows when next is used directly from your terminal, without the TUI. For instance,
 to play the next ep of the show "White Collar", just execute the following command:
 
     user@box$ next white
 
-If you press <tab> just after typing "wh" it will complete to white for you. 
+If you press <tab> just after typing "wh" it will complete to white for you.
 The completion file found in ./completion/ can be put in /etc/bash_completion.d/
-to provide tab completion for your shows. 
+to provide tab completion for your shows.
 
-If you want to enable the completion features right away, just use the following 
+If you want to enable the completion features right away, just use the following
 commands:
 
     user@box$ sudo cp ~/src/next/completion/next /etc/bash_completion.d/
     user@box$ . /etc/bash_completion.d/next
-    
+
 The last command will "source" the completion file to enable it immediately.
 
-next features fuzzy show name matching, meaning that if you have no other shows 
+next features fuzzy show name matching, meaning that if you have no other shows
 that have the letters "wh" in them, in that order, typing
 
     user@box$ next wh
-    
+
 is enough to start the next "White Collar" ep; the completion is only a nice
 addition, not a requirement.
+
+XBMC
+----
+
+If you want to use next alongside XBMC you may run into the problem of the two
+databases getting out of sync: if you watch something in XBMC then next doesn't
+know about it and vice versa. The first part of this problem is solved by the
+XBMC service addon found in ./xbmc/. If you put this directory in your XBMC
+addons directory (http://wiki.xbmc.org/index.php?title=userdata), enable it in
+XBMC and configure it correctly, each time you watched an ep in XBMC you will be
+prompted on whether you want to update next as well. If you use this plugin with
+Raspbmc (XBMC for the raspberry pi) you will need to make your next database
+available locally somehow. As sqlite3 needs to be able to lock the database to
+be able to write to it, using Samba may not work as it has not implemented the
+locking mechanism properly, so I suggest using NFS.
 
 Usage
 -----
@@ -150,14 +165,14 @@ Usage
 Some basic usage has already been discussed in the previous sections. Here follows
 a more complete guide.
 
-The first thing you need to do is add a show to the database. Adding a show looks 
+The first thing you need to do is add a show to the database. Adding a show looks
 up the show by name in the (remote) TVRage database and adds all the
 information it can find to the local database. The internal episode cache gets
 updated as you watch but you can update the cache manually (if, for instance,
 you almost always watch in an offline setting) using the -u flag. Make sure the
 cache gets updated regularly, otherwise next won't know what to do with new eps
 as they come out! Updating the database can be done manually (by running next
-with the -u flag) or automatically if you play shows while an internet 
+with the -u flag) or automatically if you play shows while an internet
 connection is available. Playing a show has already been covered in the bash
 completion part above; you just start next with some hints as to which show you
 mean as parameters:
@@ -167,12 +182,12 @@ mean as parameters:
 will start the next ep of White Collar for you (provided you added it to the
 database)
 
-next will look for eps for your shows in the given location in the configuration 
+next will look for eps for your shows in the given location in the configuration
 file. If, for some reason, you have the eps for a specific show in another location
-you can add this manually by using the "--add_location" (CLI) or "add_location" 
+you can add this manually by using the "--add_location" (CLI) or "add_location"
 (TUI) commands.
 
-A final feature worth mentioning is the scan option. The first time you start next, 
+A final feature worth mentioning is the scan option. The first time you start next,
 after configuring it's options in the config file, you can use the "--scan" (CLI)
 or "scan" (TUI) command to scan the specified show path for shows and add them
 to the database. This will take you through a wizard to add shows and specify what
