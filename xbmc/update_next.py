@@ -8,7 +8,7 @@ from collections import defaultdict
 
 
 class NextUpdatePlayer(xbmc.Player):
-    def init(self):
+    def __init__(self):
         xbmc.Player.__init__(self)
         self._last_played = None
 
@@ -50,38 +50,40 @@ class NextUpdatePlayer(xbmc.Player):
         if not self._last_played:
             return
 
-        if not xbmcgui.Dialog().yesno('Update next?', 'Do you want to update the next database?'):
-            return
-
-        episode = self._last_played['episodedetails']
-        self._log('Updating next for ' + episode['showtitle'])
-        conf = {next.constants.ConfKeys.DB_PATH: addon.getSetting('next_db_path')}
         try:
-            next.db.connect(conf)
-        except:
-            xbmcgui.Dialog().ok('next database error!', 'Could not locate next database, ahve you configured Update Next properly?')
-            return
+            if not xbmcgui.Dialog().yesno('Update next?', 'Do you want to update the next database?'):
+                return
 
-        # Find show
-        candidates = next.db.find_shows(conf, episode['showtitle'])
-        show = next.util.filter_shows(candidates, episode['showtitle'])
+            episode = self._last_played['episodedetails']
+            self._log('Updating next for ' + episode['showtitle'])
+            conf = {next.constants.ConfKeys.DB_PATH: addon.getSetting('next_db_path')}
+            try:
+                next.db.connect(conf)
+            except:
+                xbmcgui.Dialog().ok('next database error!', 'Could not locate next database, ahve you configured Update Next properly?')
+                return
 
-        # Find ep
-        eps = next.db.find_all_eps(conf, show.sid, episode['season'])
-        for ep in eps:
-            if int(episode['episode']) + 1 == ep.epnum:
-                next.db.change_show(conf, show.sid, int(episode['season']), int(episode['episode']) + 1)
-                break
-        else:
-            seasons = next.db.find_seasons(conf, show.sid)
-            if episode['season'] + 1 in seasons:
-                next.db.change_show(conf, show.sid, int(episode['season']) + 1, 1)
+            # Find show
+            candidates = next.db.find_shows(conf, episode['showtitle'])
+            show = next.util.filter_shows(candidates, episode['showtitle'])
+
+            # Find ep
+            eps = next.db.find_all_eps(conf, show.sid, episode['season'])
+            for ep in eps:
+                if int(episode['episode']) + 1 == ep.epnum:
+                    next.db.change_show(conf, show.sid, int(episode['season']), int(episode['episode']) + 1)
+                    break
             else:
-                next.db.change_show(conf, show.sid, int(episode['season']), int(episode['episode']))
-                next.db.mark_maybe_finished(conf, show.sid)
+                seasons = next.db.find_seasons(conf, show.sid)
+                if episode['season'] + 1 in seasons:
+                    next.db.change_show(conf, show.sid, int(episode['season']) + 1, 1)
+                else:
+                    next.db.change_show(conf, show.sid, int(episode['season']), int(episode['episode']))
+                    next.db.mark_maybe_finished(conf, show.sid)
 
-        self._last_played = None
-        self._log('Done!')
+            self._log('Done!')
+        finally:
+            self._last_played = None
 
     def _execute_json(self, method, **params):
         cmd = defaultdict(dict,
